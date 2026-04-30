@@ -28,7 +28,7 @@
                 @foreach (['Account aanmaken', 'Profiel inrichten', 'Email verifiëren'] as $index => $title)
                     <div class="flex flex-col items-center gap-2">
                         <div
-                            class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold 
+                            class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold
                             @if ($index === 2) bg-[#F4A261] text-[#2D6A4F]
                             @else
                                 bg-white/40 text-white @endif
@@ -55,9 +55,9 @@
                     @foreach (['1', '2', '3'] as $index => $num)
                         <div class="flex flex-col items-center gap-1">
                             <div
-                                class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold 
+                                class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold
                                 @if ($index === 2) bg-[#2D6A4F] text-white
-                                @else 
+                                @else
                                     bg-gray-200 text-gray-600 @endif
                                 transition-all">
                                 {{ $num }}
@@ -74,7 +74,14 @@
                     </p>
                 </div>
 
-                {{-- Email verification box --}}
+                {{-- Resend success message --}}
+                @if (session('resent'))
+                    <div class="bg-green-50 border border-green-200 rounded-xl px-4 py-3 mb-6">
+                        <p class="text-sm text-green-700">{{ session('resent') }}</p>
+                    </div>
+                @endif
+
+                {{-- Email verification info box --}}
                 <div class="bg-blue-50 border border-blue-200 rounded-xl px-6 py-6 mb-8">
                     <div class="flex gap-4">
                         <div class="flex-shrink-0">
@@ -84,37 +91,32 @@
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-sm font-medium text-blue-900">Email verificatie</h3>
+                            <h3 class="text-sm font-medium text-blue-900">Controleer je email</h3>
                             <p class="text-sm text-blue-700 mt-2">
-                                Je hebt een verificatiemail ontvangen op je inbox. Klik op de link in dat emailbericht om je
-                                account te activeren.
+                                We hebben een verificatiecode naar je email gestuurd. Voer de 6-cijferige code hieronder in om je account te activeren.
                             </p>
                             <p class="text-sm text-blue-600 mt-3">
-                                Heb je de email niet ontvangen? Controleer je spamfolder of klik op "Opnieuw versturen"
-                                hieronder.
+                                De code is 15 minuten geldig. Heb je de email niet ontvangen? Controleer je spamfolder.
                             </p>
                         </div>
                     </div>
                 </div>
 
-                {{-- Verification code input (alternative) --}}
-                <form method="POST" action="{{ route('register.step3') }}" class="space-y-5" novalidate>
+                {{-- Verification code form --}}
+                <form method="POST" action="{{ route('register.step3.post') }}" class="space-y-5" novalidate>
                     @csrf
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                            Of enter je verificatiecode
+                            Verificatiecode
                         </label>
                         <input type="text" name="verification_code" maxlength="6" placeholder="000000"
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-[#2D6A4F] focus:ring-4 focus:ring-[#2D6A4F]/10 transition-all text-center tracking-widest font-mono">
+                            value="{{ old('verification_code') }}"
+                            class="w-full px-4 py-3 border @error('verification_code') border-red-400 @else border-gray-200 @enderror rounded-xl text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-[#2D6A4F] focus:ring-4 focus:ring-[#2D6A4F]/10 transition-all text-center tracking-widest font-mono">
+                        @error('verification_code')
+                            <p class="text-xs text-red-600 mt-2">{{ $message }}</p>
+                        @enderror
                         <p class="text-xs text-gray-500 mt-2">6-cijferige code uit je email</p>
-                    </div>
-
-                    {{-- Already verified message --}}
-                    <div class="bg-green-50 border border-green-200 rounded-xl px-4 py-3">
-                        <p class="text-sm text-green-700">
-                            Je email is geverifieerd! Je kunt nu je account gebruiken.
-                        </p>
                     </div>
 
                     {{-- Navigation buttons --}}
@@ -130,15 +132,18 @@
                     </div>
                 </form>
 
-                {{-- Resend link --}}
+                {{-- Resend form --}}
                 <div class="text-center mt-6">
                     <p class="text-sm text-gray-600">
                         Verificatiemail niet ontvangen?
-                        <button type="button" onclick="alert('Email zou opnieuw verstuurd worden (Mailtrap integratie)')"
-                            class="text-[#2D6A4F] font-medium hover:underline">
+                    </p>
+                    <form method="POST" action="{{ route('register.resend-verification') }}" class="inline">
+                        @csrf
+                        <button type="submit"
+                            class="text-[#2D6A4F] font-medium hover:underline text-sm mt-1">
                             Opnieuw versturen
                         </button>
-                    </p>
+                    </form>
                 </div>
             </div>
         </div>

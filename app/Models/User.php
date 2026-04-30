@@ -25,6 +25,8 @@ class User extends Authenticatable
         'username',
         'bio',
         'profile_photo_path',
+        'email_verification_code',
+        'email_verification_expires_at',
     ];
 
     /**
@@ -46,6 +48,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'email_verification_expires_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
