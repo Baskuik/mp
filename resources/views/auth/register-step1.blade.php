@@ -218,5 +218,26 @@
                 `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>` :
                 `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>`;
         }
+
+        // Password strength meter
+        document.getElementById('password').addEventListener('input', function() {
+            const val = this.value;
+            let strength = 0;
+            if (val.length >= 8) strength++;
+            if (/[A-Z]/.test(val)) strength++;
+            if (/[0-9]/.test(val)) strength++;
+            if (/[^A-Za-z0-9]/.test(val)) strength++;
+
+            const colors = ['bg-red-400', 'bg-orange-400', 'bg-yellow-400', 'bg-green-500'];
+            const labels = ['Zwak', 'Matig', 'Goed', 'Sterk'];
+
+            for (let i = 1; i <= 4; i++) {
+                const bar = document.getElementById('bar-' + i);
+                bar.className = 'h-1 flex-1 rounded-full transition-colors duration-300 ' +
+                    (i <= strength ? colors[strength - 1] : 'bg-gray-200');
+            }
+            document.getElementById('strength-label').textContent = val.length > 0 ? labels[strength - 1] ?? '' :
+            '';
+        });
     </script>
 @endsection

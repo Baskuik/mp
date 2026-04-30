@@ -25,6 +25,7 @@ class User extends Authenticatable
         'username',
         'bio',
         'profile_photo_path',
+        'email_verified_at',
     ];
 
     /**
@@ -35,6 +36,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'email_verification_code',
     ];
 
     /**

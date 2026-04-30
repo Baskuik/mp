@@ -74,6 +74,15 @@
                     </p>
                 </div>
 
+                {{-- Account creation form (submits to POST /register/step3) --}}
+                <form id="account-creation-form" method="POST" action="{{ route('register.step3.post') }}" class="mb-8">
+                    @csrf
+                    <button type="submit"
+                        class="w-full bg-[#2D6A4F] hover:bg-[#1B4332] text-white font-medium py-3 px-6 rounded-xl text-sm transition-all duration-200 hover:shadow-lg hover:shadow-[#2D6A4F]/25 active:scale-[0.98]">
+                        Verificatieemail verzenden
+                    </button>
+                </form>
+
                 {{-- Email verification box --}}
                 <div class="bg-blue-50 border border-blue-200 rounded-xl px-6 py-6 mb-8">
                     <div class="flex gap-4">
@@ -86,8 +95,9 @@
                         <div>
                             <h3 class="text-sm font-medium text-blue-900">Email verificatie</h3>
                             <p class="text-sm text-blue-700 mt-2">
-                                Je hebt een verificatiemail ontvangen op je inbox. Klik op de link in dat emailbericht om je
-                                account te activeren.
+                                We hebben een verificatiecode naar <strong>{{ $email }}</strong> gestuurd. Deze bevat
+                                een
+                                6-cijferige code die je hieronder kunt invoeren.
                             </p>
                             <p class="text-sm text-blue-600 mt-3">
                                 Heb je de email niet ontvangen? Controleer je spamfolder of klik op "Opnieuw versturen"
@@ -97,24 +107,60 @@
                     </div>
                 </div>
 
-                {{-- Verification code input (alternative) --}}
-                <form method="POST" action="{{ route('register.step3') }}" class="space-y-5" novalidate>
+                {{-- Show success message if email verification succeeded and redirected back --}}
+                @if (session('success'))
+                    <div class="bg-green-50 border border-green-200 rounded-xl px-4 py-3 mb-6">
+                        <div class="flex gap-3">
+                            <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <p class="text-sm text-green-700 font-medium">
+                                {{ session('success') }}
+                            </p>
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Verification code form --}}
+                <form method="POST" action="{{ route('verify-email-code') }}" class="space-y-5" novalidate>
                     @csrf
+
+                    @if ($errors->has('code'))
+                        <div class="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                            <p class="text-sm text-red-700">
+                                {{ $errors->first('code') }}
+                            </p>
+                        </div>
+                    @endif
+
+                    @if ($errors->has('email'))
+                        <div class="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                            <p class="text-sm text-red-700">
+                                {{ $errors->first('email') }}
+                            </p>
+                        </div>
+                    @endif
+
+                    @if (session('info'))
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3">
+                            <p class="text-sm text-blue-700">
+                                {{ session('info') }}
+                            </p>
+                        </div>
+                    @endif
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                            Of enter je verificatiecode
+                            Verificatiecode (6 cijfers)
                         </label>
-                        <input type="text" name="verification_code" maxlength="6" placeholder="000000"
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-[#2D6A4F] focus:ring-4 focus:ring-[#2D6A4F]/10 transition-all text-center tracking-widest font-mono">
-                        <p class="text-xs text-gray-500 mt-2">6-cijferige code uit je email</p>
-                    </div>
-
-                    {{-- Already verified message --}}
-                    <div class="bg-green-50 border border-green-200 rounded-xl px-4 py-3">
-                        <p class="text-sm text-green-700">
-                            Je email is geverifieerd! Je kunt nu je account gebruiken.
-                        </p>
+                        <input type="text" name="code" maxlength="6" placeholder="000000" inputmode="numeric"
+                            autocomplete="one-time-code"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-[#2D6A4F] focus:ring-4 focus:ring-[#2D6A4F]/10 transition-all text-center tracking-widest font-mono @error('code') border-red-500 @enderror"
+                            value="{{ old('code') }}">
+                        <p class="text-xs text-gray-500 mt-2">Voer de code in die je in je email hebt ontvangen</p>
                     </div>
 
                     {{-- Navigation buttons --}}
@@ -125,7 +171,7 @@
                         </a>
                         <button type="submit"
                             class="flex-1 bg-[#2D6A4F] hover:bg-[#1B4332] text-white font-medium py-3 px-6 rounded-xl text-sm transition-all duration-200 hover:shadow-lg hover:shadow-[#2D6A4F]/25 active:scale-[0.98]">
-                            Account activeren
+                            Verifieer Email
                         </button>
                     </div>
                 </form>
@@ -133,11 +179,13 @@
                 {{-- Resend link --}}
                 <div class="text-center mt-6">
                     <p class="text-sm text-gray-600">
-                        Verificatiemail niet ontvangen?
-                        <button type="button" onclick="alert('Email zou opnieuw verstuurd worden (Mailtrap integratie)')"
-                            class="text-[#2D6A4F] font-medium hover:underline">
+                        Verificatiecode niet ontvangen?
+                    <form method="POST" action="{{ route('resend-verification-email') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="text-[#2D6A4F] font-medium hover:underline">
                             Opnieuw versturen
                         </button>
+                    </form>
                     </p>
                 </div>
             </div>

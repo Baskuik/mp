@@ -36,6 +36,12 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/wachtwoord-vergeten', [AuthController::class, 'showForgotPassword'])->name('password.request');
 
+// Email verification routes (accessible during registration - NOT protected by auth)
+Route::middleware(['throttle:5,1'])->group(function () {
+    Route::post('/verify-email-code', [AuthController::class, 'verifyEmailCode'])->name('verify-email-code');
+    Route::post('/resend-verification-email', [AuthController::class, 'resendVerificationEmail'])->name('resend-verification-email');
+});
+
 // Language switcher
 Route::post('/set-language/{lang}', function ($lang) {
     if (in_array($lang, ['nl', 'de', 'en', 'be'])) {

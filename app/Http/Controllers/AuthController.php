@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\EmailVerificationCode;
+use App\Mail\VerifyEmailMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -22,6 +26,12 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
+        ], [
+            'email.required' => __('E-mailadres is verplicht.'),
+            'email.string' => __('E-mailadres moet geldig zijn.'),
+            'email.email' => __('Voer een geldig e-mailadres in.'),
+            'password.required' => __('Wachtwoord is verplicht.'),
+            'password.string' => __('Wachtwoord moet uit tekens bestaan.'),
         ]);
 
         if (Auth::attempt($credentials)) {
@@ -31,7 +41,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => __('Email of wachtwoord klopt niet.'),
+            'email' => __('E-mailadres of wachtwoord klopt niet.'),
         ])->onlyInput('email');
     }
 
@@ -52,14 +62,20 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'password_confirmation' => 'required|string|min:8',
             'terms' => 'accepted',
         ], [
-            'email.unique' => __('Deze email is al in gebruik.'),
+            'name.required' => __('Volledige naam is verplicht.'),
+            'name.string' => __('Volledige naam moet uit letters bestaan.'),
+            'name.max' => __('Volledige naam mag niet langer zijn dan 255 tekens.'),
+            'email.required' => __('E-mailadres is verplicht.'),
+            'email.string' => __('E-mailadres moet geldig zijn.'),
+            'email.email' => __('Voer een geldig e-mailadres in.'),
+            'email.max' => __('E-mailadres mag niet langer zijn dan 255 tekens.'),
+            'email.unique' => __('Dit e-mailadres is al in gebruik.'),
+            'password.required' => __('Wachtwoord is verplicht.'),
+            'password.string' => __('Wachtwoord moet uit tekens bestaan.'),
             'password.min' => __('Wachtwoord moet minimaal 8 tekens bevatten.'),
             'password.confirmed' => __('De wachtwoorden komen niet overeen.'),
-            'email.email' => __('Voer een geldig emailadres in.'),
-            'name.required' => __('Naam is verplicht.'),
             'terms.accepted' => __('U moet de algemene voorwaarden accepteren.'),
         ]);
 
@@ -100,8 +116,14 @@ class AuthController extends Controller
             'bio' => 'nullable|string|max:500',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
+            'username.required' => __('Gebruikersnaam is verplicht.'),
+            'username.string' => __('Gebruikersnaam moet uit tekens bestaan.'),
+            'username.max' => __('Gebruikersnaam mag niet langer zijn dan 255 tekens.'),
             'username.unique' => __('Deze gebruikersnaam is al in gebruik.'),
+            'bio.string' => __('Bio moet uit tekens bestaan.'),
+            'bio.max' => __('Bio mag niet langer zijn dan 500 tekens.'),
             'profile_photo.image' => __('Het bestand moet een afbeelding zijn.'),
+            'profile_photo.mimes' => __('De afbeelding moet in PNG, JPG, GIF of JPEG formaat zijn.'),
             'profile_photo.max' => __('De afbeelding mag niet groter zijn dan 2MB.'),
         ]);
 
@@ -125,10 +147,13 @@ class AuthController extends Controller
      */
     public function showRegisterStep3()
     {
+        // Allow access only if user has registration session data
         if (!session('registration_step1') || !session('registration_step2')) {
             return redirect()->route('register.step1');
         }
-        return view('auth.register-step3');
+
+        $email = session('registration_step1.email');
+        return view('auth.register-step3', ['email' => $email]);
     }
 
     /**
@@ -140,23 +165,205 @@ class AuthController extends Controller
             return redirect()->route('register.step1');
         }
 
-        // Get all data from session
-        $step1Data = session('registration_step1');
-        $step2Data = session('registration_step2');
+        // Get email from session
+        $email = session('registration_step1.email');
 
-        // Merge all data and create user
-        $userData = array_merge($step1Data, $step2Data);
-        $userData['email_verified_at'] = now();
+        // Generate verification code
+        $verificationCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
-        $user = User::create($userData);
+        // Store verification code in database (user_id is null - user doesn't exist yet)
+        EmailVerificationCode::create([
+            'user_id' => null,
+            'email' => $email,
+            'code' => $verificationCode,
+            'expires_at' => now()->addMinutes(30),
+        ]);
 
-        // Log the user in
-        Auth::login($user);
+        // Send verification email
+        try {
+            Mail::to($email)->send(new VerifyEmailMail($verificationCode, session('registration_step1.name')));
+        } catch (\Exception $e) {
+            // Log error but don't fail - user can request resend
+            \Log::error('Verification email failed: ' . $e->getMessage());
+        }
 
-        // Clear the registration session data
-        $request->session()->forget(['registration_step1', 'registration_step2']);
+        // DON'T login user yet, DON'T create account yet
+        // Redirect back to step 3 to show verification form
+        return redirect()->route('register.step3');
+    }
 
-        return redirect('/');
+    /**
+     * Verify email with code.
+     */
+    public function verifyEmailCode(Request $request)
+    {
+        $validated = $request->validate([
+            'code' => 'required|string|size:6|regex:/^[0-9]{6}$/',
+        ], [
+            'code.required' => __('Verificatiecode is verplicht.'),
+            'code.string' => __('Verificatiecode moet uit cijfers bestaan.'),
+            'code.size' => __('Verificatiecode moet 6 cijfers zijn.'),
+            'code.regex' => __('Verificatiecode moet uit 6 cijfers bestaan.'),
+        ]);
+
+        try {
+            // Determine if user is registering (session data) or already logged in
+            $email = session('registration_step1.email');
+
+            // If no session data, check if user is logged in
+            if (!$email && !Auth::check()) {
+                return back()->withErrors([
+                    'code' => __('Registratiesessie is verlopen. Start opnieuw.'),
+                ]);
+            }
+
+            // If no session email but user is logged in, use authenticated user's email
+            if (!$email) {
+                $email = Auth::user()->email;
+            }
+
+            \Log::info('Verifying email code', ['email' => $email, 'is_authenticated' => Auth::check()]);
+
+            // Find the verification code
+            $verificationCode = EmailVerificationCode::where('email', $email)
+                ->where('code', $validated['code'])
+                ->where('is_verified', false)
+                ->where('expires_at', '>', now())
+                ->first();
+
+            if (!$verificationCode) {
+                return back()->withErrors([
+                    'code' => __('Verificatiecode is ongeldig of verlopen.'),
+                ]);
+            }
+
+            // Mark code as verified first
+            $verificationCode->update(['is_verified' => true]);
+
+            // SCENARIO 1: User is registering (has session data)
+            if (session('registration_step1') && session('registration_step2')) {
+                $step1Data = session('registration_step1');
+                $step2Data = session('registration_step2');
+
+                // Merge data and create user
+                $userData = array_merge($step1Data, $step2Data);
+                $userData['email_verified_at'] = now();
+
+                \Log::info('Creating user during registration', ['email' => $email]);
+
+                $user = User::create($userData);
+
+                \Log::info('User created successfully', ['user_id' => $user->id, 'email' => $user->email]);
+
+                // Update verification code with user_id
+                $verificationCode->update(['user_id' => $user->id]);
+
+                // Delete all verification codes for this email
+                EmailVerificationCode::where('email', $email)->delete();
+
+                // Clear the registration session data
+                $request->session()->forget(['registration_step1', 'registration_step2']);
+
+                // Log the user in
+                \Log::info('Logging in newly created user', ['user_id' => $user->id]);
+                Auth::login($user);
+
+                \Log::info('Redirecting to home after registration', ['authenticated' => Auth::check()]);
+                return redirect('/')->with('success', __('Je account is succesvol aangemaakt en geverifiëerd!'));
+            }
+
+            // SCENARIO 2: User is already logged in and verifying their email
+            elseif (Auth::check()) {
+                $user = Auth::user();
+
+                \Log::info('Verifying email for existing user', ['user_id' => $user->id]);
+
+                // Verify user's email
+                $user->update(['email_verified_at' => now()]);
+
+                // Update verification code with user_id
+                $verificationCode->update(['user_id' => $user->id]);
+
+                // Delete all verification codes for this email
+                EmailVerificationCode::where('email', $email)->delete();
+
+                \Log::info('Email verified for existing user', ['user_id' => $user->id]);
+                return redirect('/')->with('success', __('Je email is succesvol geverifiëerd!'));
+            }
+
+            // Should not reach here
+            return back()->withErrors([
+                'code' => __('Onbekende status. Start opnieuw.'),
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Email verification failed: ' . $e->getMessage(), [
+                'exception' => $e,
+                'email' => $email ?? 'unknown',
+                'code' => $validated['code'] ?? null,
+            ]);
+
+            return back()->withErrors([
+                'code' => __('Er is een fout opgetreden bij het verifiëren van je email: ') . $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Resend verification email.
+     */
+    public function resendVerificationEmail(Request $request)
+    {
+        try {
+            // Scenario 1: User is registering (has session data)
+            $email = session('registration_step1.email');
+            $name = session('registration_step1.name');
+
+            // Scenario 2: User is already logged in
+            if (!$email) {
+                if (!Auth::check()) {
+                    return back()->withErrors([
+                        'email' => __('Registratiesessie is verlopen. Start opnieuw.'),
+                    ]);
+                }
+                $email = Auth::user()->email;
+                $name = Auth::user()->name;
+            }
+
+            // Delete old verification codes
+            EmailVerificationCode::where('email', $email)->delete();
+
+            // Generate new verification code
+            $verificationCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+            // Store new verification code
+            $codeData = [
+                'email' => $email,
+                'code' => $verificationCode,
+                'expires_at' => now()->addMinutes(30),
+            ];
+
+            // Only add user_id if user is already logged in
+            if (Auth::check()) {
+                $codeData['user_id'] = Auth::id();
+            } else {
+                $codeData['user_id'] = null;
+            }
+
+            EmailVerificationCode::create($codeData);
+
+            // Send verification email
+            Mail::to($email)->send(new VerifyEmailMail($verificationCode, $name));
+
+            \Log::info('Verification email resent', ['email' => $email, 'code' => $verificationCode]);
+
+            return back()->with('success', __('Verificatieemail opnieuw verzonden.'));
+        } catch (\Exception $e) {
+            \Log::error('Verification email resend failed: ' . $e->getMessage());
+            return back()->withErrors([
+                'email' => __('Er is een fout opgetreden bij het verzenden van de email.'),
+            ]);
+        }
     }
 
     /**
