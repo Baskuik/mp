@@ -31,10 +31,11 @@ Route::get('/register/step2', [AuthController::class, 'showRegisterStep2'])->nam
 Route::post('/register/step2', [AuthController::class, 'registerStep2'])->name('register.step2.post');
 Route::get('/register/step3', [AuthController::class, 'showRegisterStep3'])->name('register.step3');
 Route::post('/register/step3', [AuthController::class, 'registerStep3'])->name('register.step3.post');
+Route::post('/register/resend-verification', [AuthController::class, 'resendVerificationCode'])->name('register.resend-verification');
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/wachtwoord-vergeten', [AuthController::class, 'showForgotPassword'])->name('password.request');
+
 
 // Language switcher
 Route::post('/set-language/{lang}', function ($lang) {

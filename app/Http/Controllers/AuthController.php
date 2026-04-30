@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Mail\VerificationCodeMail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
@@ -117,22 +119,48 @@ class AuthController extends Controller
         // Store step 2 data in session
         session(['registration_step2' => $validated]);
 
+        // Clear any previously created (unverified) user so a fresh one gets created on step 3
+        session()->forget('registration_user_id');
+
         return redirect()->route('register.step3');
     }
 
     /**
      * Show step 3 of registration form.
+     * Creates the user (unverified) on first visit and sends the verification email.
      */
     public function showRegisterStep3()
     {
         if (!session('registration_step1') || !session('registration_step2')) {
             return redirect()->route('register.step1');
         }
+
+        // Create the user (unverified) if not already done in this registration flow
+        $userId = session('registration_user_id');
+
+        if (!$userId || !User::find($userId)) {
+            $step1Data = session('registration_step1');
+            $step2Data = session('registration_step2');
+
+            $userData = array_merge($step1Data, $step2Data);
+            // Do NOT set email_verified_at — the user is unverified
+            $userData['email_verified_at'] = null;
+
+            $code = $this->generateVerificationCode();
+            $userData['email_verification_code'] = $code;
+            $userData['email_verification_expires_at'] = now()->addMinutes(15);
+
+            $user = User::create($userData);
+            session(['registration_user_id' => $user->id]);
+
+            Mail::to($user->email)->send(new VerificationCodeMail($code, $user->name));
+        }
+
         return view('auth.register-step3');
     }
 
     /**
-     * Handle step 3 of registration - Email verification.
+     * Handle step 3 of registration - validate the email verification code.
      */
     public function registerStep3(Request $request)
     {
@@ -140,23 +168,72 @@ class AuthController extends Controller
             return redirect()->route('register.step1');
         }
 
-        // Get all data from session
-        $step1Data = session('registration_step1');
-        $step2Data = session('registration_step2');
+        $request->validate([
+            'verification_code' => 'required|string|size:6',
+        ], [
+            'verification_code.required' => __('Voer je verificatiecode in.'),
+            'verification_code.size' => __('De verificatiecode moet 6 cijfers bevatten.'),
+        ]);
 
-        // Merge all data and create user
-        $userData = array_merge($step1Data, $step2Data);
-        $userData['email_verified_at'] = now();
+        $userId = session('registration_user_id');
+        $user = $userId ? User::find($userId) : null;
 
-        $user = User::create($userData);
+        if (!$user) {
+            return redirect()->route('register.step3')
+                ->withErrors(['verification_code' => __('Er is iets misgegaan. Probeer het opnieuw.')]);
+        }
+
+        // Check if the code has expired
+        if ($user->email_verification_expires_at && $user->email_verification_expires_at->isPast()) {
+            return back()->withErrors([
+                'verification_code' => __('De verificatiecode is verlopen. Klik op "Opnieuw versturen" om een nieuwe code te ontvangen.'),
+            ]);
+        }
+
+        // Check if the code matches
+        if ($request->verification_code !== $user->email_verification_code) {
+            return back()->withErrors([
+                'verification_code' => __('De verificatiecode is onjuist. Controleer je email en probeer het opnieuw.'),
+            ]);
+        }
+
+        // Mark email as verified and clear the code
+        $user->email_verified_at = now();
+        $user->email_verification_code = null;
+        $user->email_verification_expires_at = null;
+        $user->save();
 
         // Log the user in
         Auth::login($user);
 
         // Clear the registration session data
-        $request->session()->forget(['registration_step1', 'registration_step2']);
+        $request->session()->forget(['registration_step1', 'registration_step2', 'registration_user_id']);
 
         return redirect('/');
+    }
+
+    /**
+     * Resend the verification code email.
+     */
+    public function resendVerificationCode(Request $request)
+    {
+        $userId = session('registration_user_id');
+        $user = $userId ? User::find($userId) : null;
+
+        if (!$user) {
+            return redirect()->route('register.step3')
+                ->withErrors(['verification_code' => __('Er is iets misgegaan. Probeer het opnieuw.')]);
+        }
+
+        $code = $this->generateVerificationCode();
+        $user->email_verification_code = $code;
+        $user->email_verification_expires_at = now()->addMinutes(15);
+        $user->save();
+
+        Mail::to($user->email)->send(new VerificationCodeMail($code, $user->name));
+
+        return redirect()->route('register.step3')
+            ->with('resent', __('Een nieuwe verificatiecode is naar je email verstuurd.'));
     }
 
     /**
@@ -178,5 +255,13 @@ class AuthController extends Controller
     public function showForgotPassword()
     {
         // Forgot password form will go here
+    }
+
+    /**
+     * Generate a random 6-digit numeric verification code.
+     */
+    private function generateVerificationCode(): string
+    {
+        return str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
     }
 }
