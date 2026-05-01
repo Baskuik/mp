@@ -115,8 +115,8 @@
                 @endif
 
                 {{-- Verification code form --}}
-                <form method="POST" action="{{ route('verify-email-code') }}" class="space-y-5" novalidate>
-                    @csrf
+                <form method="POST" action="/verify-email-code" class="space-y-5">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
                     @if ($errors->has('code'))
                         <div class="bg-red-50 border border-red-200 rounded-xl px-4 py-3">

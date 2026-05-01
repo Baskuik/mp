@@ -131,7 +131,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <input id="username" type="text" name="username" required placeholder="bijv. jan_de_vries"
+                            <input id="username" type="text" name="username" required placeholder="bijv. Jan de Vries"
                                 class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-[#2D6A4F] focus:ring-4 focus:ring-[#2D6A4F]/10 transition-all @error('username') border-red-400 @enderror">
                         </div>
                         <p class="text-xs text-gray-500 mt-1">Deze naam is zichtbaar voor andere gebruikers</p>

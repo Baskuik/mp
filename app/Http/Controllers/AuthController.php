@@ -189,54 +189,38 @@ class AuthController extends Controller
             return redirect()->route('register.step1');
         }
 
-        // Get email from session
-        $email = session('registration_step1.email');
-
-        // Generate verification code
-        $verificationCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-
-        // Store verification code in database (user_id is null - user doesn't exist yet)
-        EmailVerificationCode::create([
-            'user_id' => null,
-            'email' => $email,
-            'code' => $verificationCode,
-            'expires_at' => now()->addMinutes(30),
-        ]);
-
-        // Send verification email
-        try {
-            Mail::to($email)->send(new VerificationCodeMail($verificationCode, session('registration_step1.name')));
-        } catch (\Exception $e) {
-            // Log error but don't fail - user can request resend
-            \Log::error('Verification email failed: ' . $e->getMessage());
-        }
-
-        // DON'T login user yet, DON'T create account yet
-        // Redirect back to step 3 to show verification form
+        // Session data is valid, redirect back to show the verification form
+        // (Email was already sent at the end of registerStep2)
         return redirect()->route('register.step3');
     }
 
     /**
      * Verify email with code.
      */
-    public function VerificationCodeMail(Request $request)
+    public function verifyEmailCode(Request $request)
     {
-        $validated = $request->validate([
-            'code' => 'required|string|size:6|regex:/^[0-9]{6}$/',
-        ], [
-            'code.required' => __('Verificatiecode is verplicht.'),
-            'code.string' => __('Verificatiecode moet uit cijfers bestaan.'),
-            'code.size' => __('Verificatiecode moet 6 cijfers zijn.'),
-            'code.regex' => __('Verificatiecode moet uit 6 cijfers bestaan.'),
-        ]);
-
         try {
+            $validated = $request->validate([
+                'code' => 'required|string|size:6',
+            ], [
+                'code.required' => __('Verificatiecode is verplicht.'),
+                'code.string' => __('Verificatiecode moet uit cijfers bestaan.'),
+                'code.size' => __('Verificatiecode moet 6 cijfers zijn.'),
+            ]);
+
+            // Ensure code contains only digits
+            if (!ctype_digit($validated['code'])) {
+                return redirect()->route('register.step3')->withErrors([
+                    'code' => __('Verificatiecode moet uit 6 cijfers bestaan.'),
+                ]);
+            }
+
             // Determine if user is registering (session data) or already logged in
             $email = session('registration_step1.email');
 
             // If no session data, check if user is logged in
             if (!$email && !Auth::check()) {
-                return back()->withErrors([
+                return redirect()->route('register.step3')->withErrors([
                     'code' => __('Registratiesessie is verlopen. Start opnieuw.'),
                 ]);
             }
@@ -256,7 +240,7 @@ class AuthController extends Controller
                 ->first();
 
             if (!$verificationCode) {
-                return back()->withErrors([
+                return redirect()->route('register.step3')->withErrors([
                     'code' => __('Verificatiecode is ongeldig of verlopen.'),
                 ]);
             }
@@ -316,7 +300,7 @@ class AuthController extends Controller
             }
 
             // Should not reach here
-            return back()->withErrors([
+            return redirect()->route('register.step3')->withErrors([
                 'code' => __('Onbekende status. Start opnieuw.'),
             ]);
 
@@ -327,7 +311,7 @@ class AuthController extends Controller
                 'code' => $validated['code'] ?? null,
             ]);
 
-            return back()->withErrors([
+            return redirect()->route('register.step3')->withErrors([
                 'code' => __('Er is een fout opgetreden bij het verifiëren van je email: ') . $e->getMessage(),
             ]);
         }

@@ -17,5 +17,4 @@ class EmailVerificationCode extends Model
         protected $hidden = [
             'code',
         ];
-    }
 }

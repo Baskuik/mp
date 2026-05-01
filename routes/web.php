@@ -40,6 +40,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Email verification routes (accessible during registration - NOT protected by auth)
 Route::middleware(['throttle:5,1'])->group(function () {
     Route::post('/verify-email-code', [AuthController::class, 'verifyEmailCode'])->name('verify-email-code');
+    Route::get('/verify-email-code', function () {
+        return redirect()->route('register.step3');
+    });
     Route::post('/resend-verification-email', [AuthController::class, 'resendVerificationEmail'])->name('resend-verification-email');
 });
 
