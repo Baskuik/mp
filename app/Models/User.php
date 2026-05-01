@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -16,15 +17,33 @@ class User extends Authenticatable implements FilamentUser
 
     protected $primaryKey = 'user_id';
 
+    const USER_ID = 'user_id';
+    const USER_NAME = 'name';
+    const USER_EMAIL = 'email';
+    const USER_EMAIL_VERIFIED_AT = 'email_verified_at';
+    const USER_PASSWORD = 'password';
+    const USER_IS_ADMIN = 'is_admin';
+    const USER_IS_ACTIVE = 'is_active';
+    const USER_REMEMBER_TOKEN = 'remember_token';
+    const USER_CREATED_AT = 'created_at';
+    const USER_UPDATED_AT = 'updated_at';
+    const USER_USERNAME = 'username';
+    const USER_BIO = 'bio';
+    const USER_PROFILE_PHOTO_PATH = 'profile_photo_path';
     protected $fillable = [
+        'user_id',
         'name',
         'email',
+        'email_verified_at',
         'password',
+        'is_admin',
+        'is_active',
+        'remember_token',
+        'created_at',
+        'updated_at',
         'username',
         'bio',
         'profile_photo_path',
-        'email_verified_at',
-        'is_admin',
     ];
 
     protected $hidden = [
@@ -36,25 +55,29 @@ class User extends Authenticatable implements FilamentUser
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
-            'is_admin'          => 'boolean',
+            'password' => 'hashed',
+            'is_admin' => 'boolean',
+            'is_active' => 'boolean',
         ];
     }
 
-    /**
-     * Controleer of de gebruiker een admin is.
-     */
     public function isAdmin(): bool
     {
         return $this->is_admin === true;
     }
 
-    /**
-     * Bepaalt of de gebruiker toegang heeft tot het Filament admin panel.
-     * Alleen gebruikers met is_admin = true krijgen toegang.
-     */
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->isAdmin();
+    }
+
+    public function listings(): HasMany
+    {
+        return $this->hasMany(Listing::class, 'user_id');
+    }
+
+    public function bids(): HasMany
+    {
+        return $this->hasMany(Bid::class, 'buyer_id');
     }
 }
