@@ -167,7 +167,7 @@ class AuthController extends Controller
 
     /**
      * Show step 3 of registration form.
-     * Creates the user (unverified) on first visit and sends the verification email.
+     * Displays the email verification screen with the email address from the session.
      */
     public function showRegisterStep3()
     {
@@ -333,7 +333,7 @@ class AuthController extends Controller
             EmailVerificationCode::where('email', $email)->delete();
 
             // Generate new verification code
-            $verificationCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            $verificationCode = $this->generateVerificationCode();
 
             // Store new verification code
             $codeData = [
