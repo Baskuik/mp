@@ -28,7 +28,7 @@
                 @foreach (['Account aanmaken', 'Profiel inrichten', 'Email verifiëren'] as $index => $title)
                     <div class="flex flex-col items-center gap-2">
                         <div
-                            class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold 
+                            class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold
                             @if ($index === 2) bg-[#F4A261] text-[#2D6A4F]
                             @else
                                 bg-white/40 text-white @endif
@@ -55,9 +55,9 @@
                     @foreach (['1', '2', '3'] as $index => $num)
                         <div class="flex flex-col items-center gap-1">
                             <div
-                                class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold 
+                                class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold
                                 @if ($index === 2) bg-[#2D6A4F] text-white
-                                @else 
+                                @else
                                     bg-gray-200 text-gray-600 @endif
                                 transition-all">
                                 {{ $num }}
@@ -93,15 +93,14 @@
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-sm font-medium text-blue-900">Email verificatie</h3>
+                            <h3 class="text-sm font-medium text-blue-900">Controleer je email</h3>
                             <p class="text-sm text-blue-700 mt-2">
                                 We hebben een verificatiecode naar <strong>{{ $email }}</strong> gestuurd. Deze bevat
                                 een
                                 6-cijferige code die je hieronder kunt invoeren.
                             </p>
                             <p class="text-sm text-blue-600 mt-3">
-                                Heb je de email niet ontvangen? Controleer je spamfolder of klik op "Opnieuw versturen"
-                                hieronder.
+                                De code is 15 minuten geldig. Heb je de email niet ontvangen? Controleer je spamfolder.
                             </p>
                         </div>
                     </div>
@@ -176,7 +175,7 @@
                     </div>
                 </form>
 
-                {{-- Resend link --}}
+                {{-- Resend form --}}
                 <div class="text-center mt-6">
                     <p class="text-sm text-gray-600">
                         Verificatiecode niet ontvangen?

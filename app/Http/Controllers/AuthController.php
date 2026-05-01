@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\EmailVerificationCode;
 use App\Mail\VerifyEmailMail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -139,11 +140,15 @@ class AuthController extends Controller
         // Store step 2 data in session
         session(['registration_step2' => $validated]);
 
+        // Clear any previously created (unverified) user so a fresh one gets created on step 3
+        session()->forget('registration_user_id');
+
         return redirect()->route('register.step3');
     }
 
     /**
      * Show step 3 of registration form.
+     * Creates the user (unverified) on first visit and sends the verification email.
      */
     public function showRegisterStep3()
     {
@@ -157,7 +162,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle step 3 of registration - Email verification.
+     * Handle step 3 of registration - validate the email verification code.
      */
     public function registerStep3(Request $request)
     {
@@ -385,5 +390,13 @@ class AuthController extends Controller
     public function showForgotPassword()
     {
         // Forgot password form will go here
+    }
+
+    /**
+     * Generate a random 6-digit numeric verification code.
+     */
+    private function generateVerificationCode(): string
+    {
+        return str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
     }
 }
