@@ -150,6 +150,7 @@ class AuthController extends Controller
             'user_id' => null,
             'email' => $email,
             'code' => $verificationCode,
+            'is_verified' => false,
             'expires_at' => now()->addMinutes(15),
         ]);
 
@@ -339,6 +340,7 @@ class AuthController extends Controller
             $codeData = [
                 'email' => $email,
                 'code' => $verificationCode,
+                'is_verified' => false,
                 'expires_at' => now()->addMinutes(15),
             ];
 

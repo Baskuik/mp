@@ -32,6 +32,7 @@ Route::post('/register/step2', [AuthController::class, 'registerStep2'])->name('
 Route::get('/register/step3', [AuthController::class, 'showRegisterStep3'])->name('register.step3');
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
+Route::get('/password.request', [AuthController::class, 'showPasswordRequest'])->name('password.request');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
