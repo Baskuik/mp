@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\EmailVerificationCode;
-use App\Mail\VerifyEmailMail;
+use App\Mail\VerificationCodeMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
@@ -82,7 +82,7 @@ class AuthController extends Controller
             'registration_step1' => [
                 'name' => $validated['name'],
                 'email' => $validated['email'],
-                'password' => $validated['password'],
+                'password' => bcrypt($validated['password']),
             ]
         ]);
 
@@ -140,6 +140,28 @@ class AuthController extends Controller
         // Clear any previously created (unverified) user so a fresh one gets created on step 3
         session()->forget('registration_user_id');
 
+        // Delete old verification codes for this email
+        $email = session('registration_step1.email');
+        EmailVerificationCode::where('email', $email)->delete();
+
+        // Generate and save new verification code
+        $verificationCode = $this->generateVerificationCode();
+        EmailVerificationCode::create([
+            'user_id' => null,
+            'email' => $email,
+            'code' => $verificationCode,
+            'expires_at' => now()->addMinutes(15),
+        ]);
+
+        // Send verification email
+        try {
+            Mail::to($email)->send(
+                new VerificationCodeMail($verificationCode, session('registration_step1.name'))
+            );
+        } catch (\Exception $e) {
+            \Log::error('Verification email failed: ' . $e->getMessage());
+        }
+
         return redirect()->route('register.step3');
     }
 
@@ -183,7 +205,7 @@ class AuthController extends Controller
 
         // Send verification email
         try {
-            Mail::to($email)->send(new VerifyEmailMail($verificationCode, session('registration_step1.name')));
+            Mail::to($email)->send(new VerificationCodeMail($verificationCode, session('registration_step1.name')));
         } catch (\Exception $e) {
             // Log error but don't fail - user can request resend
             \Log::error('Verification email failed: ' . $e->getMessage());
@@ -197,7 +219,7 @@ class AuthController extends Controller
     /**
      * Verify email with code.
      */
-    public function verifyEmailCode(Request $request)
+    public function VerificationCodeMail(Request $request)
     {
         $validated = $request->validate([
             'code' => 'required|string|size:6|regex:/^[0-9]{6}$/',
@@ -355,7 +377,7 @@ class AuthController extends Controller
             EmailVerificationCode::create($codeData);
 
             // Send verification email
-            Mail::to($email)->send(new VerifyEmailMail($verificationCode, $name));
+            Mail::to($email)->send(new VerificationCodeMail($verificationCode, $name));
 
             \Log::info('Verification email resent', ['email' => $email, 'code' => $verificationCode]);
 

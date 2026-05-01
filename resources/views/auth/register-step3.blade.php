@@ -74,15 +74,6 @@
                     </p>
                 </div>
 
-                {{-- Account creation form (submits to POST /register/step3) --}}
-                <form id="account-creation-form" method="POST" action="{{ route('register.step3.post') }}" class="mb-8">
-                    @csrf
-                    <button type="submit"
-                        class="w-full bg-[#2D6A4F] hover:bg-[#1B4332] text-white font-medium py-3 px-6 rounded-xl text-sm transition-all duration-200 hover:shadow-lg hover:shadow-[#2D6A4F]/25 active:scale-[0.98]">
-                        Verificatieemail verzenden
-                    </button>
-                </form>
-
                 {{-- Email verification box --}}
                 <div class="bg-blue-50 border border-blue-200 rounded-xl px-6 py-6 mb-8">
                     <div class="flex gap-4">
@@ -177,15 +168,13 @@
 
                 {{-- Resend form --}}
                 <div class="text-center mt-6">
-                    <p class="text-sm text-gray-600">
-                        Verificatiecode niet ontvangen?
+                    <p class="text-sm text-gray-600">Verificatiecode niet ontvangen?</p>
                     <form method="POST" action="{{ route('resend-verification-email') }}" class="inline">
                         @csrf
-                        <button type="submit" class="text-[#2D6A4F] font-medium hover:underline">
+                        <button type="submit" class="text-[#2D6A4F] font-medium hover:underline text-sm">
                             Opnieuw versturen
                         </button>
                     </form>
-                    </p>
                 </div>
             </div>
         </div>
