@@ -65,7 +65,7 @@
                 @endif
 
                 {{-- Formulier --}}
-                <form method="POST" action="{{ route('register') }}" class="space-y-4" novalidate>
+                <form method="POST" action="{{ route('register.step1.post') }}" class="space-y-4" novalidate>
                     @csrf
 
                     {{-- Naam --}}

@@ -8,9 +8,6 @@ use App\Models\EmailVerificationCode;
 use App\Mail\VerifyEmailMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
