@@ -30,10 +30,8 @@ Route::post('/register/step1', [AuthController::class, 'registerStep1'])->name('
 Route::get('/register/step2', [AuthController::class, 'showRegisterStep2'])->name('register.step2');
 Route::post('/register/step2', [AuthController::class, 'registerStep2'])->name('register.step2.post');
 Route::get('/register/step3', [AuthController::class, 'showRegisterStep3'])->name('register.step3');
-Route::post('/register/step3', [AuthController::class, 'registerStep3'])->name('register.step3.post');
-Route::post('/register/resend-verification', [AuthController::class, 'resendVerificationEmail'])->name('register.resend-verification');
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 

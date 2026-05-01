@@ -17,4 +17,14 @@ class EmailVerificationCode extends Model
         protected $hidden = [
             'code',
         ];
+
+        protected $casts = [
+            'expires_at' => 'datetime',
+            'is_verified' => 'boolean',
+        ];
+
+        public function user()
+        {
+            return $this->belongsTo(User::class);
+        }
 }

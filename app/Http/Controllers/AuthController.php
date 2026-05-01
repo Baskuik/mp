@@ -180,25 +180,16 @@ class AuthController extends Controller
         return view('auth.register-step3', ['email' => $email]);
     }
 
-    /**
-     * Handle step 3 of registration - validate the email verification code.
-     */
-    public function registerStep3(Request $request)
-    {
-        if (!session('registration_step1') || !session('registration_step2')) {
-            return redirect()->route('register.step1');
-        }
 
-        // Session data is valid, redirect back to show the verification form
-        // (Email was already sent at the end of registerStep2)
-        return redirect()->route('register.step3');
-    }
 
     /**
      * Verify email with code.
      */
     public function verifyEmailCode(Request $request)
     {
+        $email = null;
+        $validated = [];
+
         try {
             $validated = $request->validate([
                 'code' => 'required|string|size:6',
@@ -348,7 +339,7 @@ class AuthController extends Controller
             $codeData = [
                 'email' => $email,
                 'code' => $verificationCode,
-                'expires_at' => now()->addMinutes(30),
+                'expires_at' => now()->addMinutes(15),
             ];
 
             // Only add user_id if user is already logged in
