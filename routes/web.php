@@ -47,7 +47,7 @@ Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showRes
     ->middleware('guest');
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])
     ->name('password.update')
-    ->middleware('guest');
+    ->middleware('guest', 'throttle:5,1');
 
 // Email verificatie routes
 Route::middleware(['throttle:5,1'])->group(function () {

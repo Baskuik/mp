@@ -98,7 +98,7 @@
                                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                             <input id="email" type="email" name="email" value="{{ old('email') }}" required
-                                autofocus placeholder="jouw@email.nl"
+                                autofocus autocomplete="email" placeholder="jouw@email.nl"
                                 class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-[#2D6A4F] focus:ring-4 focus:ring-[#2D6A4F]/10 transition-all @error('email') border-red-400 @enderror">
                         </div>
                     </div>
