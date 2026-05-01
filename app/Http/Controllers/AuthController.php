@@ -36,7 +36,7 @@ class AuthController extends Controller
             'password.string'   => __('Wachtwoord moet uit tekens bestaan.'),
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
             return redirect()->intended('/');
         }

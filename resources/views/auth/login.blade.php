@@ -49,7 +49,7 @@
 
                 {{-- Mobile logo --}}
                 <div class="font-display text-2xl text-[#2D6A4F] mb-8 lg:hidden">
-                    Markt<span class="text-[#F4A261]">plaats</span>
+                    Direct<span class="text-[#F4A261]">Deal</span>
                 </div>
 
                 {{-- Header --}}
@@ -85,7 +85,7 @@
                                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                             <input id="email" type="email" name="email" value="{{ old('email') }}" required
-                                autofocus placeholder="jouw@email.nl"
+                                autofocus autocomplete="username" placeholder="jouw@email.nl"
                                 class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-[#2D6A4F] focus:ring-4 focus:ring-[#2D6A4F]/10 transition-all @error('email') border-red-400 @enderror">
                         </div>
                     </div>
@@ -106,7 +106,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                     d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                             </svg>
-                            <input id="password" type="password" name="password" required placeholder="••••••••"
+                            <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="••••••••"
                                 class="w-full pl-10 pr-11 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-[#2D6A4F] focus:ring-4 focus:ring-[#2D6A4F]/10 transition-all @error('password') border-red-400 @enderror">
                             <button type="button" onclick="togglePassword('password', this)"
                                 class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors">

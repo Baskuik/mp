@@ -41,7 +41,7 @@ Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotPass
     ->middleware('guest');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])
     ->name('password.send')
-    ->middleware('guest');
+    ->middleware(['guest', 'throttle:5,1']);
 Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetPassword'])
     ->name('password.reset')
     ->middleware('guest');
