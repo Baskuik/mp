@@ -80,7 +80,6 @@ class AuthController extends Controller
             'terms.accepted'     => __('U moet de algemene voorwaarden accepteren.'),
         ]);
 
-        // Store step 1 data in session (don't create user yet)
         session([
             'registration_step1' => [
                 'name'     => $validated['name'],
@@ -118,30 +117,26 @@ class AuthController extends Controller
             'bio'           => 'nullable|string|max:500',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
-            'username.required' => __('Gebruikersnaam is verplicht.'),
-            'username.string'   => __('Gebruikersnaam moet uit tekens bestaan.'),
-            'username.max'      => __('Gebruikersnaam mag niet langer zijn dan 255 tekens.'),
-            'username.unique'   => __('Deze gebruikersnaam is al in gebruik.'),
-            'bio.string'        => __('Bio moet uit tekens bestaan.'),
-            'bio.max'           => __('Bio mag niet langer zijn dan 500 tekens.'),
+            'username.required'   => __('Gebruikersnaam is verplicht.'),
+            'username.string'     => __('Gebruikersnaam moet uit tekens bestaan.'),
+            'username.max'        => __('Gebruikersnaam mag niet langer zijn dan 255 tekens.'),
+            'username.unique'     => __('Deze gebruikersnaam is al in gebruik.'),
+            'bio.string'          => __('Bio moet uit tekens bestaan.'),
+            'bio.max'             => __('Bio mag niet langer zijn dan 500 tekens.'),
             'profile_photo.image' => __('Het bestand moet een afbeelding zijn.'),
             'profile_photo.mimes' => __('De afbeelding moet in PNG, JPG, GIF of JPEG formaat zijn.'),
             'profile_photo.max'   => __('De afbeelding mag niet groter zijn dan 2MB.'),
         ]);
 
-        // Handle profile photo upload
         if ($request->hasFile('profile_photo')) {
             $validated['profile_photo_path'] = $request->file('profile_photo')
                 ->store('profile-photos', 'public');
         }
 
-        // Remove the UploadedFile object before storing in session
         unset($validated['profile_photo']);
 
-        // Store step 2 data in session
         session(['registration_step2' => $validated]);
 
-        // Send a fresh verification code
         $this->sendVerificationCode(
             session('registration_step1.email'),
             session('registration_step1.name')
@@ -177,14 +172,12 @@ class AuthController extends Controller
             'code.size'     => __('Verificatiecode moet 6 cijfers zijn.'),
         ]);
 
-        // Ensure code contains only digits
         if (!ctype_digit($validated['code'])) {
             return back()->withErrors([
                 'code' => __('Verificatiecode moet uit 6 cijfers bestaan.'),
             ]);
         }
 
-        // Resolve the email from session or authenticated user
         $email = session('registration_step1.email') ?? (Auth::check() ? Auth::user()->email : null);
 
         if (!$email) {
@@ -193,7 +186,6 @@ class AuthController extends Controller
             ]);
         }
 
-        // Find a valid, unexpired, unverified code
         $verificationCode = EmailVerificationCode::where('email', $email)
             ->where('code', $validated['code'])
             ->where('is_verified', false)
@@ -206,7 +198,6 @@ class AuthController extends Controller
             ]);
         }
 
-        // Mark code as verified
         $verificationCode->update(['is_verified' => true]);
 
         // --- SCENARIO 1: New registration ---
@@ -224,13 +215,8 @@ class AuthController extends Controller
                 'email'   => $user->email,
             ]);
 
-            // Link the verification code to the new user
             $verificationCode->update(['user_id' => $user->user_id]);
-
-            // Clean up all codes for this email
             EmailVerificationCode::where('email', $email)->delete();
-
-            // Clear registration session data
             $request->session()->forget(['registration_step1', 'registration_step2']);
 
             Auth::login($user);
@@ -243,9 +229,7 @@ class AuthController extends Controller
             $user = Auth::user();
 
             $user->update(['email_verified_at' => now()]);
-
             $verificationCode->update(['user_id' => $user->user_id]);
-
             EmailVerificationCode::where('email', $email)->delete();
 
             Log::info('Email verified for existing user', ['user_id' => $user->user_id]);
@@ -253,7 +237,6 @@ class AuthController extends Controller
             return redirect('/')->with('success', __('Je email is succesvol geverifiëerd!'));
         }
 
-        // Fallback — should not happen
         return redirect()->route('register.step1')->withErrors([
             'code' => __('Onbekende status. Start opnieuw.'),
         ]);
@@ -295,25 +278,15 @@ class AuthController extends Controller
         return redirect('/');
     }
 
-    /**
-     * Show the forgot password form.
-     */
-    public function showForgotPassword()
-    {
-        // To be implemented
-    }
-
     // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
 
     /**
-     * Delete old codes for the given email, generate a new one, store it,
-     * and send the verification email. Throws on mail failure.
+     * Delete old codes, generate a new one and send the verification email.
      */
     private function sendVerificationCode(string $email, string $name): void
     {
-        // Remove any existing codes for this email
         EmailVerificationCode::where('email', $email)->delete();
 
         $code = $this->generateVerificationCode();
