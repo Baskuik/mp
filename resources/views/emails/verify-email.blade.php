@@ -98,7 +98,7 @@
                 <div class="code">{{ $code }}</div>
             </div>
 
-            <p>Deze code is 30 minuten geldig. Voer deze code in op stap 3 van je registratieproces.</p>
+            <p>Deze code is 15 minuten geldig. Voer deze code in op stap 3 van je registratieproces.</p>
 
             <div class="warning">
                 <strong>Beveiligingstip:</strong> Deel deze code niet met anderen. DirectDeal medewerkers zullen nooit

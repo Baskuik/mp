@@ -379,7 +379,7 @@ class AuthController extends Controller
             // Send verification email
             Mail::to($email)->send(new VerificationCodeMail($verificationCode, $name));
 
-            \Log::info('Verification email resent', ['email' => $email, 'code' => $verificationCode]);
+            \Log::info('Verification email resent', ['email' => $email]);
 
             return back()->with('success', __('Verificatieemail opnieuw verzonden.'));
         } catch (\Exception $e) {

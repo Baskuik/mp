@@ -15,9 +15,19 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Whitelist of supported locales
+        $supportedLocales = ['nl', 'de', 'en', 'be'];
+
         // Check if locale is set in session
         if (session()->has('locale')) {
-            app()->setLocale(session('locale'));
+            $locale = session('locale');
+            // Validate locale against whitelist
+            if (in_array($locale, $supportedLocales)) {
+                app()->setLocale($locale);
+            } else {
+                // Use default locale if invalid
+                app()->setLocale(config('app.locale'));
+            }
         } else {
             // Use default locale from config
             app()->setLocale(config('app.locale'));
