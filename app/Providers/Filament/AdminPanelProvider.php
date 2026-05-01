@@ -54,6 +54,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                // canAccessPanel() in User.php regelt de admin-check.
+                // Filament roept dit automatisch aan na authenticatie.
             ]);
     }
 }

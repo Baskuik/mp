@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -22,7 +24,7 @@ class User extends Authenticatable
         'bio',
         'profile_photo_path',
         'email_verified_at',
-        'is_admin', // nieuw
+        'is_admin',
     ];
 
     protected $hidden = [
@@ -35,7 +37,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
-            'is_admin'          => 'boolean', // nieuw
+            'is_admin'          => 'boolean',
         ];
     }
 
@@ -45,5 +47,14 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->is_admin === true;
+    }
+
+    /**
+     * Bepaalt of de gebruiker toegang heeft tot het Filament admin panel.
+     * Alleen gebruikers met is_admin = true krijgen toegang.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isAdmin();
     }
 }
