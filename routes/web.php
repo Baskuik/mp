@@ -2,8 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ForgotPasswordController;
 
-//web routes
+// View routes
 Route::get('/', function () {
     return view('welcome');
 });
@@ -24,7 +25,7 @@ Route::get('/', function () {
 //     return view('instellingen');
 // });
 
-//auth routes')
+// Auth routes
 Route::get('/register', [AuthController::class, 'showRegisterStep1'])->name('register.step1');
 Route::post('/register/step1', [AuthController::class, 'registerStep1'])->name('register.step1.post');
 Route::get('/register/step2', [AuthController::class, 'showRegisterStep2'])->name('register.step2');
@@ -34,8 +35,21 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Wachtwoord vergeten / resetten
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotPassword'])
+    ->name('password.request')
+    ->middleware('guest');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])
+    ->name('password.send')
+    ->middleware(['guest', 'throttle:5,1']);
+Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetPassword'])
+    ->name('password.reset')
+    ->middleware('guest');
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])
+    ->name('password.update')
+    ->middleware('guest', 'throttle:5,1');
 
-// Email verification routes (accessible during registration - NOT protected by auth)
+// Email verificatie routes
 Route::middleware(['throttle:5,1'])->group(function () {
     Route::post('/verify-email-code', [AuthController::class, 'verifyEmailCode'])->name('verify-email-code');
     Route::get('/verify-email-code', function () {

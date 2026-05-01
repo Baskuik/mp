@@ -43,51 +43,41 @@
                 {{-- Language Switcher --}}
                 <x-language-switcher />
 
-                {{-- User dropdown --}}
-                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                {{-- User dropdown (alleen zichtbaar als ingelogd) --}}
+                @auth
+                    <div class="relative" x-data="{ open: false }" @click.outside="open = false">
 
-                    <button @click="open = !open"
-                        class="flex items-center gap-2 pl-2 pr-3 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-150">
-                        {{-- Avatar / user icon --}}
-                        <div class="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
-                            @auth
+                        <button @click="open = !open"
+                            class="flex items-center gap-2 pl-2 pr-3 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-150">
+                            {{-- Avatar --}}
+                            <div class="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
                                 <span class="text-xs font-semibold text-white">
                                     {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                                 </span>
-                            @else
-                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                            @endauth
-                        </div>
-                        {{-- Chevron --}}
-                        <svg class="w-3.5 h-3.5 transition-transform duration-200 text-white/70"
-                            :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
+                            </div>
+                            {{-- Chevron --}}
+                            <svg class="w-3.5 h-3.5 transition-transform duration-200 text-white/70"
+                                :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
 
-                    {{-- Dropdown menu --}}
-                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
-                        x-transition:enter-start="opacity-0 translate-y-1 scale-95"
-                        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                        x-transition:leave="transition ease-in duration-100"
-                        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-                        x-transition:leave-end="opacity-0 translate-y-1 scale-95"
-                        class="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl shadow-xl shadow-gray-900/8 overflow-hidden origin-top-right z-50">
+                        {{-- Dropdown menu --}}
+                        <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                            x-transition:enter-start="opacity-0 translate-y-1 scale-95"
+                            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                            x-transition:leave="transition ease-in duration-100"
+                            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                            x-transition:leave-end="opacity-0 translate-y-1 scale-95"
+                            class="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl shadow-xl shadow-gray-900/8 overflow-hidden origin-top-right z-50">
 
-                        @auth
                             {{-- Gebruikersnaam header --}}
                             <div class="px-4 py-3 border-b border-gray-50">
                                 <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Ingelogd als</p>
-                                <p class="text-sm font-semibold text-gray-800 truncate mt-0.5">{{ auth()->user()->name }}
-                                </p>
+                                <p class="text-sm font-semibold text-gray-800 truncate mt-0.5">{{ auth()->user()->name }}</p>
                             </div>
-                        @endauth
 
-                        <div class="p-1.5">
-                            @auth
+                            <div class="p-1.5">
                                 {{-- Profiel --}}
                                 <a href="{{ url('/profiel') }}"
                                     class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-600 hover:text-[#2D6A4F] hover:bg-[#2D6A4F]/8 transition-all duration-150 group">
@@ -123,18 +113,15 @@
                                 </a>
 
                                 <div class="border-t border-gray-100 my-1"></div>
-                            @endauth
 
-                            {{-- Uitloggen --}}
-                            @auth
+                                {{-- Uitloggen --}}
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit"
                                         class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-500 hover:text-red-600 hover:bg-red-50 transition-all duration-150 group">
                                         <div
                                             class="w-8 h-8 rounded-lg bg-red-50 group-hover:bg-red-100 flex items-center justify-center transition-colors">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                                     d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                             </svg>
@@ -142,21 +129,20 @@
                                         <p class="font-medium">Uitloggen</p>
                                     </button>
                                 </form>
-                            @else
-                                <a href="{{ route('login') }}"
-                                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-[#2D6A4F] hover:bg-[#2D6A4F]/8 transition-all duration-150">
-                                    <div class="w-8 h-8 rounded-lg bg-[#2D6A4F]/10 flex items-center justify-center">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                                        </svg>
-                                    </div>
-                                    <p class="font-medium">Inloggen</p>
-                                </a>
-                            @endauth
+                            </div>
                         </div>
                     </div>
-                </div>
+                @else
+                    {{-- Inlogknop (alleen zichtbaar als niet ingelogd) --}}
+                    <a href="{{ route('login') }}"
+                        class="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all duration-150">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                        </svg>
+                        Inloggen
+                    </a>
+                @endauth
             </div>
         </div>
     </div>
