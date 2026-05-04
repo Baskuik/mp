@@ -8,8 +8,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('listing_images', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('listing_id')->constrained()->cascadeOnDelete();
+            $table->id('listing_image_id');
+            $table->foreignId('listing_id')->references('listing_id')->on('listings')->cascadeOnDelete();
             $table->string('path');
             $table->boolean('is_primary')->default(false);
             $table->integer('sort_order')->default(0);

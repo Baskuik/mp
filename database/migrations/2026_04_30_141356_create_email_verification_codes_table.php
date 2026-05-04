@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('email_verification_codes', function (Blueprint $table) {
-            $table->id();
+            $table->id('email_verification_code_id');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('email');
             $table->string('code');
@@ -21,7 +21,7 @@ return new class extends Migration {
 
             // Foreign key constraint - allow null user_id
             $table->foreign('user_id')
-                ->references('id')
+                ->references('user_id')
                 ->on('users')
                 ->onDelete('cascade');
         });

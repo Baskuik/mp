@@ -34,9 +34,9 @@ class Listing extends Model
         'updated_at',
     ];
 
-    public function listing(): BelongsTo
+    public function seller(): BelongsTo
     {
-        return $this->belongsTo(Listing::class, 'listing_id');
+        return $this->belongsTo(User::class, User::USER_ID);
     }
 
     public function buyer(): BelongsTo

@@ -8,10 +8,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('categories', function (Blueprint $table) {
-            $table->id();
+            $table->id('category_id');
             $table->string('name');
             $table->string('slug')->unique();
-            $table->foreignId('parent_id')->nullable()->constrained('categories')->nullOnDelete();
+            $table->foreignId('parent_id')->nullable()->references('category_id')->on('categories')->nullOnDelete();
             $table->timestamps();
         });
     }

@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\Reviews\Tables;
 
 use App\Models\Review;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -17,36 +17,43 @@ class ReviewsTable
             ->columns([
                 TextColumn::make(Review::REVIEW_ID)
                     ->label(__('ID'))
+                    ->placeholder('Geen ID beschikbaar')
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make(Review::REVIEWER_ID)
                     ->label(__('Reviewer ID'))
+                    ->placeholder('Geen reviewer ID beschikbaar')
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make(Review::REVIEWEE_ID)
                     ->label(__('Reviewee ID'))
+                    ->placeholder('Geen reviewee ID beschikbaar')
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make(Review::REVIEW_RATING)
                     ->label(__('Rating'))
+                    ->placeholder('Geen rating beschikbaar')
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make(Review::REVIEW_COMMENT)
                     ->label(__('Comment'))
+                    ->placeholder('Geen commentaar beschikbaar')
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make(Review::CREATED_AT)
                     ->label(__('Created At'))
+                    ->placeholder('Geen datum beschikbaar')
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make(Review::UPDATED_AT)
                     ->label(__('Updated At'))
+                    ->placeholder('Geen datum beschikbaar')
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
