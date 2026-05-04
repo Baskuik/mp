@@ -20,19 +20,19 @@ class UsersTable
             ->columns([
                 TextColumn::make(User::USER_ID)
                     ->label(__('ID'))
-                    ->placeholder('Geen ID beschikbaar')
+                    ->placeholder(__('Geen ID beschikbaar'))
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make(User::USER_NAME)
                     ->label(__('Name'))
-                    ->placeholder('Geen naam beschikbaar')
+                    ->placeholder(__('Geen naam beschikbaar'))
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make(User::USER_EMAIL)
                     ->label(__('Email'))
-                    ->placeholder('Geen email beschikbaar')
+                    ->placeholder(__('Geen email beschikbaar'))
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
@@ -50,13 +50,13 @@ class UsersTable
                     ->toggleable(),
                 TextColumn::make(User::USER_USERNAME)
                     ->label(__('Username'))
-                    ->placeholder('Geen username beschikbaar')
+                    ->placeholder(__('Geen username beschikbaar'))
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make(User::USER_BIO)
                     ->label(__('Bio'))
-                    ->placeholder('Geen bio beschikbaar')
+                    ->placeholder(__('Geen bio beschikbaar'))
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
@@ -67,13 +67,13 @@ class UsersTable
                     ->disk('public'),
                 TextColumn::make(User::CREATED_AT)
                     ->label(__('Created At'))
-                    ->placeholder('Geen datum beschikbaar')
+                    ->placeholder(__('Geen datum beschikbaar'))
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make(User::UPDATED_AT)
                     ->label(__('Updated At'))
-                    ->placeholder('Geen datum beschikbaar')
+                    ->placeholder(__('Geen datum beschikbaar'))
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
