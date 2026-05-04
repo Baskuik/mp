@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Users\Tables;
 use App\Models\User;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
@@ -93,7 +94,7 @@ class UsersTable
             ->bulkActions([
                 BulkActionGroup::make([
                     // simpele bulk deactivate zonder extra classes
-                    \Filament\Tables\Actions\BulkAction::make('deactivate')
+                    BulkAction::make('deactivate')
                         ->label('Deactivate selected')
                         ->icon('heroicon-o-user-minus')
                         ->requiresConfirmation()

@@ -8,7 +8,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use function Laravel\Prompts\search;
 
 class BidsTable
 {
@@ -22,7 +21,7 @@ class BidsTable
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make(Bid::LISTING_ID)
-                    ->label(__('Seller ID'))
+                    ->label(__('Listing ID'))
                     ->sortable()
                     ->searchable()
                     ->toggleable(),

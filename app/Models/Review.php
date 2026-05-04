@@ -4,11 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Review extends Model
 {
-    protected $primaryKey = 'review_id';
+
 
     const REVIEW_ID = 'review_id';
     const REVIEWER_ID = 'reviewer_id';

@@ -34,13 +34,13 @@ class Listing extends Model
         'updated_at',
     ];
 
-    public function listing(): BelongsTo
+    public function seller(): BelongsTo
     {
-        return $this->belongsTo(Listing::class, 'listing_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function buyer(): BelongsTo
+    public function category(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'buyer_id');
+        return $this->belongsTo(Category::class, 'category_id');
     }
 }
