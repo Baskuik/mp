@@ -18,6 +18,7 @@ class ReviewResource extends Resource
 {
     protected static ?string $model = Review::class;
 
+    protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-chat-bubble-left-right';
     protected static \UnitEnum|string|null $navigationGroup = 'BEHEER';
 
     public static function form(Schema $schema): Schema

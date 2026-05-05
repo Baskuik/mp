@@ -16,8 +16,7 @@ use Filament\Tables\Table;
 
 class BidResource extends Resource
 {
-    protected static ?string $model = Bid::class;
-
+    protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-banknotes';
     protected static \UnitEnum|string|null $navigationGroup = 'BEHEER';
 
     public static function form(Schema $schema): Schema

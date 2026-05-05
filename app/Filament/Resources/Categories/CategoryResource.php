@@ -16,10 +16,8 @@ use Filament\Tables\Table;
 
 class CategoryResource extends Resource
 {
-    protected static ?string $model = Category::class;
-
+    protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-tag';
     protected static \UnitEnum|string|null $navigationGroup = 'BEHEER';
-
     public static function form(Schema $schema): Schema
     {
         return CategoryForm::configure($schema);
