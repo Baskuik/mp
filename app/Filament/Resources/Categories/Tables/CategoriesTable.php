@@ -3,11 +3,14 @@
 namespace App\Filament\Resources\Categories\Tables;
 
 use App\Models\Category;
+use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
+use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Collection;
 
 class CategoriesTable
 {
@@ -16,51 +19,73 @@ class CategoriesTable
         return $table
             ->columns([
                 TextColumn::make(Category::CATEGORY_ID)
-                    ->label(__('ID'))
-                    ->placeholder(__('Geen ID beschikbaar'))
+                    ->label('ID')
+                    ->prefix('#')
+                    ->toggleable()
                     ->sortable()
-                    ->searchable()
-                    ->toggleable(),
+                    ->color('gray'),
+
                 TextColumn::make(Category::CATEGORY_NAME)
-                    ->label(__('Name'))
-                    ->placeholder(__('Geen naam beschikbaar'))
-                    ->sortable()
+                    ->label('CATEGORIE NAAM')
                     ->searchable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->sortable()
+                    ->weight('medium'),
+
                 TextColumn::make(Category::CATEGORY_SLUG)
-                    ->label(__('Slug'))
-                    ->placeholder(__('Geen slug beschikbaar'))
-                    ->sortable()
+                    ->label('TITEL')
                     ->searchable()
-                    ->toggleable(),
-                TextColumn::make(Category::PARENT_ID)
-                    ->label(__('Parent ID'))
-                    ->placeholder(__('Geen parent ID beschikbaar'))
+                    ->toggleable()
                     ->sortable()
-                    ->searchable()
-                    ->toggleable(),
+                    ->color('gray'),
+
                 TextColumn::make(Category::CREATED_AT)
-                    ->label(__('Created At'))
-                    ->placeholder(__('Geen datum beschikbaar'))
+                    ->label('AANGEMAAKT OP')
+                    ->dateTime('d-m-Y H:i')
+                    ->toggleable()
                     ->sortable()
-                    ->searchable()
-                    ->toggleable(),
+                    ->color('gray'),
+
                 TextColumn::make(Category::UPDATED_AT)
-                    ->label(__('Updated At'))
-                    ->placeholder(__('Geen datum beschikbaar'))
+                    ->label('LAATSTE UPDATE')
+                    ->dateTime('d-m-Y H:i')
+                    ->toggleable()
                     ->sortable()
-                    ->searchable()
-                    ->toggleable(),
-            ])
-            ->filters([
-                //
+                    ->color('gray'),
             ])
             ->actions([
-                EditAction::make(),
+                EditAction::make()
+                    ->label(false)
+                    ->icon('heroicon-m-pencil-square')
+                    ->color('blue'),
+                
+                DeleteAction::make()
+                    ->label(false)
+                    ->icon('heroicon-m-trash')
+                    ->modalHeading('Categorie deactiveren')
+                    ->modalDescription('Deze categorie wordt onzichtbaar voor klanten.')
+                    ->action(function (Category $record) {
+                        $record->update(['is_active' => false]);
+
+                        Notification::make()
+                            ->title('Categorie gedeactiveerd')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->label('Selectie deactiveren')
+                        ->action(function (Collection $records) {
+                            $records->each(fn (Category $record) => $record->update(['is_active' => false]));
+
+                            Notification::make()
+                                ->title('Categorieën gedeactiveerd')
+                                ->success()
+                                ->send();
+                        })
+                        ->deselectRecordsAfterCompletion(),
                 ]),
             ]);
     }

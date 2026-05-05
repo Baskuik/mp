@@ -3,12 +3,14 @@
 namespace App\Filament\Resources\Bids\Tables;
 
 use App\Models\Bid;
+use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
-use function Laravel\Prompts\search;
+use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Collection;
 
 class BidsTable
 {
@@ -17,57 +19,99 @@ class BidsTable
         return $table
             ->columns([
                 TextColumn::make(Bid::BID_ID)
-                    ->label(__('ID'))
-                    ->placeholder(__('Geen ID beschikbaar'))
+                    ->label('ID')
+                    ->prefix('#')
                     ->sortable()
-                    ->searchable()
+                    ->color('gray')
                     ->toggleable(),
-                TextColumn::make(Bid::LISTING_ID)
-                    ->label(__('Listing ID'))
-                    ->placeholder(__('Geen listing ID beschikbaar'))
+
+                TextColumn::make(Bid::LISTING_ID) // Toont de titel van de advertentie
+                    ->label('ADVERTENTIE')
+                    ->searchable()
                     ->sortable()
-                    ->searchable()
+                    ->weight('medium')
                     ->toggleable(),
-                TextColumn::make(Bid::BUYER_ID)
-                    ->label(__('Buyer ID'))
-                    ->placeholder(__('Geen buyer ID beschikbaar'))
+
+                TextColumn::make(Bid::BUYER_ID) // Toont de naam van de bieder
+                    ->label('BIEDER')
+                    ->searchable()
                     ->sortable()
-                    ->searchable()
                     ->toggleable(),
+
                 TextColumn::make(Bid::AMOUNT)
-                    ->label(__('Amount'))
-                    ->placeholder(__('Geen bedrag beschikbaar'))
+                    ->label('BEDRAG')
+                    ->money('EUR')
                     ->sortable()
-                    ->searchable()
+                    ->weight('bold')
+                    ->color('success')
                     ->toggleable(),
+
                 TextColumn::make(Bid::STATUS)
-                    ->label(__('Status'))
-                    ->placeholder(__('Geen status beschikbaar'))
+                    ->label('STATUS')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'accepted' => 'success',
+                        'pending' => 'warning',
+                        'rejected', 'cancelled' => 'danger',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state) => ucfirst($state))
                     ->sortable()
-                    ->searchable()
                     ->toggleable(),
+
                 TextColumn::make(Bid::CREATED_AT)
-                    ->label(__('Created At'))
-                    ->placeholder(__('Geen datum beschikbaar'))
+                    ->label('DATUM')
+                    ->dateTime('d-m-Y H:i')
+                    ->color('gray')
                     ->sortable()
-                    ->searchable()
                     ->toggleable(),
+
                 TextColumn::make(Bid::UPDATED_AT)
-                    ->label(__('Updated At'))
-                    ->placeholder(__('Geen datum beschikbaar'))
+                    ->label('LAATSTE UPDATE')
+                    ->dateTime('d-m-Y H:i')
+                    ->color('gray')
                     ->sortable()
-                    ->searchable()
                     ->toggleable(),
-            ])
-            ->filters([
-                //
             ])
             ->actions([
-                EditAction::make(),
+                EditAction::make()
+                    ->label(false)
+                    ->icon('heroicon-m-pencil-square')
+                    ->color('blue'),
+
+                // "Soft Delete" voor Biedingen
+                DeleteAction::make()
+                    ->label(false)
+                    ->icon('heroicon-m-trash')
+                    ->modalHeading('Bieding annuleren')
+                    ->modalDescription('Weet je zeker dat je deze bieding wilt annuleren? De status wordt aangepast naar "cancelled".')
+                    ->modalSubmitActionLabel('Ja, annuleer bieding')
+                    ->action(function (Bid $record) {
+                        // Pas 'cancelled' aan naar de waarde die jij gebruikt in je database
+                        $record->update([Bid::STATUS => 'cancelled']);
+
+                        Notification::make()
+                            ->title('Bieding geannuleerd')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->label('Selectie annuleren')
+                        ->modalHeading('Geselecteerde biedingen annuleren')
+                        ->action(function (Collection $records) {
+                            $records->each(fn (Bid $record) => $record->update([
+                                Bid::STATUS => 'cancelled'
+                            ]));
+
+                            Notification::make()
+                                ->title('Biedingen geannuleerd')
+                                ->success()
+                                ->send();
+                        })
+                        ->deselectRecordsAfterCompletion(),
                 ]),
             ]);
     }

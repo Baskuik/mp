@@ -34,7 +34,10 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->brandName('DirectDeal')
 
-            ->colors(['primary' => '#d0803d', 'gray' => Color::Zinc])
+            ->colors([
+    'primary' => Color::hex('#1a3d2b'), // Jouw Forest Green als de basis van het hele systeem
+    'gray' => Color::Zinc,
+])
             ->sidebarCollapsibleOnDesktop()
             ->sidebarWidth('20rem')
             ->userMenu(position: UserMenuPosition::Sidebar)
