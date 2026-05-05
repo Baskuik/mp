@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     protected $primaryKey = 'user_id';
@@ -30,20 +30,11 @@ class User extends Authenticatable implements FilamentUser
     const USER_USERNAME = 'username';
     const USER_BIO = 'bio';
     const USER_PROFILE_PHOTO_PATH = 'profile_photo_path';
+
     protected $fillable = [
-        'user_id',
-        'name',
-        'email',
-        'email_verified_at',
-        'password',
-        'is_admin',
-        'is_active',
-        'remember_token',
-        'created_at',
-        'updated_at',
-        'username',
-        'bio',
-        'profile_photo_path',
+        'user_id', 'name', 'email', 'email_verified_at', 'password',
+        'is_admin', 'is_active', 'remember_token', 'created_at',
+        'updated_at', 'username', 'bio', 'profile_photo_path',
     ];
 
     protected $hidden = [
@@ -69,6 +60,13 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->isAdmin();
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->profile_photo_path
+            ? asset('storage/' . $this->profile_photo_path)
+            : null;
     }
 
     public function listings(): HasMany

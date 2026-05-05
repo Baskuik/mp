@@ -18,7 +18,7 @@ class BidResource extends Resource
 {
     protected static ?string $model = Bid::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static \UnitEnum|string|null $navigationGroup = 'BEHEER';
 
     public static function form(Schema $schema): Schema
     {

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class EmailVerificationCode extends Model
 {
+    protected $primaryKey = 'email_verification_code_id';
+
     protected $fillable = [
         'user_id',
         'email',
@@ -19,7 +21,7 @@ class EmailVerificationCode extends Model
     ];
 
     protected $casts = [
-        'expires_at'  => 'datetime',
+        'expires_at' => 'datetime',
         'is_verified' => 'boolean',
     ];
 
@@ -38,6 +40,6 @@ class EmailVerificationCode extends Model
     public function scopeValid($query)
     {
         return $query->where('expires_at', '>', now())
-                     ->where('is_verified', false);
+            ->where('is_verified', false);
     }
 }

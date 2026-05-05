@@ -43,4 +43,10 @@ class Listing extends Model
     {
         return $this->belongsTo(User::class, 'buyer_id');
     }
+    protected function getHeaderWidgets(): array
+{
+    return [
+        \App\Filament\Widgets\UserStatsOverview::class,
+    ];
+}
 }

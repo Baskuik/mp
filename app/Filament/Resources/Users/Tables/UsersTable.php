@@ -3,14 +3,14 @@
 namespace App\Filament\Resources\Users\Tables;
 
 use App\Models\User;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\BulkAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 
 class UsersTable
 {
@@ -18,97 +18,63 @@ class UsersTable
     {
         return $table
             ->columns([
-                TextColumn::make(User::USER_ID)
-                    ->label(__('ID'))
-                    ->placeholder(__('Geen ID beschikbaar'))
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(),
-                TextColumn::make(User::USER_NAME)
-                    ->label(__('Name'))
-                    ->placeholder(__('Geen naam beschikbaar'))
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(),
-                TextColumn::make(User::USER_EMAIL)
-                    ->label(__('Email'))
-                    ->placeholder(__('Geen email beschikbaar'))
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(),
-                IconColumn::make(User::USER_EMAIL_VERIFIED_AT)
-                    ->label(__('Email Verified'))
-                    ->boolean()
-                    ->toggleable(),
-                IconColumn::make(User::USER_IS_ADMIN)
-                    ->label(__('Is Admin'))
-                    ->boolean()
-                    ->toggleable(),
-                IconColumn::make(User::USER_IS_ACTIVE)
-                    ->label(__('Is Active'))
-                    ->boolean()
-                    ->toggleable(),
-                TextColumn::make(User::USER_USERNAME)
-                    ->label(__('Username'))
-                    ->placeholder(__('Geen username beschikbaar'))
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(),
-                TextColumn::make(User::USER_BIO)
-                    ->label(__('Bio'))
-                    ->placeholder(__('Geen bio beschikbaar'))
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(),
-                ImageColumn::make(User::USER_PROFILE_PHOTO_PATH)
-                    ->label(__('Profile Photo'))
+                ImageColumn::make('avatar')
+                    ->label('')
+                    ->defaultImageUrl(
+                        fn(User $record) => 'https://ui-avatars.com/api/?name='
+                        . urlencode($record->name)
+                        . '&background=2d6a4f&color=fff&bold=true'
+                    )
                     ->circular()
-                    ->toggleable()
-                    ->disk('public'),
-                TextColumn::make(User::CREATED_AT)
-                    ->label(__('Created At'))
-                    ->placeholder(__('Geen datum beschikbaar'))
+                    ->size(36),
+
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->prefix('#')
                     ->sortable()
+                    ->color('gray'),
+
+                TextColumn::make('name')
+                    ->label('NAAM')
+                    ->description(fn(User $record): string => $record->email)
                     ->searchable()
-                    ->toggleable(),
-                TextColumn::make(User::UPDATED_AT)
-                    ->label(__('Updated At'))
-                    ->placeholder(__('Geen datum beschikbaar'))
                     ->sortable()
-                    ->searchable()
-                    ->toggleable(),
+                    ->weight('medium'),
+
+                TextColumn::make('email')
+                    ->label('EMAIL')
+                    ->searchable(),
+
+                TextColumn::make('email_verified_at')
+                    ->label('EMAIL GEVERIFIEERD')
+                    ->badge()
+                    ->getStateUsing(fn(User $record) => !is_null($record->email_verified_at))
+                    ->formatStateUsing(fn($state) => $state ? '✓ Ja' : '✗ Nee')
+                    ->color(fn($state) => $state ? 'success' : 'danger'),
+
+                TextColumn::make('is_admin')
+                    ->label('IS ADMIN')
+                    ->badge()
+                    ->formatStateUsing(fn($state) => $state ? '★ Admin' : 'Nee')
+                    ->color(fn($state) => $state ? 'warning' : 'gray'),
+
+                TextColumn::make('is_active')
+                    ->label('IS ACTIEF')
+                    ->badge()
+                    ->formatStateUsing(fn($state) => $state ? 'Actief' : 'Gedeactiveerd')
+                    ->color(fn($state) => $state ? 'success' : 'danger'),
+
+                TextColumn::make('username')
+                    ->label('USERNAME')
+                    ->color('gray'),
             ])
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-                DeleteAction::make()
-                    ->label('Deactivate')
-                    ->modalHeading('Gebruiker deactiveren')
-                    ->modalDescription('Weet je zeker dat je deze gebruiker wilt deactiveren?')
-                    ->successNotificationTitle('Gebruiker gedeactiveerd')
-                    ->action(function (User $record) {
-                        $record->update(['is_active' => 0]);
-                        $record->delete();
-                    }),
+            ->actions([
+                EditAction::make()->label(false)->icon('heroicon-m-pencil-square')->color('gray'),
+                DeleteAction::make()->label(false)->icon('heroicon-m-trash')->color('danger'),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
-                    BulkAction::make('deactivate')
-                        ->label('Deactivate selected')
-                        ->icon('heroicon-o-user-minus')
-                        ->requiresConfirmation()
-                        ->modalHeading('Gebruikers deactiveren')
-                        ->modalDescription('Weet je zeker dat je de geselecteerde gebruikers wilt deactiveren?')
-                        ->successNotificationTitle('Gebruikers gedeactiveerd')
-                        ->action(function ($records) {
-                            foreach ($records as $record) {
-                                $record->update(['is_active' => 0]);
-                                $record->delete();
-                            }
-                        })
-                        ->deselectRecordsAfterCompletion(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

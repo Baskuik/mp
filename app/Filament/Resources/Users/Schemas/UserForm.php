@@ -2,15 +2,17 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
-use Filament\Schemas\Schema;
+use Filament\Schemas\Schema; // Moet matchen met UserResource
+use Filament\Forms\Components\TextInput;
 
-class UserForm
+class UserForm 
 {
-    public static function configure(Schema $schema): Schema
+    public static function configure(Schema $schema): Schema 
     {
         return $schema
-            ->components([
-                //
+            ->components([ // Let op: in deze versie is het vaak 'components' ipv 'schema'
+                TextInput::make('name')->required(),
+                TextInput::make('email')->email()->required(),
             ]);
     }
 }

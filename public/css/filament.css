@@ -1,0 +1,531 @@
+/* =============================================
+   DIRECT DEAL — FILAMENT ADMIN THEME
+   ============================================= */
+
+/* ===== ZWARTE BALK FIX — body achtergrond ===== */
+html, body {
+    background-color: #5f816c !important;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* ===== SIDEBAR ===== */
+.fi-sidebar {
+    background-color: #1F4A2E !important;
+    width: 280px !important;
+    min-height: 100vh !important;
+    transition: width 0.25s ease, min-width 0.25s ease !important;
+}
+
+.fi-sidebar.dd-collapsed {
+    width: 0 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+}
+
+/* ===== SIDEBAR HEADER — logo + collapse knop ===== */
+.fi-sidebar-header {
+    display: flex !important;
+    background-color: #1F4A2E !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 0 1rem !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    height: 56px !important;
+    box-sizing: border-box !important;
+}
+
+/* Toon alles in de sidebar header */
+.fi-sidebar-header a,
+.fi-sidebar-header .fi-logo,
+.fi-sidebar-header img,
+.fi-sidebar-header svg,
+.fi-sidebar-header span,
+.fi-sidebar-header button {
+    display: revert !important;
+}
+
+.fi-sidebar-header a {
+    display: flex !important;
+    align-items: center !important;
+    text-decoration: none !important;
+    flex: 1 !important;
+}
+
+.fi-sidebar-header img {
+    height: 28px !important;
+    width: auto !important;
+    object-fit: contain !important;
+}
+
+.fi-sidebar-header .fi-logo {
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Collapse knop in sidebar header */
+.fi-sidebar-header button {
+    background: rgba(255,255,255,0.1) !important;
+    border: none !important;
+    border-radius: 6px !important;
+    color: rgba(255,255,255,0.7) !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    transition: background 0.15s !important;
+    width: 30px !important;
+    height: 30px !important;
+    padding: 5px !important;
+}
+
+.fi-sidebar-header button:hover {
+    background: rgba(255,255,255,0.2) !important;
+    color: #ffffff !important;
+}
+
+.fi-sidebar-header button svg {
+    width: 15px !important;
+    height: 15px !important;
+    color: inherit !important;
+}
+
+/* ===== VERBERG DUBBEL LOGO IN TOPBAR ===== */
+.fi-topbar-start > a {
+    display: none !important;
+}
+
+/* ===== TOPBAR VERBERGEN ===== */
+.fi-topbar {
+    display: none !important;
+}
+
+/* Ruimte voor topbar weghalen */
+.fi-body-has-topbar .fi-layout,
+.fi-body-has-topbar .fi-main-ctn,
+.fi-body-has-topbar .fi-main,
+.fi-body-has-topbar {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* ===== SIDEBAR NAVIGATIE ===== */
+.fi-sidebar-group-label {
+    color: rgba(255, 255, 255, 0.45) !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    padding: 1rem 1rem 0.4rem !important;
+}
+
+.fi-sidebar-item-button {
+    border-radius: 8px !important;
+    margin: 1px 8px !important;
+    padding: 0.5rem 0.75rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.6rem !important;
+    transition: background 0.15s ease !important;
+}
+
+.fi-sidebar-item-button:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.fi-sidebar-item-active .fi-sidebar-item-button {
+    background-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+.fi-sidebar-item-label {
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+}
+
+.fi-sidebar-item-active .fi-sidebar-item-label {
+    color: #ffffff !important;
+}
+
+.fi-sidebar-item-icon {
+    color: rgba(255, 255, 255, 0.55) !important;
+    width: 18px !important;
+    height: 18px !important;
+}
+
+.fi-sidebar-item-active .fi-sidebar-item-icon {
+    color: #ffffff !important;
+}
+
+/* Badge in sidebar */
+.fi-sidebar-item-badge {
+    background-color: #E07B2A !important;
+    color: #ffffff !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    border-radius: 999px !important;
+    padding: 1px 7px !important;
+    margin-left: auto !important;
+}
+
+/* Lijst opmaak verwijderen */
+.fi-sidebar *, .fi-sidebar li::before, .fi-sidebar li::after, .fi-sidebar li::marker {
+    list-style: none !important;
+}
+.fi-sidebar ul, .fi-sidebar ol {
+    list-style: none !important;
+    padding-left: 0 !important;
+}
+.fi-sidebar-item-grouped-border { display: none !important; }
+
+/* ===== SIDEBAR FOOTER ===== */
+.fi-sidebar-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 10px 14px !important;
+    background-color: #1F4A2E !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+/* Avatar oranje in footer */
+.fi-sidebar-footer .fi-avatar,
+.fi-sidebar-footer [class*="avatar"],
+span.fi-avatar,
+[class*="fi-avatar"] {
+    background-color: #E07B2A !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+.fi-sidebar-footer [class*="name"],
+.fi-sidebar-footer .fi-user-name {
+    color: #ffffff !important;;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+.fi-sidebar-footer [class*="role"],
+.fi-sidebar-footer [class*="email"] {
+    color: rgba(255,255,255,0.5) !important;
+    font-size: 11px !important;
+}
+
+/* Collapse knop in footer stijlen (niet verbergen!) */
+.fi-sidebar-footer button {
+    background: rgba(255,255,255,0.1) !important;
+    border: none !important;
+    border-radius: 6px !important;
+    color: rgba(255,255,255,0.7) !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    width: 28px !important;
+    height: 28px !important;
+    margin-left: auto !important;
+    transition: background 0.15s !important;
+}
+
+.fi-sidebar-footer button:hover {
+    background: rgba(255,255,255,0.2) !important;
+    color: #ffffff !important;
+}
+
+/* ===== HOOFD ACHTERGROND ===== */
+.fi-main, .fi-main-ctn {
+    background-color: #E8EDEA !important;
+}
+
+/* ===== PAGE HEADER ===== */
+.fi-header-heading,
+.fi-simple-header-heading {
+    color: #1A2E22 !important;
+    font-weight: 700 !important;
+    font-size: 22px !important;
+}
+
+/* ===== STAT CARDS ===== */
+.fi-wi-stats-overview-stat {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(0, 0, 0, 0.07) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    padding: 1.25rem 1.5rem !important;
+}
+
+.fi-wi-stats-overview-stat-label {
+    color: #8AA896 !important;
+    font-size: 10px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.07em !important;
+    font-weight: 600 !important;
+}
+
+.fi-wi-stats-overview-stat-value {
+    color: #1A2E22 !important;
+    font-weight: 700 !important;
+    font-size: 30px !important;
+    line-height: 1.2 !important;
+    margin: 0.25rem 0 !important;
+}
+
+.fi-wi-stats-overview-stat-description {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+
+/* ===== TABEL CONTAINER ===== */
+.fi-ta-ctn {
+    background-color: #ffffff !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(0, 0, 0, 0.07) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+    overflow: hidden !important;
+}
+
+/* ===== TABEL HEADER ===== */
+.fi-ta-header-cell {
+    background-color: #F0F4F2 !important;
+    color: #7A9485 !important;
+    font-size: 11px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    font-weight: 600 !important;
+    padding: 0.75rem 1rem !important;
+}
+
+/* ===== TABEL RIJEN ===== */
+.fi-ta-cell {
+    padding: 0.875rem 1rem !important;
+    vertical-align: middle !important;
+}
+
+.fi-ta-cell, .fi-ta-cell * {
+    color: #1A2E22 !important;
+}
+
+.fi-ta-row:hover td {
+    background-color: #F2F7F4 !important;
+}
+
+/* ===== TABEL FILTER TABS ===== */
+.fi-tabs {
+    background: transparent !important;
+    border-bottom: none !important;
+    gap: 0.25rem !important;
+    padding: 0 !important;
+}
+
+.fi-tabs-tab {
+    background: transparent !important;
+    color: #666 !important;
+    border: 1px solid transparent !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    padding: 0.35rem 0.85rem !important;
+    font-weight: 500 !important;
+    transition: all 0.15s !important;
+}
+
+.fi-tabs-tab:hover {
+    background: #F0F5F1 !important;
+    color: #1A2E22 !important;
+}
+
+.fi-tabs-tab[aria-selected="true"] {
+    background: #ffffff !important;
+    color: #1A2E22 !important;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+    font-weight: 600 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07) !important;
+}
+
+/* ===== TABEL SEARCH ===== */
+.fi-ta-search-field input {
+    background-color: #F5F7F5 !important;
+    border: 1px solid rgba(0,0,0,0.09) !important;
+    border-radius: 8px !important;
+    font-size: 13.5px !important;
+    color: #333 !important;
+}
+
+/* ===== KNOPPEN ===== */
+.fi-btn {
+    border-radius: 8px !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    padding: 0.5rem 1.1rem !important;
+}
+
+.fi-btn-color-primary {
+    background-color: #E07B2A !important;
+    border-color: #E07B2A !important;
+    color: #ffffff !important;
+}
+
+.fi-btn-color-primary:hover {
+    background-color: #C96D21 !important;
+    border-color: #C96D21 !important;
+}
+
+.fi-btn-color-gray {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+    color: #444 !important;
+}
+
+.fi-btn-color-gray:hover {
+    background-color: #F5F5F5 !important;
+}
+
+/* ===== BADGES ===== */
+.fi-badge {
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    padding: 2px 9px !important;
+}
+
+.fi-badge-color-success {
+    background-color: #E8F4EC !important;
+    color: #1F7A40 !important;
+    border: 1px solid rgba(31, 122, 64, 0.25) !important;
+}
+
+.fi-badge-color-warning {
+    background-color: #FEF3E7 !important;
+    color: #D4782A !important;
+    border: 1px solid rgba(212, 120, 42, 0.3) !important;
+}
+
+.fi-badge-color-gray {
+    background-color: #F3F4F6 !important;
+    color: #555 !important;
+    border: 1px solid rgba(0,0,0,0.08) !important;
+}
+
+.fi-badge-color-danger {
+    background-color: #FEE8E8 !important;
+    color: #C0392B !important;
+    border: 1px solid rgba(192, 57, 43, 0.25) !important;
+}
+
+/* ===== AVATAR ===== */
+.fi-avatar {
+    background-color: #2D6A4F !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+}
+
+/* ===== PAGINERING ===== */
+.fi-pagination {
+    padding: 0.75rem 1rem !important;
+    border-top: 1px solid rgba(0,0,0,0.06) !important;
+}
+
+.fi-pagination-item-btn[aria-current="page"] {
+    background-color: #1F4A2E !important;
+    color: #ffffff !important;
+    border-radius: 6px !important;
+    font-weight: 700 !important;
+}
+
+.fi-pagination-item-btn {
+    border-radius: 6px !important;
+    color: #555 !important;
+    font-size: 13px !important;
+}
+
+.fi-pagination-item-btn:hover {
+    background-color: #F0F5F1 !important;
+}
+
+/* ===== ACTIES IN TABEL ===== */
+.fi-ta-actions {
+    display: flex !important;
+    gap: 4px !important;
+    justify-content: flex-end !important;
+}
+
+.fi-ta-actions .fi-btn-icon {
+    padding: 0.3rem !important;
+    border-radius: 6px !important;
+}
+
+/* ===== CHECKBOX ===== */
+.fi-checkbox input[type="checkbox"] {
+    border-radius: 4px !important;
+    border-color: rgba(0,0,0,0.2) !important;
+}
+
+.fi-checkbox input[type="checkbox"]:checked {
+    background-color: #1F4A2E !important;
+    border-color: #1F4A2E !important;
+}
+
+/* ===== FORMULIER INPUTS ===== */
+.fi-input {
+    border-radius: 8px !important;
+    border-color: rgba(0,0,0,0.12) !important;
+    font-size: 13.5px !important;
+}
+
+.fi-input:focus {
+    border-color: #2D6A4F !important;
+    box-shadow: 0 0 0 2px rgba(45, 106, 79, 0.15) !important;
+}
+
+/* ===== SECTION LABEL ===== */
+.fi-ta-header {
+    padding: 0.75rem 1rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    border-bottom: 1px solid rgba(0,0,0,0.06) !important;
+}
+
+.fi-ta-header-toolbar {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+/* ===== FIX WIT VLAK BOVEN SIDEBAR ===== */
+/* De topbar-container reserveert nog steeds hoogte ook als display:none */
+.fi-topbar,
+.fi-topbar-ctn,
+nav.fi-topbar {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+}
+
+/* Verwijder alle top-padding/margin die door Filament wordt toegevoegd */
+.fi-body-has-topbar,
+.fi-body-has-topbar .fi-layout,
+.fi-body-has-topbar .fi-sidebar-wrapper,
+.fi-body-has-topbar .fi-sidebar,
+.fi-body-has-topbar .fi-main-ctn,
+.fi-body-has-topbar .fi-main {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+    top: 0 !important;
+}
+
+/* Sidebar altijd vanaf de bovenkant */
+.fi-sidebar {
+    top: 0 !important;
+    height: 100vh !important;
+    position: sticky !important;
+}
