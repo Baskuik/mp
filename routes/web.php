@@ -3,11 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\ListingController;
 
 // View routes
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [ListingController::class, 'home'])->name('home');
 
 // Route::get('/favorieten', function () {
 //     return view('favorieten');
@@ -34,6 +33,14 @@ Route::get('/register/step3', [AuthController::class, 'showRegisterStep3'])->nam
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profiel', [ListingController::class, 'profile'])->name('profile');
+    Route::post('/listings', [ListingController::class, 'store'])->name('listings.store');
+    Route::get('/listings/{listing}/edit', [ListingController::class, 'edit'])->name('listings.edit');
+    Route::put('/listings/{listing}', [ListingController::class, 'update'])->name('listings.update');
+    Route::delete('/listings/{listing}', [ListingController::class, 'destroy'])->name('listings.destroy');
+});
 
 // Wachtwoord vergeten / resetten
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotPassword'])
