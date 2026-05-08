@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('listings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained('users', 'user_id')->cascadeOnDelete();
             $table->foreignId('category_id')->constrained()->restrictOnDelete();
             $table->string('title');
             $table->text('description');

@@ -10,8 +10,8 @@ return new class extends Migration {
         Schema::create('conversations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('listing_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('buyer_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('seller_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('buyer_id')->constrained('users', 'user_id')->cascadeOnDelete();
+            $table->foreignId('seller_id')->constrained('users', 'user_id')->cascadeOnDelete();
             $table->timestamps();
         });
     }

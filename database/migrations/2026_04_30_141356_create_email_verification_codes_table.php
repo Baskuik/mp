@@ -21,7 +21,7 @@ return new class extends Migration {
 
             // Foreign key constraint - allow null user_id
             $table->foreign('user_id')
-                ->references('id')
+                ->references('user_id')
                 ->on('users')
                 ->onDelete('cascade');
         });
