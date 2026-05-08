@@ -384,48 +384,47 @@ nav.fi-topbar {
     background-color: #F6FAF7 !important;
 }
 
-/* ===== TABEL FILTER TABS (DE DEFINITIEVE FIX) ===== */
+/* ===== TABEL FILTER TABS ===== */
 
-/* 1. De container: Geef deze een lichte achtergrond zodat witte knoppen opvallen */
 .fi-ta-header-toolbar nav {
-    background-color: rgba(0, 0, 0, 0.08) !important;
-    padding: 6px !important;
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    padding: 5px !important;
     border-radius: 12px !important;
     display: inline-flex !important;
-    gap: 8px !important;
+    gap: 6px !important;
     border: 1px solid rgba(0, 0, 0, 0.05) !important;
 }
 
-/* 2. De INACTIEVE knoppen (Admins, Actief) */
+/* Alle knoppen — altijd groene achtergrond */
 .fi-ta-header-toolbar nav a, 
 .fi-ta-header-toolbar nav button {
-    background-color: #ffffff !important;
-    color: #1a3d2b !important; /* DirectDeal Forest Green voor de tekst */
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    background: linear-gradient(135deg, var(--dd-forest-mid) 0%, var(--dd-forest) 100%) !important;
+    color: rgba(255,255,255,0.75) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
     border-radius: 8px !important;
     padding: 6px 16px !important;
-    font-weight: 700 !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12) !important;
     text-decoration: none !important;
 }
 
-/* 3. De ACTIEVE knop (Die nu oranje/blauw is) */
+/* Actieve knop — iets lichter groen zodat hij opvalt */
 .fi-ta-header-toolbar nav a[aria-selected="true"],
 .fi-ta-header-toolbar nav button[aria-selected="true"],
 .fi-ta-header-toolbar nav a[aria-current="page"],
 .fi-ta-header-toolbar nav button[class*="active"] {
-    background-color: #1a3d2b !important; /* Jouw Forest Green */
-    color: #ffffff !important;            /* Witte tekst */
-    border-color: #1a3d2b !important;
+    background: linear-gradient(135deg, var(--dd-forest-lit) 0%, var(--dd-forest-mid) 100%) !important;
+    color: #ffffff !important;
+    border-color: rgba(255,255,255,0.15) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
 }
 
-/* 4. Hover voor een beetje extra 'pop' */
+/* Hover */
 .fi-ta-header-toolbar nav a:hover, 
 .fi-ta-header-toolbar nav button:hover {
-    background-color: #f3f4f6 !important;
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, var(--dd-forest-lit) 0%, var(--dd-forest-mid) 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px) !important;
 }
 
 /* ===== TABEL SEARCH ===== */

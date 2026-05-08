@@ -9,6 +9,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -26,18 +27,25 @@ class ReviewsTable
                     ->toggleable(),
 
                 TextColumn::make(Review::REVIEWER_ID) // De persoon die de review schreef
-                    ->label('REVIEWER')
+                    ->label('REVIEWER ID')
                     ->searchable()
                     ->sortable()
                     ->weight('medium'),
 
                 TextColumn::make(Review::REVIEWEE_ID) // De persoon over wie de review gaat
-                    ->label('OVER')
+                    ->label('REVIEWEE ID')
                     ->searchable()
                     ->sortable()
                     ->color('gray'),
 
                 TextColumn::make(Review::LISTING_ID)
+                    ->label('LISTING ID')
+                    ->limit(50) // Zorgt dat de tabel compact blijft
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make(Review::REVIEW_RATING) // De listing waar de review betrekking op heeft
                     ->label('RATING')
                     ->icon('heroicon-m-star')
                     ->iconColor('warning')
@@ -45,12 +53,6 @@ class ReviewsTable
                     ->color('gray')
                     ->sortable()
                     ->alignCenter(),
-
-                TextColumn::make(Review::REVIEW_RATING)
-                    ->label('COMMENTAAR')
-                    ->limit(50) // Zorgt dat de tabel compact blijft
-                    ->searchable()
-                    ->toggleable(),
 
                 TextColumn::make(Review::REVIEW_COMMENT)
                     ->label('COMMENTAAR')
@@ -70,6 +72,17 @@ class ReviewsTable
                     ->color('gray')
                     ->sortable()
                     ->toggleable(),
+            ])
+            ->filters([
+                SelectFilter::make(Review::REVIEW_RATING)
+                    ->label('RATING')
+                    ->options([
+                        1 => '1 ster',
+                        2 => '2 sterren',
+                        3 => '3 sterren',
+                        4 => '4 sterren',
+                        5 => '5 sterren',
+                    ]),
             ])
             ->actions([
                 EditAction::make()
@@ -101,7 +114,7 @@ class ReviewsTable
                         ->label('Selectie verbergen')
                         ->modalHeading('Geselecteerde reviews verbergen')
                         ->action(function (Collection $records) {
-                            $records->each(fn (Review $record) => $record->update(['is_active' => false]));
+                            $records->each(fn(Review $record) => $record->update(['is_active' => false]));
 
                             Notification::make()
                                 ->title('Reviews succesvol verborgen')

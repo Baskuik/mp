@@ -3,7 +3,8 @@
 namespace App\Filament\Resources\Bids\Pages;
 
 use App\Filament\Resources\Bids\BidResource;
-use Filament\Actions\CreateAction;
+use App\Models\Bid;
+use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class ListBids extends ListRecords
@@ -12,8 +13,60 @@ class ListBids extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            CreateAction::make(),
+        $activeTabs = request()->query('tab', []);
+
+        if (is_string($activeTabs)) {
+            $activeTabs = [$activeTabs];
+        }
+
+        $options = [
+            'pending'  => 'In afwachting',
+            'accepted' => 'Geaccepteerd',
+            'declined' => 'Afgewezen',
         ];
+
+        $actions = [
+            Actions\Action::make('tab-alle')
+                ->label('Alle')
+                ->url('?')
+                ->color('success')
+                ->outlined(!empty($activeTabs))
+                ->size('sm'),
+        ];
+
+        foreach ($options as $value => $label) {
+            $isActive = in_array($value, $activeTabs);
+            $newTabs  = $isActive
+                ? array_filter($activeTabs, fn ($t) => $t !== $value)
+                : array_merge($activeTabs, [$value]);
+
+            $actions[] = Actions\Action::make("tab-{$value}")
+                ->label($label)
+                ->url('?' . http_build_query(['tab' => array_values($newTabs)]))
+                ->color('success')
+                ->outlined(!$isActive)
+                ->size('sm');
+        }
+
+        $actions[] = Actions\CreateAction::make()->label('Bieding aanmaken');
+
+        return $actions;
+    }
+
+    public function getTable(): \Filament\Tables\Table
+    {
+        $table = parent::getTable();
+
+        $activeTabs = request()->query('tab', []);
+
+        if (is_string($activeTabs)) {
+            $activeTabs = [$activeTabs];
+        }
+
+        if (!empty($activeTabs)) {
+            $table->modifyQueryUsing(fn ($query) => $query->whereIn(Bid::STATUS, $activeTabs));
+        }
+
+        return $table;
     }
 }

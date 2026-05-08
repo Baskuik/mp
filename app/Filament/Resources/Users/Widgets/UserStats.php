@@ -14,13 +14,13 @@ class UserStats extends BaseWidget
             Stat::make('TOTAAL USERS', User::count())
                 ->description('Alle accounts')
                 ->descriptionIcon('heroicon-m-users')
-                ->color('gray'),
+                ->color('success'),
             Stat::make('ACTIEF', User::where('is_active', true)->count())
                 ->description('100% actief')
                 ->color('success'),
             Stat::make('ADMINS', User::where('is_admin', true)->count())
                 ->description('Beheerders')
-                ->color('warning'),
+                ->color('success'),
         ];
     }
 }

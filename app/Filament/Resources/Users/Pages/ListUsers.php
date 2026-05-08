@@ -12,32 +12,43 @@ class ListUsers extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        $currentTab = request()->query('tab', 'alle');
+        $activeTabs = request()->query('tab', []);
 
-        return [
-            // Tab buttons (styled as badges/pills)
+        if (is_string($activeTabs)) {
+            $activeTabs = [$activeTabs];
+        }
+
+        $options = [
+            'actief'        => 'Actief',
+            'gedeactiveerd' => 'Gedeactiveerd',
+        ];
+
+        $actions = [
             Actions\Action::make('tab-alle')
                 ->label('Alle')
-                ->url('?tab=alle')
-                ->color($currentTab === 'alle' ? 'info' : 'gray')
+                ->url('?')
+                ->color('success')
+                ->outlined(!empty($activeTabs))
                 ->size('sm'),
-
-            Actions\Action::make('tab-admins')
-                ->label('Admins')
-                ->url('?tab=admins')
-                ->color($currentTab === 'admins' ? 'warning' : 'gray')
-                ->size('sm'),
-
-            Actions\Action::make('tab-actief')
-                ->label('Actief')
-                ->url('?tab=actief')
-                ->color($currentTab === 'actief' ? 'info' : 'gray')
-                ->size('sm'),
-
-            // Create action
-            Actions\CreateAction::make()
-                ->label('User aanmaken'),
         ];
+
+        foreach ($options as $value => $label) {
+            $isActive = in_array($value, $activeTabs);
+            $newTabs  = $isActive
+                ? array_filter($activeTabs, fn ($t) => $t !== $value)
+                : array_merge($activeTabs, [$value]);
+
+            $actions[] = Actions\Action::make("tab-{$value}")
+                ->label($label)
+                ->url('?' . http_build_query(['tab' => array_values($newTabs)]))
+                ->color('success')
+                ->outlined(!$isActive)
+                ->size('sm');
+        }
+
+        $actions[] = Actions\CreateAction::make()->label('User aanmaken');
+
+        return $actions;
     }
 
     protected function getHeaderWidgets(): array
@@ -51,17 +62,20 @@ class ListUsers extends ListRecords
     {
         $table = parent::getTable();
 
-        // Get the active tab from query string
-        $tab = request()->query('tab', 'alle');
+        $activeTabs = request()->query('tab', []);
 
-        // Apply filtering based on the tab
-        if ($tab === 'admins') {
-            $table->modifyQueryUsing(function ($query) {
-                return $query->where('is_admin', true);
-            });
-        } elseif ($tab === 'actief') {
-            $table->modifyQueryUsing(function ($query) {
-                return $query->where('is_active', true);
+        if (is_string($activeTabs)) {
+            $activeTabs = [$activeTabs];
+        }
+
+        if (!empty($activeTabs)) {
+            $table->modifyQueryUsing(function ($query) use ($activeTabs) {
+                if (in_array('actief', $activeTabs) && !in_array('gedeactiveerd', $activeTabs)) {
+                    $query->where('is_active', 1);
+                } elseif (in_array('gedeactiveerd', $activeTabs) && !in_array('actief', $activeTabs)) {
+                    $query->where('is_active', 0);
+                }
+                return $query;
             });
         }
 

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Bids\Tables;
 
 use App\Models\Bid;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Actions\EditAction;
@@ -25,14 +26,14 @@ class BidsTable
                     ->color('gray')
                     ->toggleable(),
 
-                TextColumn::make(Bid::LISTING_ID) // Toont de titel van de advertentie
+                TextColumn::make(Bid::LISTING_ID)
                     ->label('ADVERTENTIE')
                     ->searchable()
                     ->sortable()
                     ->weight('medium')
                     ->toggleable(),
 
-                TextColumn::make(Bid::BUYER_ID) // Toont de naam van de bieder
+                TextColumn::make(Bid::BUYER_ID)
                     ->label('BIEDER')
                     ->searchable()
                     ->sortable()
@@ -51,11 +52,16 @@ class BidsTable
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'accepted' => 'success',
-                        'pending' => 'warning',
-                        'rejected', 'cancelled' => 'danger',
-                        default => 'gray',
+                        'pending'  => 'warning',
+                        'declined' => 'danger',
+                        default    => 'gray',
                     })
-                    ->formatStateUsing(fn (string $state) => ucfirst($state))
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'pending'  => 'In afwachting',
+                        'accepted' => 'Geaccepteerd',
+                        'declined' => 'Afgewezen',
+                        default    => ucfirst($state),
+                    })
                     ->sortable()
                     ->toggleable(),
 
@@ -79,19 +85,17 @@ class BidsTable
                     ->icon('heroicon-m-pencil-square')
                     ->color('blue'),
 
-                // "Soft Delete" voor Biedingen
                 DeleteAction::make()
                     ->label(false)
                     ->icon('heroicon-m-trash')
-                    ->modalHeading('Bieding annuleren')
-                    ->modalDescription('Weet je zeker dat je deze bieding wilt annuleren? De status wordt aangepast naar "cancelled".')
-                    ->modalSubmitActionLabel('Ja, annuleer bieding')
+                    ->modalHeading('Bieding afwijzen')
+                    ->modalDescription('Weet je zeker dat je deze bieding wilt afwijzen? De status wordt aangepast naar "Afgewezen".')
+                    ->modalSubmitActionLabel('Ja, wijs bieding af')
                     ->action(function (Bid $record) {
-                        // Pas 'cancelled' aan naar de waarde die jij gebruikt in je database
-                        $record->update([Bid::STATUS => 'cancelled']);
+                        $record->update([Bid::STATUS => 'declined']);
 
                         Notification::make()
-                            ->title('Bieding geannuleerd')
+                            ->title('Bieding afgewezen')
                             ->success()
                             ->send();
                     }),
@@ -99,15 +103,15 @@ class BidsTable
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
-                        ->label('Selectie annuleren')
-                        ->modalHeading('Geselecteerde biedingen annuleren')
+                        ->label('Selectie afwijzen')
+                        ->modalHeading('Geselecteerde biedingen afwijzen')
                         ->action(function (Collection $records) {
                             $records->each(fn (Bid $record) => $record->update([
-                                Bid::STATUS => 'cancelled'
+                                Bid::STATUS => 'declined',
                             ]));
 
                             Notification::make()
-                                ->title('Biedingen geannuleerd')
+                                ->title('Biedingen afgewezen')
                                 ->success()
                                 ->send();
                         })

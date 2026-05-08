@@ -14,17 +14,19 @@ class Review extends Model
     const REVIEWER_ID = 'reviewer_id';
     const REVIEWEE_ID = 'reviewee_id';
     const LISTING_ID = 'listing_id';
+    const REVIEWS_ACTIVE = 'reviews_active';
     const REVIEW_RATING = 'rating';
     const REVIEW_COMMENT = 'comment';
     const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';    
-    
+    const UPDATED_AT = 'updated_at';
+
 
     protected $fillable = [
         'review_id',
         'reviewer_id',
         'reviewee_id',
         'listing_id',
+        'reviews_active',
         'rating',
         'comment',
         'created_at',

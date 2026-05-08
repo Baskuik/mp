@@ -54,7 +54,7 @@ class ListingsTable
 
                 TextColumn::make(Listing::LISTING_PRICE)
                     ->label('PRIJS')
-                    ->money('EUR') // Formatteert automatisch als €
+                    ->money('EUR')
                     ->sortable()
                     ->toggleable(),
 
@@ -62,10 +62,9 @@ class ListingsTable
                     ->label('STATUS')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'active' => 'success',
-                        'pending' => 'warning',
-                        'sold', 'inactive' => 'danger',
-                        default => 'gray',
+                        'active'            => 'success',
+                        'sold', 'archived'  => 'danger',
+                        default             => 'gray',
                     })
                     ->formatStateUsing(fn (string $state) => ucfirst($state))
                     ->sortable()
@@ -75,6 +74,7 @@ class ListingsTable
                     ->label('LOCATIE')
                     ->icon('heroicon-m-map-pin')
                     ->iconColor('gray')
+                    ->sortable()
                     ->searchable()
                     ->toggleable(),
 
@@ -93,7 +93,7 @@ class ListingsTable
                     ->toggleable(),
             ])
             ->filters([
-                // Hier kun je later filters toevoegen voor status of categorie
+                //
             ])
             ->actions([
                 EditAction::make()
@@ -101,19 +101,17 @@ class ListingsTable
                     ->icon('heroicon-m-pencil-square')
                     ->color('blue'),
 
-                // De "Soft Delete" actie voor Listings
                 DeleteAction::make()
                     ->label(false)
                     ->icon('heroicon-m-trash')
-                    ->modalHeading('Advertentie deactiveren')
-                    ->modalDescription('Weet je zeker dat je deze advertentie op offline wilt zetten? Hij blijft bewaard in het systeem.')
-                    ->modalSubmitActionLabel('Ja, zet offline')
+                    ->modalHeading('Advertentie archiveren')
+                    ->modalDescription('Weet je zeker dat je deze advertentie wilt archiveren? Hij blijft bewaard in het systeem.')
+                    ->modalSubmitActionLabel('Ja, archiveer')
                     ->action(function (Listing $record) {
-                        // We zetten de status op 'inactive' in plaats van te deleten
-                        $record->update([Listing::LISTING_STATUS => 'inactive']);
+                        $record->update([Listing::LISTING_STATUS => 'archived']);
 
                         Notification::make()
-                            ->title('Advertentie offline gezet')
+                            ->title('Advertentie gearchiveerd')
                             ->success()
                             ->send();
                     }),
@@ -121,15 +119,15 @@ class ListingsTable
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
-                        ->label('Selectie deactiveren')
-                        ->modalHeading('Geselecteerde advertenties offline zetten')
+                        ->label('Selectie archiveren')
+                        ->modalHeading('Geselecteerde advertenties archiveren')
                         ->action(function (Collection $records) {
                             $records->each(fn (Listing $record) => $record->update([
-                                Listing::LISTING_STATUS => 'inactive'
+                                Listing::LISTING_STATUS => 'archived',
                             ]));
 
                             Notification::make()
-                                ->title('Advertenties gedeactiveerd')
+                                ->title('Advertenties gearchiveerd')
                                 ->success()
                                 ->send();
                         })
