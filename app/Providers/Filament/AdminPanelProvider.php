@@ -45,94 +45,93 @@ class AdminPanelProvider extends PanelProvider
             ->assets([
                 \Filament\Support\Assets\Css::make('custom-stylesheet', asset('css/filament.css')),
             ])
-            ->renderHook(
-                'panels::body.end',
-                fn() => new HtmlString('
-                <script>
-                (function () {
-                    const STORAGE_KEY = "dd_sidebar_collapsed";
+           ->renderHook(
+    'panels::body.end',
+    fn() => new HtmlString('
+    <script>
+    (function () {
+        function init() {
+            const old = document.getElementById("dd-sidebar-toggle");
+            if (old) old.remove();
 
-                    function init() {
-                        // Verwijder oude knop als die al bestaat (na Livewire navigatie)
-                        const old = document.getElementById("dd-sidebar-toggle");
-                        if (old) old.remove();
+            const footer = document.querySelector(".fi-sidebar-footer");
+            if (!footer) return;
 
-                        const footer = document.querySelector(".fi-sidebar-footer");
-                        if (!footer) return;
+            const btn = document.createElement("button");
+            btn.id = "dd-sidebar-toggle";
+            btn.title = "Sidebar in-/uitklappen";
+            btn.setAttribute("aria-label", "Sidebar in-/uitklappen");
 
-                        // Maak de << >> toggle knop
-                        const btn = document.createElement("button");
-                        btn.id = "dd-sidebar-toggle";
-                        btn.title = "Sidebar in-/uitklappen";
-                        btn.setAttribute("aria-label", "Sidebar in-/uitklappen");
+            function getAlpineData() {
+                // Stap 1: probeer .fi-layout direct (hoofd-layout element van Filament)
+                const layoutEl = document.querySelector(".fi-layout");
+                if (layoutEl && window.Alpine) {
+                    try {
+                        const data = Alpine.$data(layoutEl);
+                        if (typeof data.sidebarIsOpen !== "undefined") return data;
+                    } catch(e) {}
+                }
 
-                        // Gebruik Filament\'s eigen collapse functionaliteit via de bestaande knop
-                        // Zoek de originele Filament toggle knop
-                        function getFilamentToggle() {
-                            return document.querySelector("[x-data] button[x-on\\\\:click], .fi-sidebar-close-overlay-btn, [wire\\\\:click*=\'collaps\']")
-                                || document.querySelector(".fi-topbar button[title], .fi-sidebar button[aria-label*=\'close\'], .fi-sidebar button[aria-label*=\'collapse\']");
-                        }
-
-                        // Lees huidige collapsed staat uit localStorage van Filament
-                        function isCollapsed() {
-                            return localStorage.getItem("sidebarIsOpen") === "false"
-                                || document.querySelector(".fi-sidebar")?.offsetWidth < 50;
-                        }
-
-                        function updateIcon() {
-                            btn.textContent = isCollapsed() ? ">>" : "<<";
-                        }
-
-                        updateIcon();
-
-                        btn.addEventListener("click", function () {
-                            // Trigger Filament\'s eigen Alpine.js sidebar toggle
-                            const sidebar = document.querySelector(".fi-sidebar");
-                            if (sidebar) {
-                                // Zoek naar de Alpine component en toggle die
-                                const alpineEl = document.querySelector("[x-data*=\'sidebar\']")
-                                    || document.querySelector(".fi-layout > div[x-data]")
-                                    || document.querySelector("[x-data]");
-
-                                if (alpineEl && window.Alpine) {
-                                    // Trigger via Alpine
-                                    const component = Alpine.$data(alpineEl);
-                                    if (component && typeof component.sidebarIsOpen !== "undefined") {
-                                        component.sidebarIsOpen = !component.sidebarIsOpen;
-                                        localStorage.setItem("sidebarIsOpen", component.sidebarIsOpen);
-                                    }
-                                } else {
-                                    // Fallback: zoek Filament\'s toggle knop in de topbar en klik die
-                                    const topbarBtn = document.querySelector(".fi-topbar-sidebar-toggle-btn")
-                                        || document.querySelector("[aria-controls*=\'sidebar\']")
-                                        || document.querySelector(".fi-icon-btn[title*=\'sidebar\']");
-                                    if (topbarBtn) topbarBtn.click();
-                                }
-                            }
-                            setTimeout(updateIcon, 300);
-                        });
-
-                        footer.appendChild(btn);
-
-                        // Update icoon ook als Filament zelf de sidebar toggle triggert
-                        const observer = new MutationObserver(() => updateIcon());
-                        const sidebar = document.querySelector(".fi-sidebar");
-                        if (sidebar) {
-                            observer.observe(sidebar, { attributes: true, attributeFilter: ["style", "class"] });
-                        }
+                // Stap 2: loop omhoog vanaf de sidebar zelf
+                const sidebar = document.querySelector(".fi-sidebar");
+                if (sidebar && window.Alpine) {
+                    let el = sidebar.parentElement;
+                    while (el && el !== document.body) {
+                        try {
+                            const data = Alpine.$data(el);
+                            if (typeof data.sidebarIsOpen !== "undefined") return data;
+                        } catch(e) {}
+                        el = el.parentElement;
                     }
+                }
+                return null;
+            }
 
-                    if (document.readyState === "loading") {
-                        document.addEventListener("DOMContentLoaded", init);
-                    } else {
-                        setTimeout(init, 100);
-                    }
+            function isCollapsed() {
+                const data = getAlpineData();
+                if (data) return !data.sidebarIsOpen;
+                return false;
+            }
 
-                    document.addEventListener("livewire:navigated", () => setTimeout(init, 100));
-                })();
-                </script>
-                ')
-            )
+            function updateIcon() {
+                btn.textContent = isCollapsed() ? ">>" : "<<";
+            }
+
+            updateIcon();
+
+            btn.addEventListener("click", function () {
+                const data = getAlpineData();
+                if (data) {
+                    data.sidebarIsOpen = !data.sidebarIsOpen;
+                } else {
+                    // Fallback: klik Filament\'s eigen topbar toggle knop
+                    const topbarBtn = document.querySelector(".fi-topbar-sidebar-toggle-btn");
+                    if (topbarBtn) topbarBtn.click();
+                }
+                setTimeout(updateIcon, 300);
+            });
+
+            footer.appendChild(btn);
+
+            // Update icoon als Filament zelf de sidebar toggle triggert
+            const observer = new MutationObserver(() => updateIcon());
+            const sidebar = document.querySelector(".fi-sidebar");
+            if (sidebar) {
+                observer.observe(sidebar, { attributes: true, attributeFilter: ["style", "class"] });
+            }
+        }
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", init);
+        } else {
+            setTimeout(init, 100);
+        }
+
+        document.addEventListener("livewire:navigated", () => setTimeout(init, 100));
+    })();
+    </script>
+    ')
+)
             ->resources([
                 UserResource::class,
                 CategoryResource::class,
