@@ -7,30 +7,33 @@
 
 /* ===== CSS VARIABELEN ===== */
 :root {
-    --dd-forest:     #1A3D2B;
+    --dd-forest: #1A3D2B;
     --dd-forest-mid: #245C3A;
     --dd-forest-lit: #2E7A4F;
-    --dd-sage:       #7BA98A;
-    --dd-mist:       #EEF3F0;
-    --dd-orange:     #E07B2A;
+    --dd-sage: #7BA98A;
+    --dd-mist: #EEF3F0;
+    --dd-orange: #E07B2A;
     --dd-orange-drk: #C46A1E;
-    --dd-white:      #FFFFFF;
-    --dd-ink:        #162218;
-    --dd-ink-soft:   #3D5444;
-    --dd-radius-lg:  14px;
-    --dd-radius-md:  10px;
-    --dd-radius-sm:  7px;
-    --dd-shadow-sm:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-    --dd-shadow-md:  0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+    --dd-white: #FFFFFF;
+    --dd-ink: #162218;
+    --dd-ink-soft: #3D5444;
+    --dd-radius-lg: 14px;
+    --dd-radius-md: 10px;
+    --dd-radius-sm: 7px;
+    --dd-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --dd-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 /* ===== GLOBAL FONT ===== */
-html, body, * {
+html,
+body,
+* {
     font-family: 'DM Sans', system-ui, sans-serif !important;
 }
 
 /* ===== ACHTERGROND ===== */
-html, body {
+html,
+body {
     background-color: var(--dd-mist) !important;
     padding-top: 0 !important;
     margin-top: 0 !important;
@@ -47,7 +50,7 @@ html, body {
     top: 0 !important;
     height: 100vh !important;
     position: sticky !important;
-    box-shadow: 2px 0 24px rgba(0,0,0,0.12) !important;
+    box-shadow: 2px 0 24px rgba(0, 0, 0, 0.12) !important;
 }
 
 .fi-sidebar-nav {
@@ -65,7 +68,7 @@ html, body {
 .fi-sidebar-header {
     display: flex !important;
     background-color: transparent !important;
-    border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
     padding: 0 1.1rem !important;
     align-items: center !important;
     justify-content: space-between !important;
@@ -102,10 +105,10 @@ html, body {
 
 /* Collapse knop */
 .fi-sidebar-header button {
-    background: rgba(255,255,255,0.08) !important;
-    border: 1px solid rgba(255,255,255,0.1) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: var(--dd-radius-sm) !important;
-    color: rgba(255,255,255,0.65) !important;
+    color: rgba(255, 255, 255, 0.65) !important;
     cursor: pointer !important;
     display: flex !important;
     align-items: center !important;
@@ -118,9 +121,9 @@ html, body {
 }
 
 .fi-sidebar-header button:hover {
-    background: rgba(255,255,255,0.16) !important;
+    background: rgba(255, 255, 255, 0.16) !important;
     color: #ffffff !important;
-    border-color: rgba(255,255,255,0.2) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 .fi-sidebar-header button svg {
@@ -129,7 +132,9 @@ html, body {
 }
 
 /* ===== TOPBAR VERBERGEN ===== */
-.fi-topbar-start > a { display: none !important; }
+.fi-topbar-start>a {
+    display: none !important;
+}
 
 .fi-topbar,
 .fi-topbar-ctn,
@@ -157,7 +162,7 @@ nav.fi-topbar {
 /* ===== SIDEBAR NAVIGATIE (Lijntjes verwijderd) ===== */
 .fi-sidebar-nav {
     flex: 1 1 auto !important;
-    padding: 1.5rem 24px !important; 
+    padding: 1.5rem 24px !important;
 }
 
 /* Verwijder de verticale lijn en de bolletjes */
@@ -173,7 +178,7 @@ nav.fi-topbar {
 
 .fi-sidebar-item-button {
     border-radius: var(--dd-radius-sm) !important;
-    margin: 4px 0 !important; 
+    margin: 4px 0 !important;
     padding: 0.6rem 12px !important;
     display: flex !important;
     align-items: center !important;
@@ -189,7 +194,7 @@ nav.fi-topbar {
 }
 
 .fi-sidebar-group-label {
-    color: rgba(255,255,255,0.32) !important;
+    color: rgba(255, 255, 255, 0.32) !important;
     font-size: 10px !important;
     font-weight: 700 !important;
     letter-spacing: 0.1em !important;
@@ -197,16 +202,18 @@ nav.fi-topbar {
     padding: 1.2rem 0 0.5rem 12px !important;
 }
 
-.fi-sidebar-item-active > .fi-sidebar-item-button {
-    background: rgba(255,255,255,0.1) !important;
+.fi-sidebar-item-active>.fi-sidebar-item-button {
+    background: rgba(255, 255, 255, 0.1) !important;
     box-shadow: inset 3px 0 0 var(--dd-orange) !important;
     color: #ffffff !important;
 }
+
 /* ===== SIDEBAR FOOTER ===== */
 .fi-sidebar-footer {
-    border-top: 1px solid rgba(255,255,255,0.07) !important;
-    padding: 12px 32px !important; /* Ook hier de marge gelijkgetrokken */
-    background-color: rgba(0,0,0,0.15) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.07) !important;
+    padding: 12px 32px !important;
+    /* Ook hier de marge gelijkgetrokken */
+    background-color: rgba(0, 0, 0, 0.15) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
@@ -214,11 +221,11 @@ nav.fi-topbar {
     margin-top: auto !important;
 }
 
-.fi-sidebar-footer > .fi-dropdown,
-.fi-sidebar-footer > div:not(button) {
-    background-color: rgba(255,255,255,0.07) !important;
+.fi-sidebar-footer>.fi-dropdown,
+.fi-sidebar-footer>div:not(button) {
+    background-color: rgba(255, 255, 255, 0.07) !important;
     border-radius: var(--dd-radius-md) !important;
-    border: 1px solid rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
     padding: 6px 10px !important;
     display: flex !important;
     align-items: center !important;
@@ -228,7 +235,7 @@ nav.fi-topbar {
 
 .fi-sidebar-footer [class*="trigger"],
 .fi-sidebar-footer button[class*="trigger"],
-.fi-sidebar-footer [class*="trigger"] > button {
+.fi-sidebar-footer [class*="trigger"]>button {
     background: transparent !important;
     background-color: transparent !important;
     border: none !important;
@@ -250,16 +257,16 @@ nav.fi-topbar {
 
 .fi-sidebar-footer [class*="trigger"] svg:not([class*="left"]) {
     margin-left: auto !important;
-    color: rgba(255,255,255,0.4) !important;
+    color: rgba(255, 255, 255, 0.4) !important;
     width: 14px !important;
 }
 
-.fi-sidebar-footer > button:not([class*="trigger"]),
+.fi-sidebar-footer>button:not([class*="trigger"]),
 .fi-sidebar-footer button:has(svg[class*="left"]) {
-    background: rgba(255,255,255,0.09) !important;
-    border: 1px solid rgba(255,255,255,0.1) !important;
+    background: rgba(255, 255, 255, 0.09) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: var(--dd-radius-sm) !important;
-    color: rgba(255,255,255,0.7) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
     width: 32px !important;
     height: 32px !important;
     display: flex !important;
@@ -269,8 +276,8 @@ nav.fi-topbar {
     transition: all 0.15s !important;
 }
 
-.fi-sidebar-footer > button:not([class*="trigger"]):hover {
-    background: rgba(255,255,255,0.16) !important;
+.fi-sidebar-footer>button:not([class*="trigger"]):hover {
+    background: rgba(255, 255, 255, 0.16) !important;
     color: #ffffff !important;
 }
 
@@ -285,11 +292,12 @@ nav.fi-topbar {
     color: #ffffff !important;
     font-weight: 700 !important;
     font-size: 13px !important;
-    box-shadow: 0 0 0 2px rgba(255,255,255,0.12) !important;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.12) !important;
 }
 
 /* ===== HOOFD ACHTERGROND ===== */
-.fi-main, .fi-main-ctn {
+.fi-main,
+.fi-main-ctn {
     background-color: #dfd8d8a8 !important;
 }
 
@@ -305,9 +313,9 @@ nav.fi-topbar {
 /* ===== STAT CARDS ===== */
 .fi-wi-stats-overview-stat {
     background: linear-gradient(140deg, var(--dd-forest-mid) 0%, var(--dd-forest) 100%) !important;
-    border: 1px solid rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
     border-radius: var(--dd-radius-lg) !important;
-    box-shadow: var(--dd-shadow-md), inset 0 1px 0 rgba(255,255,255,0.07) !important;
+    box-shadow: var(--dd-shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
     padding: 1.35rem 1.5rem !important;
     position: relative !important;
     overflow: hidden !important;
@@ -317,13 +325,15 @@ nav.fi-topbar {
 .fi-wi-stats-overview-stat::before {
     content: '' !important;
     position: absolute !important;
-    top: 0 !important; left: 0 !important; right: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
     height: 1px !important;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent) !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
 }
 
 .fi-wi-stats-overview-stat-label {
-    color: rgba(255,255,255,0.45) !important;
+    color: rgba(255, 255, 255, 0.45) !important;
     font-size: 10.5px !important;
     text-transform: uppercase !important;
     letter-spacing: 0.09em !important;
@@ -342,7 +352,7 @@ nav.fi-topbar {
 .fi-wi-stats-overview-stat-description {
     font-size: 12px !important;
     font-weight: 500 !important;
-    color: rgba(255,255,255,0.55) !important;
+    color: rgba(255, 255, 255, 0.55) !important;
     display: flex !important;
     align-items: center !important;
     gap: 4px !important;
@@ -352,7 +362,7 @@ nav.fi-topbar {
 .fi-ta-ctn {
     background-color: #ffffff !important;
     border-radius: var(--dd-radius-lg) !important;
-    border: 1px solid rgba(0,0,0,0.06) !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
     box-shadow: var(--dd-shadow-sm) !important;
     overflow: hidden !important;
 }
@@ -366,17 +376,18 @@ nav.fi-topbar {
     letter-spacing: 0.08em !important;
     font-weight: 700 !important;
     padding: 0.8rem 1rem !important;
-    border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
 }
 
 /* ===== TABEL RIJEN ===== */
 .fi-ta-cell {
     padding: 0.9rem 1rem !important;
     vertical-align: middle !important;
-    border-bottom: 1px solid rgba(0,0,0,0.04) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
 }
 
-.fi-ta-cell, .fi-ta-cell * {
+.fi-ta-cell,
+.fi-ta-cell * {
     color: var(--dd-ink) !important;
 }
 
@@ -396,15 +407,15 @@ nav.fi-topbar {
 }
 
 /* Alle knoppen — altijd groene achtergrond */
-.fi-ta-header-toolbar nav a, 
+.fi-ta-header-toolbar nav a,
 .fi-ta-header-toolbar nav button {
     background: linear-gradient(135deg, var(--dd-forest-mid) 0%, var(--dd-forest) 100%) !important;
-    color: rgba(255,255,255,0.75) !important;
-    border: 1px solid rgba(255,255,255,0.08) !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
     border-radius: 8px !important;
     padding: 6px 16px !important;
     font-weight: 600 !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.12) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12) !important;
     text-decoration: none !important;
 }
 
@@ -415,12 +426,12 @@ nav.fi-topbar {
 .fi-ta-header-toolbar nav button[class*="active"] {
     background: linear-gradient(135deg, var(--dd-forest-lit) 0%, var(--dd-forest-mid) 100%) !important;
     color: #ffffff !important;
-    border-color: rgba(255,255,255,0.15) !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* Hover */
-.fi-ta-header-toolbar nav a:hover, 
+.fi-ta-header-toolbar nav a:hover,
 .fi-ta-header-toolbar nav button:hover {
     background: linear-gradient(135deg, var(--dd-forest-lit) 0%, var(--dd-forest-mid) 100%) !important;
     color: #ffffff !important;
@@ -430,7 +441,7 @@ nav.fi-topbar {
 /* ===== TABEL SEARCH ===== */
 .fi-ta-search-field input {
     background-color: #F5F8F6 !important;
-    border: 1px solid rgba(0,0,0,0.08) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
     border-radius: var(--dd-radius-md) !important;
     font-size: 13.5px !important;
     color: var(--dd-ink) !important;
@@ -439,7 +450,7 @@ nav.fi-topbar {
 
 .fi-ta-search-field input:focus {
     border-color: var(--dd-forest-lit) !important;
-    box-shadow: 0 0 0 3px rgba(46,122,79,0.1) !important;
+    box-shadow: 0 0 0 3px rgba(46, 122, 79, 0.1) !important;
 }
 
 /* ===== KNOPPEN ===== */
@@ -456,26 +467,26 @@ nav.fi-topbar {
     background: linear-gradient(135deg, var(--dd-orange) 0%, #F09240 100%) !important;
     border-color: var(--dd-orange) !important;
     color: #ffffff !important;
-    box-shadow: 0 2px 8px rgba(224,123,42,0.3) !important;
+    box-shadow: 0 2px 8px rgba(224, 123, 42, 0.3) !important;
 }
 
 .fi-btn-color-primary:hover {
     background: linear-gradient(135deg, var(--dd-orange-drk) 0%, var(--dd-orange) 100%) !important;
     border-color: var(--dd-orange-drk) !important;
-    box-shadow: 0 4px 12px rgba(224,123,42,0.4) !important;
+    box-shadow: 0 4px 12px rgba(224, 123, 42, 0.4) !important;
     transform: translateY(-1px) !important;
 }
 
 .fi-btn-color-gray {
     background-color: #ffffff !important;
-    border: 1px solid rgba(0,0,0,0.1) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
     color: var(--dd-ink-soft) !important;
     box-shadow: var(--dd-shadow-sm) !important;
 }
 
 .fi-btn-color-gray:hover {
     background-color: #F6FAF7 !important;
-    border-color: rgba(0,0,0,0.14) !important;
+    border-color: rgba(0, 0, 0, 0.14) !important;
 }
 
 /* ===== BADGES ===== */
@@ -490,31 +501,31 @@ nav.fi-topbar {
 .fi-badge-color-success {
     background-color: #E6F4EC !important;
     color: #186B36 !important;
-    border: 1px solid rgba(24,107,54,0.2) !important;
+    border: 1px solid rgba(24, 107, 54, 0.2) !important;
 }
 
 .fi-badge-color-warning {
     background-color: #FEF3E6 !important;
     color: #C16B1A !important;
-    border: 1px solid rgba(193,107,26,0.25) !important;
+    border: 1px solid rgba(193, 107, 26, 0.25) !important;
 }
 
 .fi-badge-color-gray {
     background-color: #F1F4F2 !important;
     color: #5A6B61 !important;
-    border: 1px solid rgba(0,0,0,0.07) !important;
+    border: 1px solid rgba(0, 0, 0, 0.07) !important;
 }
 
 .fi-badge-color-danger {
     background-color: #FDE8E8 !important;
     color: #B83232 !important;
-    border: 1px solid rgba(184,50,50,0.2) !important;
+    border: 1px solid rgba(184, 50, 50, 0.2) !important;
 }
 
 /* ===== PAGINERING ===== */
 .fi-pagination {
     padding: 0.8rem 1rem !important;
-    border-top: 1px solid rgba(0,0,0,0.05) !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
     background: #FAFCFA !important;
 }
 
@@ -523,7 +534,7 @@ nav.fi-topbar {
     color: #ffffff !important;
     border-radius: var(--dd-radius-sm) !important;
     font-weight: 700 !important;
-    box-shadow: 0 2px 6px rgba(31,74,46,0.25) !important;
+    box-shadow: 0 2px 6px rgba(31, 74, 46, 0.25) !important;
 }
 
 .fi-pagination-item-btn {
@@ -554,27 +565,27 @@ nav.fi-topbar {
 /* ===== CHECKBOX ===== */
 .fi-checkbox input[type="checkbox"] {
     border-radius: 5px !important;
-    border-color: rgba(0,0,0,0.18) !important;
+    border-color: rgba(0, 0, 0, 0.18) !important;
     transition: all 0.12s !important;
 }
 
 .fi-checkbox input[type="checkbox"]:checked {
     background-color: var(--dd-forest-mid) !important;
     border-color: var(--dd-forest-mid) !important;
-    box-shadow: 0 0 0 2px rgba(36,92,58,0.15) !important;
+    box-shadow: 0 0 0 2px rgba(36, 92, 58, 0.15) !important;
 }
 
 /* ===== FORMULIER INPUTS ===== */
 .fi-input {
     border-radius: var(--dd-radius-md) !important;
-    border-color: rgba(0,0,0,0.1) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
     font-size: 13.5px !important;
     transition: all 0.15s !important;
 }
 
 .fi-input:focus {
     border-color: var(--dd-forest-lit) !important;
-    box-shadow: 0 0 0 3px rgba(46,122,79,0.12) !important;
+    box-shadow: 0 0 0 3px rgba(46, 122, 79, 0.12) !important;
 }
 
 /* ===== TABEL TOOLBAR ===== */
@@ -583,7 +594,7 @@ nav.fi-topbar {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
     background: #FAFCFA !important;
 }
 
@@ -591,4 +602,400 @@ nav.fi-topbar {
     display: flex !important;
     align-items: center !important;
     gap: 0.5rem !important;
+}
+
+/* ===== FORM SECTIONS (SCHEMA) ===== */
+.fi-section,
+.fi-box {
+    background-color: var(--dd-white) !important;
+    border-radius: var(--dd-radius-md) !important;
+    border: 1px solid #E0E4E8 !important;
+    box-shadow: var(--dd-shadow-sm) !important;
+    margin-bottom: 1.5rem !important;
+    padding: 1.5rem !important;
+}
+
+.fi-section-header {
+    border-bottom: 1px solid var(--dd-mist) !important;
+    padding-bottom: 0.75rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.fi-section-header-title {
+    color: var(--dd-forest) !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+.fi-section .fi-icon svg {
+    color: var(--dd-orange) !important;
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+}
+
+/* ===== FORM INPUTS STYLING ===== */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="url"],
+textarea,
+select,
+.fi-input {
+    border-radius: var(--dd-radius-sm) !important;
+    border: 1px solid #E0E4E8 !important;
+    background-color: var(--dd-white) !important;
+    color: var(--dd-ink) !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    padding: 0.625rem 0.875rem !important;
+    font-family: 'DM Sans', system-ui, sans-serif !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.fi-input:focus {
+    border-color: var(--dd-orange) !important;
+    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.1) !important;
+    outline: none !important;
+    background-color: rgba(238, 243, 240, 0.3) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--dd-sage) !important;
+    opacity: 0.7;
+}
+
+/* ── Kleurpalet ──────────────────────────────────────────────────────────── */
+:root {
+    --dd-green-dark: #1a3d2b;
+    /* sidebar achtergrond */
+    --dd-green-mid: #1f4d35;
+    /* hover states */
+    --dd-green-accent: #2d6a45;
+    /* knoppen, badges */
+    --dd-green-light: #e8f5ee;
+    /* lichte achtergronden */
+    --dd-orange: #e8821a;
+    /* "DirectDeal" accent, ster-badges */
+    --dd-bg: #f0ede8;
+    /* pagina achtergrond */
+    --dd-white: #ffffff;
+    --dd-text: #1a1a1a;
+    --dd-muted: #6b7280;
+    --dd-border: #d1d5db;
+    --dd-radius: 0.75rem;
+    /* afgeronde hoeken zoals in de UI */
+}
+
+/* ── Pagina achtergrond ───────────────────────────────────────────────────── */
+.fi-main,
+.fi-body {
+    background-color: var(--dd-bg) !important;
+}
+
+/* ── Formulier secties ───────────────────────────────────────────────────── */
+.dd-section,
+.fi-section {
+    background-color: var(--dd-white) !important;
+    border-radius: var(--dd-radius) !important;
+    border: 1px solid var(--dd-border) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Sectie header (titel + icon) */
+.fi-section-header {
+    border-bottom: 1px solid var(--dd-green-light) !important;
+    padding-bottom: 0.75rem !important;
+    margin-bottom: 0.25rem !important;
+}
+
+.fi-section-header-heading {
+    color: var(--dd-green-dark) !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+}
+
+/* Icon in sectie header – groen */
+.fi-section-header .fi-icon svg {
+    color: var(--dd-green-accent) !important;
+}
+
+/* ── Form inputs ─────────────────────────────────────────────────────────── */
+.fi-input,
+.fi-fo-text-input,
+.fi-fo-textarea,
+.fi-fo-select {
+    border-radius: 0.5rem !important;
+    border-color: var(--dd-border) !important;
+    background-color: var(--dd-white) !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fi-input:focus,
+.fi-fo-text-input:focus-within,
+.fi-fo-textarea:focus-within,
+.fi-fo-select:focus-within {
+    border-color: var(--dd-green-accent) !important;
+    box-shadow: 0 0 0 3px rgba(45, 106, 69, 0.15) !important;
+    outline: none !important;
+}
+
+/* Prefix icons in inputs */
+.fi-input-wrp .fi-icon svg {
+    color: var(--dd-green-accent) !important;
+}
+
+/* Labels */
+.fi-fo-field-wrp-label label,
+.fi-label,
+.fi-fo-field-wrp label,
+label.fi-fo-field-wrp-label,
+label,
+.text-white,
+.text-gray-50 {
+    color: #111827 !important;
+    font-weight: 500 !important;
+    font-size: 0.875rem !important;
+}
+
+/* Helper tekst */
+.fi-fo-field-wrp-helper-text,
+.fi-hint {
+    color: var(--dd-muted) !important;
+    font-size: 0.78rem !important;
+}
+
+/* ── Knoppen (primair = groen) ───────────────────────────────────────────── */
+.fi-btn-primary,
+.fi-btn[data-color="success"] {
+    background-color: var(--dd-green-dark) !important;
+    border-color: var(--dd-green-dark) !important;
+    color: var(--dd-white) !important;
+    border-radius: 0.6rem !important;
+    font-weight: 600 !important;
+    transition: background-color 0.15s ease;
+}
+
+.fi-btn-primary:hover,
+.fi-btn[data-color="success"]:hover {
+    background-color: var(--dd-green-accent) !important;
+    border-color: var(--dd-green-accent) !important;
+}
+
+/* Outlined knoppen (zoals "Actief", "Gedeactiveerd" filters) */
+.fi-btn-outlined {
+    background-color: transparent !important;
+    border: 1.5px solid var(--dd-green-dark) !important;
+    color: var(--dd-green-dark) !important;
+    border-radius: 0.6rem !important;
+}
+
+.fi-btn-outlined:hover {
+    background-color: var(--dd-green-light) !important;
+}
+
+/* ── Select dropdown ─────────────────────────────────────────────────────── */
+.fi-fo-select .choices__inner,
+.fi-select {
+    border-radius: 0.5rem !important;
+    border-color: var(--dd-border) !important;
+}
+
+.fi-fo-select .choices__item--selectable.is-highlighted,
+.fi-select-option:hover {
+    background-color: var(--dd-green-light) !important;
+    color: var(--dd-green-dark) !important;
+}
+
+/* ── Checkbox ────────────────────────────────────────────────────────────── */
+.fi-checkbox input[type="checkbox"]:checked,
+.fi-fo-checkbox input:checked {
+    background-color: var(--dd-green-accent) !important;
+    border-color: var(--dd-green-accent) !important;
+}
+
+/* ── Wachtwoord "reveal" knop ────────────────────────────────────────────── */
+.fi-input-suffix-action svg {
+    color: var(--dd-green-accent) !important;
+}
+
+/* ── Validatie fouten ────────────────────────────────────────────────────── */
+.fi-fo-field-wrp-error-message,
+.fi-error {
+    color: #dc2626 !important;
+    font-size: 0.78rem !important;
+}
+
+.fi-input-wrp--error .fi-input,
+.fi-fo-text-input.fi-fo-text-input--error {
+    border-color: #dc2626 !important;
+}
+
+/* ── Formulier action buttons (Aanmaken, Annuleren) ──────────────────── */
+.fi-form-actions .fi-btn {
+    background-color: var(--dd-green-accent) !important;
+    border-color: var(--dd-green-accent) !important;
+    color: white !important;
+}
+
+.fi-form-actions .fi-btn:hover {
+    background-color: var(--dd-green-dark) !important;
+    border-color: var(--dd-green-dark) !important;
+}
+
+.fi-main label {
+    color: #111827 !important;
+}
+
+.fi-main .text-white {
+    color: #111827 !important;
+}
+
+.fi-main .text-gray-50 {
+    color: #111827 !important;
+}
+
+.fi-main .fi-fo-field-label-content {
+    color: #111827 !important;
+}
+
+.fi-main .fi-fo-field-label {
+    color: #111827 !important;
+}
+
+/* =============================================
+   FIX: Geselecteerde waarden in inputs/selects
+   Voeg dit toe onderaan je filament.css
+   ============================================= */
+
+/* Geselecteerde waarde IN het inputveld (bovenste balk) donker maken */
+.fi-fo-select [role="combobox"],
+.fi-fo-select [role="combobox"] span,
+.fi-fo-select button>span:first-child,
+.fi-fo-select button>span,
+.fi-select-input,
+.fi-fo-select .choices__input,
+.fi-fo-select .choices__item--selectable,
+.fi-fo-select .choices__list--single .choices__item,
+.fi-fo-select .choices__button,
+.fi-fo-select [data-type="select-one"],
+.fi-fo-select select,
+.choices__list--single .choices__item {
+    color: var(--dd-ink) !important;
+}
+
+/* Override alle tekst-wit classes in select */
+.fi-fo-select .text-white,
+.fi-fo-select .text-gray-50,
+.fi-select .text-white,
+.fi-select .text-gray-50 {
+    color: var(--dd-ink) !important;
+}
+
+/* Ingevulde waarde in TextInput en Textarea */
+.fi-input:not(:placeholder-shown),
+input[type="text"]:not(:placeholder-shown),
+input[type="email"]:not(:placeholder-shown),
+input[type="password"]:not(:placeholder-shown),
+input[type="number"]:not(:placeholder-shown),
+textarea:not(:placeholder-shown) {
+    color: var(--dd-ink) !important;
+}
+
+/* Zorg dat wit (Tailwind text-white) niet doorlekt op formulier inputs */
+.fi-fo-field-wrp .fi-input-wrp .text-white,
+.fi-fo-field-wrp .fi-input-wrp span.text-white {
+    color: var(--dd-ink) !important;
+}
+
+/* ── Dropdown lijst: tekst WIT houden ───────────────────────────────────── */
+/* De popup/listbox die verschijnt bij het openen van een Select */
+[role="listbox"],
+[role="listbox"] *,
+[role="option"],
+[role="option"] *,
+.choices__list--dropdown .choices__item,
+.choices__list--dropdown .choices__item.is-highlighted {
+    color: #ffffff !important;
+}
+/* Geselecteerde waarde in gesloten veld — zwart */
+.fi-fo-select button > span {
+    color: var(--dd-ink) !important;
+}
+
+/* Dropdown popup — wit houden */
+.fi-fo-select [role="listbox"],
+.fi-fo-select [role="listbox"] *,
+.fi-fo-select [role="option"],
+.fi-fo-select [role="option"] *,
+.fi-fo-select [data-headlessui-state="active"] *,
+.fi-fo-select li,
+.fi-fo-select li * {
+    color: #ffffff !important;
+}
+/* Alles in de select wrapper zwart — behalve de listbox */
+.fi-fo-select *:not([role="listbox"]):not([role="option"]):not([role="listbox"] *):not([role="option"] *) {
+    color: var(--dd-ink) !important;
+}
+
+/* Listbox altijd wit */
+.fi-fo-select [role="listbox"],
+.fi-fo-select [role="listbox"] *,
+.fi-fo-select [role="option"],
+.fi-fo-select [role="option"] * {
+    color: #ffffff !important;
+}
+/* ── Dropdown lijst items zichtbaar maken ───────────────────────────────── */
+[role="listbox"] [role="option"],
+[role="listbox"] [role="option"] *,
+[role="option"] span,
+[role="option"] {
+    color: #ffffff !important;
+    background-color: #1A3D2B !important;
+}
+
+/* Hover state */
+[role="option"]:hover,
+[role="option"][data-headlessui-state~="active"],
+[role="option"][aria-selected="true"] {
+    background-color: #2E7A4F !important;
+    color: #ffffff !important;
+}
+
+/* Placeholder tekst */
+[role="listbox"] input::placeholder {
+    color: rgba(255,255,255,0.45) !important;
+}
+
+/* Zoekbalk bovenin dropdown */
+[role="listbox"] input {
+    background-color: #245C3A !important;
+    color: #ffffff !important;
+    border-color: rgba(255,255,255,0.15) !important;
+}
+
+/* ── Brede fix voor alle dropdowns ─────────────────────────────────────── */
+* [role="option"] { color: #ffffff !important; background-color: #1A3D2B !important; }
+* [role="option"]:hover { background-color: #2E7A4F !important; }
+* [role="listbox"] { background-color: #1A3D2B !important; }
+
+/* Filament's eigen select zonder role attributen */
+.fi-fo-select ul li { color: #ffffff !important; background-color: #1A3D2B !important; }
+.fi-fo-select ul li:hover { background-color: #2E7A4F !important; }
+.fi-fo-select ul { background-color: #1A3D2B !important; }
+
+/* Alpine.js/Livewire dropdown */
+[x-transition] li, [x-transition] li * { color: #ffffff !important; }
+[x-transition] ul { background-color: #1A3D2B !important; }
+
+/* Absolute/fixed positioned popups */
+.fi-fo-select > div > div > ul > li,
+.fi-fo-select > div > div > ul > li * {
+    color: #ffffff !important;
+    background-color: #1A3D2B !important;
 }

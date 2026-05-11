@@ -2,17 +2,97 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
-use Filament\Schemas\Schema; // Moet matchen met UserResource
+use App\Models\User;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Schema;
 
-class UserForm 
+class UserForm
 {
-    public static function configure(Schema $schema): Schema 
+    public static function configure(Schema $schema): Schema
     {
         return $schema
-            ->components([ // Let op: in deze versie is het vaak 'components' ipv 'schema'
-                TextInput::make('name')->required(),
-                TextInput::make('email')->email()->required(),
+            ->components([
+                TextInput::make('name')
+                    ->label('Naam')
+                    ->placeholder('Jan de Vries')
+                    ->prefixIcon('heroicon-o-user')
+                    ->required()
+                    ->maxLength(255),
+
+                TextInput::make('username')
+                    ->label('Gebruikersnaam')
+                    ->placeholder('jandevries')
+                    ->prefixIcon('heroicon-o-at-symbol')
+                    ->required()
+                    ->unique(User::class, 'username', ignoreRecord: true)
+                    ->maxLength(50)
+                    ->alphaDash()
+                    ->helperText('Alleen letters, cijfers, koppeltekens en underscores.'),
+
+                TextInput::make('email')
+                    ->label('E-mailadres')
+                    ->placeholder('jan@voorbeeld.nl')
+                    ->prefixIcon('heroicon-o-envelope')
+                    ->email()
+                    ->required()
+                    ->unique(User::class, 'email', ignoreRecord: true)
+                    ->maxLength(255),
+
+                Textarea::make('bio')
+                    ->label('Bio')
+                    ->placeholder('Vertel iets over deze gebruiker…')
+                    ->rows(3)
+                    ->nullable()
+                    ->maxLength(1000)
+                    ->helperText('Maximaal 1000 tekens.'),
+
+                TextInput::make('password')
+                    ->label('Wachtwoord')
+                    ->placeholder('Minimaal 8 tekens')
+                    ->password()
+                    ->revealable()
+                    ->required(fn(string $operation) => $operation === 'create')
+                    ->dehydrated(fn(?string $state) => filled($state))
+                    ->minLength(8)
+                    ->helperText(fn(string $operation) => $operation === 'edit'
+                        ? 'Laat leeg om het huidige wachtwoord te behouden.'
+                        : null),
+
+                TextInput::make('password_confirmation')
+                    ->label('Wachtwoord bevestigen')
+                    ->placeholder('Herhaal het wachtwoord')
+                    ->password()
+                    ->revealable()
+                    ->required(fn(string $operation) => $operation === 'create')
+                    ->dehydrated(false)
+                    ->same('password'),
+
+                Checkbox::make('is_admin')
+                    ->label('Admin')
+                    ->default(false)
+                    ->helperText('Geeft beheerderrechten op het platform.'),
+
+                Checkbox::make('is_active')
+                    ->label('Actief')
+                    ->default(true)
+                    ->disabled(fn($get) => $get('is_banned') === true)
+                    ->helperText(fn($get) => $get('is_banned')
+                        ? 'Verbannen gebruikers kunnen niet actief zijn.'
+                        : 'Inactieve gebruikers kunnen niet inloggen.'),
+
+                Checkbox::make('is_banned')
+                    ->label('Verbannen')
+                    ->default(false)
+                    ->afterStateUpdated(function ($set, $state) {
+                        // Als verbannen wordt geactiveerd, zet is_active op false
+                        if ($state === true) {
+                            $set('is_active', false);
+                        }
+                    })
+                    ->helperText('Verbannen gebruikers kunnen niet meer inloggen en hun account zien.'),
             ]);
     }
 }

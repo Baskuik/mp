@@ -74,16 +74,18 @@ class ReviewsTable
                     ->toggleable(),
             ])
             ->filters([
-                SelectFilter::make(Review::REVIEW_RATING)
-                    ->label('RATING')
-                    ->options([
-                        1 => '1 ster',
-                        2 => '2 sterren',
-                        3 => '3 sterren',
-                        4 => '4 sterren',
-                        5 => '5 sterren',
-                    ]),
-            ])
+    SelectFilter::make(Review::REVIEW_RATING)
+        ->label('RATING')
+        ->native(false)      // ✅ Gebruik de Filament-stijl dropdown
+        ->searchable()       // ✅ Voegt de zoekbalk toe bovenaan
+        ->options([
+            1 => '⭐ 1 ster',
+            2 => '⭐⭐ 2 sterren',
+            3 => '⭐⭐⭐ 3 sterren',
+            4 => '⭐⭐⭐⭐ 4 sterren',
+            5 => '⭐⭐⭐⭐⭐ 5 sterren',
+        ]),
+])
             ->actions([
                 EditAction::make()
                     ->label(false)

@@ -69,13 +69,21 @@ class UsersTable
                     ->toggleable()
                     ->sortable(),
 
+                TextColumn::make(User::USER_IS_BANNED)
+                    ->label('VERBANNEN')
+                    ->badge()
+                    ->formatStateUsing(fn($state) => $state ? '⛔ Verbannen' : 'Niet verbannen')
+                    ->color(fn($state) => $state ? 'danger' : 'gray')
+                    ->toggleable()
+                    ->sortable(),
+
                 TextColumn::make(User::USER_USERNAME)
                     ->label('USERNAME')
                     ->color('gray')
                     ->sortable()
                     ->toggleable()
                     ->searchable(),
-                
+
                 TextColumn::make(User::USER_BIO)
                     ->label('ACCOUNT BIO')
                     ->color('gray')
@@ -88,7 +96,7 @@ class UsersTable
                     ->dateTime('d-m-Y H:i')
                     ->toggleable()
                     ->sortable(),
-                
+
                 TextColumn::make(User::USER_UPDATED_AT)
                     ->label('LAATSTE UPDATE')
                     ->dateTime('d-m-Y H:i')
@@ -100,7 +108,7 @@ class UsersTable
                     ->label(false)
                     ->icon('heroicon-m-pencil-square')
                     ->color('blue'),
-                
+
                 // Aangepaste Delete actie (Soft)
                 DeleteAction::make()
                     ->label(false)
@@ -124,7 +132,7 @@ class UsersTable
                         ->label('Selectie deactiveren')
                         ->modalHeading('Geselecteerde gebruikers deactiveren')
                         ->action(function (Collection $records) {
-                            $records->each(fn (User $record) => $record->update(['is_active' => false]));
+                            $records->each(fn(User $record) => $record->update(['is_active' => false]));
 
                             Notification::make()
                                 ->title('Gebruikers gedeactiveerd')

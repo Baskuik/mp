@@ -12,15 +12,12 @@ class ListUsers extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        $activeTabs = request()->query('tab', []);
-
-        if (is_string($activeTabs)) {
-            $activeTabs = [$activeTabs];
-        }
+        $activeTab = request()->query('tab');
 
         $options = [
-            'actief'        => 'Actief',
+            'actief' => 'Actief',
             'gedeactiveerd' => 'Gedeactiveerd',
+            'verbannen' => 'Verbannen',
         ];
 
         $actions = [
@@ -28,19 +25,16 @@ class ListUsers extends ListRecords
                 ->label('Alle')
                 ->url('?')
                 ->color('success')
-                ->outlined(!empty($activeTabs))
+                ->outlined(!empty($activeTab))
                 ->size('sm'),
         ];
 
         foreach ($options as $value => $label) {
-            $isActive = in_array($value, $activeTabs);
-            $newTabs  = $isActive
-                ? array_filter($activeTabs, fn ($t) => $t !== $value)
-                : array_merge($activeTabs, [$value]);
-
+            $isActive = $activeTab === $value;
+            // Mutually exclusive: set this tab as the only active one
             $actions[] = Actions\Action::make("tab-{$value}")
                 ->label($label)
-                ->url('?' . http_build_query(['tab' => array_values($newTabs)]))
+                ->url('?' . http_build_query(['tab' => $value]))
                 ->color('success')
                 ->outlined(!$isActive)
                 ->size('sm');
@@ -62,22 +56,28 @@ class ListUsers extends ListRecords
     {
         $table = parent::getTable();
 
-        $activeTabs = request()->query('tab', []);
+        $activeTab = request()->query('tab');
 
-        if (is_string($activeTabs)) {
-            $activeTabs = [$activeTabs];
-        }
-
-        if (!empty($activeTabs)) {
-            $table->modifyQueryUsing(function ($query) use ($activeTabs) {
-                if (in_array('actief', $activeTabs) && !in_array('gedeactiveerd', $activeTabs)) {
-                    $query->where('is_active', 1);
-                } elseif (in_array('gedeactiveerd', $activeTabs) && !in_array('actief', $activeTabs)) {
-                    $query->where('is_active', 0);
-                }
+        $table->modifyQueryUsing(function ($query) use ($activeTab) {
+            // Standaard: toon alles
+            if (empty($activeTab)) {
                 return $query;
-            });
-        }
+            }
+
+            switch ($activeTab) {
+                case 'actief':
+                    $query->where('is_banned', 0)->where('is_active', 1);
+                    break;
+                case 'gedeactiveerd':
+                    $query->where('is_banned', 0)->where('is_active', 0);
+                    break;
+                case 'verbannen':
+                    $query->where('is_banned', 1);
+                    break;
+            }
+
+            return $query;
+        });
 
         return $table;
     }

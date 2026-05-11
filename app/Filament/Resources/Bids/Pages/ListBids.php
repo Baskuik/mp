@@ -20,9 +20,10 @@ class ListBids extends ListRecords
         }
 
         $options = [
-            'pending'  => 'In afwachting',
-            'accepted' => 'Geaccepteerd',
-            'declined' => 'Afgewezen',
+            'pending'   => 'In behandeling',
+            'accepted'  => 'Geaccepteerd',
+            'rejected'  => 'Afgewezen',
+            'cancelled' => 'Geannuleerd',
         ];
 
         $actions = [

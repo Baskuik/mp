@@ -17,6 +17,21 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
     protected $primaryKey = 'user_id';
 
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Als user verbannen wordt, zet is_active op false
+        static::saving(function ($user) {
+            if ($user->is_banned === true) {
+                $user->is_active = false;
+            }
+        });
+    }
+
     const USER_ID = 'user_id';
     const USER_NAME = 'name';
     const USER_EMAIL = 'email';
@@ -24,6 +39,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     const USER_PASSWORD = 'password';
     const USER_IS_ADMIN = 'is_admin';
     const USER_IS_ACTIVE = 'is_active';
+    const USER_IS_BANNED = 'is_banned';
     const USER_REMEMBER_TOKEN = 'remember_token';
     const USER_CREATED_AT = 'created_at';
     const USER_UPDATED_AT = 'updated_at';
@@ -32,9 +48,20 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     const USER_PROFILE_PHOTO_PATH = 'profile_photo_path';
 
     protected $fillable = [
-        'user_id', 'name', 'email', 'email_verified_at', 'password',
-        'is_admin', 'is_active', 'remember_token', 'created_at',
-        'updated_at', 'username', 'bio', 'profile_photo_path',
+        'user_id',
+        'name',
+        'email',
+        'email_verified_at',
+        'password',
+        'is_admin',
+        'is_active',
+        'is_banned',
+        'remember_token',
+        'created_at',
+        'updated_at',
+        'username',
+        'bio',
+        'profile_photo_path',
     ];
 
     protected $hidden = [
@@ -49,6 +76,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             'password' => 'hashed',
             'is_admin' => 'boolean',
             'is_active' => 'boolean',
+            'is_banned' => 'boolean',
         ];
     }
 
@@ -77,5 +105,22 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     public function bids(): HasMany
     {
         return $this->hasMany(Bid::class, 'buyer_id');
+    }
+
+    /**
+     * Soft delete: zet is_active op false in plaats van hard deleten
+     */
+    public function delete()
+    {
+        $this->is_active = false;
+        return $this->save();
+    }
+
+    /**
+     * Hard delete als nodig
+     */
+    public function forceDelete()
+    {
+        return parent::delete();
     }
 }

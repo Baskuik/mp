@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Reviews\Pages;
 use App\Filament\Resources\Reviews\ReviewResource;
 use App\Models\Review;
 use Filament\Actions;
+use Filament\Forms\Components\DatePicker;
 use Filament\Resources\Pages\ListRecords;
 
 class ListReviews extends ListRecords
@@ -13,37 +14,52 @@ class ListReviews extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        $activeTabs = request()->query('tab', []);
+        $dateFrom = request()->query('date_from');
+        $dateTo   = request()->query('date_to');
 
-        if (is_string($activeTabs)) {
-            $activeTabs = [$activeTabs];
-        }
+        $hasFilter = $dateFrom || $dateTo;
 
-        $actions = [
-            Actions\Action::make('tab-alle')
-                ->label('Alle')
-                ->url('?')
-                ->color('success')
-                ->outlined(!empty($activeTabs))
-                ->size('sm'),
-        ];
+        $actions = [];
 
-        foreach (range(1, 5) as $star) {
-            $isActive = in_array((string) $star, $activeTabs);
+        // "Alle" reset-knop — altijd zichtbaar
+        $actions[] = Actions\Action::make('filter-reset')
+            ->label('Alle')
+            ->url('?')
+            ->color('success')
+            ->outlined($hasFilter)
+            ->size('sm');
 
-            $newTabs = $isActive
-                ? array_filter($activeTabs, fn ($t) => $t !== (string) $star)
-                : array_merge($activeTabs, [(string) $star]);
+        // Kalender-filter actie met datepickers in een modal
+        $actions[] = Actions\Action::make('filter-date')
+            ->label($hasFilter
+                ? 'Periode: ' . ($dateFrom ?? '…') . ' → ' . ($dateTo ?? '…')
+                : 'Filter op periode')
+            ->icon('heroicon-o-calendar')
+            ->color($hasFilter ? 'success' : 'primary')
+            ->outlined(true)
+            ->size('sm')
+            ->form([
+                DatePicker::make('date_from')
+                    ->label('Van')
+                    ->default($dateFrom)
+                    ->maxDate(fn (callable $get) => $get('date_to') ?: now()),
+                DatePicker::make('date_to')
+                    ->label('Tot en met')
+                    ->default($dateTo)
+                    ->minDate(fn (callable $get) => $get('date_from'))
+                    ->maxDate(now()),
+            ])
+            ->action(function (array $data): void {
+                $params = array_filter([
+                    'date_from' => $data['date_from'] ?? null,
+                    'date_to'   => $data['date_to']   ?? null,
+                ]);
 
-            $query = http_build_query(['tab' => array_values($newTabs)]);
-
-            $actions[] = Actions\Action::make("tab-{$star}")
-                ->label("⭐ {$star}")
-                ->url('?' . $query)
-                ->color('success')
-                ->outlined(!$isActive)
-                ->size('sm');
-        }
+                $this->redirect('?' . http_build_query($params));
+            })
+            ->modalHeading('Filter op datum')
+            ->modalSubmitActionLabel('Toepassen')
+            ->modalCancelActionLabel('Annuleren');
 
         $actions[] = Actions\CreateAction::make()
             ->label('Review aanmaken');
@@ -55,16 +71,18 @@ class ListReviews extends ListRecords
     {
         $table = parent::getTable();
 
-        $activeTabs = request()->query('tab', []);
+        $dateFrom = request()->query('date_from');
+        $dateTo   = request()->query('date_to');
 
-        if (is_string($activeTabs)) {
-            $activeTabs = [$activeTabs];
-        }
-
-        $ratings = array_map('intval', $activeTabs);
-
-        if (!empty($ratings)) {
-            $table->modifyQueryUsing(fn ($query) => $query->whereIn(Review::REVIEW_RATING, $ratings));
+        if ($dateFrom || $dateTo) {
+            $table->modifyQueryUsing(function ($query) use ($dateFrom, $dateTo) {
+                if ($dateFrom) {
+                    $query->whereDate(Review::CREATED_AT, '>=', $dateFrom);
+                }
+                if ($dateTo) {
+                    $query->whereDate(Review::CREATED_AT, '<=', $dateTo);
+                }
+            });
         }
 
         return $table;

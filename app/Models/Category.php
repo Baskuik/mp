@@ -29,6 +29,13 @@ class Category extends Model
         'updated_at',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'category_active' => 'boolean',
+        ];
+    }
+
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'parent_id');

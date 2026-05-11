@@ -40,6 +40,13 @@ class CategoriesTable
                     ->sortable()
                     ->color('gray'),
 
+                TextColumn::make('parent.name')
+                    ->label('BOVENLIGGENDE CATEGORIE')
+                    ->placeholder('Geen (hoofdcategorie)')
+                    ->toggleable()
+                    ->sortable()
+                    ->color('gray'),
+
                 TextColumn::make(Category::CATEGORY_ACTIVE)
                     ->label('IS ACTIEF')
                     ->badge()
@@ -63,20 +70,22 @@ class CategoriesTable
                     ->color('gray'),
             ])
             ->filters([
-                SelectFilter::make('category_name')
-                    ->label('Categorie')
-                    ->multiple()
-                    ->options(
-                        Category::query()
-                            ->pluck(Category::CATEGORY_NAME, Category::CATEGORY_NAME)
-                            ->toArray()
-                    )
-                    ->query(function ($query, array $data) {
-                        if (!empty($data['values'])) {
-                            $query->whereIn(Category::CATEGORY_NAME, $data['values']);
-                        }
-                    }),
-            ])
+    SelectFilter::make('category_name')
+        ->label('Categorie')
+        ->multiple()
+        ->native(false)      // ✅ Gebruik de Filament-stijl dropdown
+        ->searchable()       // ✅ Voegt de zoekbalk toe
+        ->options(
+            Category::query()
+                ->pluck(Category::CATEGORY_NAME, Category::CATEGORY_NAME)
+                ->toArray()
+        )
+        ->query(function ($query, array $data) {
+            if (!empty($data['values'])) {
+                $query->whereIn(Category::CATEGORY_NAME, $data['values']);
+            }
+        }),
+])
             ->actions([
                 EditAction::make()
                     ->label(false)
@@ -102,7 +111,7 @@ class CategoriesTable
                     DeleteBulkAction::make()
                         ->label('Selectie deactiveren')
                         ->action(function (Collection $records) {
-                            $records->each(fn (Category $record) => $record->update([
+                            $records->each(fn(Category $record) => $record->update([
                                 Category::CATEGORY_ACTIVE => false,
                             ]));
 
