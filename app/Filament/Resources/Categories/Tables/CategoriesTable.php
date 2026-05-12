@@ -6,10 +6,10 @@ use App\Models\Category;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Columns\CheckboxColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -18,7 +18,10 @@ class CategoriesTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->selectable()
             ->columns([
+                CheckboxColumn::make(Category::CATEGORY_ID),
+
                 TextColumn::make(Category::CATEGORY_ID)
                     ->label(__('ID'))
                     ->prefix('#')
@@ -73,8 +76,8 @@ class CategoriesTable
                 SelectFilter::make('category_name')
                     ->label(__('Categorie'))
                     ->multiple()
-                    ->native(false)      // ✅ Gebruik de Filament-stijl dropdown
-                    ->searchable()       // ✅ Voegt de zoekbalk toe
+                    ->native(false)
+                    ->searchable()
                     ->options(
                         Category::query()
                             ->pluck(Category::CATEGORY_NAME, Category::CATEGORY_NAME)
@@ -107,21 +110,19 @@ class CategoriesTable
                     }),
             ])
             ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make()
-                        ->label(__('Selectie deactiveren'))
-                        ->action(function (Collection $records) {
-                            $records->each(fn(Category $record) => $record->update([
-                                Category::CATEGORY_ACTIVE => false,
-                            ]));
+                Action::make('delete')
+                    ->label(__('Selectie deactiveren'))
+                    ->action(function (Collection $records) {
+                        $records->each(fn(Category $record) => $record->update([
+                            Category::CATEGORY_ACTIVE => false,
+                        ]));
 
-                            Notification::make()
-                                ->title(__('Categorieën gedeactiveerd'))
-                                ->success()
-                                ->send();
-                        })
-                        ->deselectRecordsAfterCompletion(),
-                ]),
+                        Notification::make()
+                            ->title(__('Categorieën gedeactiveerd'))
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
             ]);
     }
 }

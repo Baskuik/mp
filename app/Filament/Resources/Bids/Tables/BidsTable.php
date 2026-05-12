@@ -6,10 +6,8 @@ use App\Models\Bid;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\BulkAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\EditAction;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -103,25 +101,23 @@ class BidsTable
                     }),
             ])
             ->bulkActions([
-                BulkActionGroup::make([
-                    BulkAction::make('decline')
-                        ->label(__('Selectie afwijzen'))
-                        ->icon('heroicon-m-trash')
-                        ->color('danger')
-                        ->requiresConfirmation()
-                        ->modalHeading(__('Geselecteerde biedingen afwijzen'))
-                        ->action(function (Collection $records) {
-                            $records->each(fn(Bid $record) => $record->update([
-                                Bid::STATUS => 'declined',
-                            ]));
+                Action::make('decline')
+                    ->label(__('Selectie afwijzen'))
+                    ->icon('heroicon-m-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading(__('Geselecteerde biedingen afwijzen'))
+                    ->action(function (Collection $records) {
+                        $records->each(fn(Bid $record) => $record->update([
+                            Bid::STATUS => 'declined',
+                        ]));
 
-                            Notification::make()
-                                ->title(__('Biedingen afgewezen'))
-                                ->success()
-                                ->send();
-                        })
-                        ->deselectRecordsAfterCompletion(),
-                ]),
+                        Notification::make()
+                            ->title(__('Biedingen afgewezen'))
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
             ]);
     }
 }

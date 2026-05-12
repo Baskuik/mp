@@ -40,11 +40,13 @@ class ListBids extends ListRecords
     {
         $table = parent::getTable();
 
-        $activeTabs = request()->query('tab', []);
-
-        if (is_string($activeTabs)) {
-            $activeTabs = [$activeTabs];
-        }
+        $allowedTabs = ['pending', 'accepted', 'rejected', 'cancelled'];  
+        $activeTabs = request()->query('tab', []);  
+        $activeTabs = is_string($activeTabs) ? [$activeTabs] : (is_array($activeTabs) ? $activeTabs : []);  
+        $activeTabs = array_values(array_filter(  
+            $activeTabs,  
+            fn ($tab) => is_string($tab) && in_array($tab, $allowedTabs, true),  
+        ));  
 
         if (!empty($activeTabs)) {
             $table->modifyQueryUsing(fn($query) => $query->whereIn(Bid::STATUS, $activeTabs));

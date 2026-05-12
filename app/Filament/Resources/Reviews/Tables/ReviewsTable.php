@@ -5,10 +5,9 @@ namespace App\Filament\Resources\Reviews\Tables;
 use App\Models\Review;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\Action;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Collection;
@@ -111,20 +110,18 @@ class ReviewsTable
                     }),
             ])
             ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make()
-                        ->label(__('Selectie verbergen'))
-                        ->modalHeading(__('Geselecteerde reviews verbergen'))
-                        ->action(function (Collection $records) {
-                            $records->each(fn(Review $record) => $record->update(['is_active' => false]));
+                Action::make('delete')
+                    ->label(__('Selectie verbergen'))
+                    ->modalHeading(__('Geselecteerde reviews verbergen'))
+                    ->action(function (Collection $records) {
+                        $records->each(fn(Review $record) => $record->update(['is_active' => false]));
 
-                            Notification::make()
-                                ->title(__('Reviews succesvol verborgen'))
-                                ->success()
-                                ->send();
-                        })
-                        ->deselectRecordsAfterCompletion(),
-                ]),
+                        Notification::make()
+                            ->title(__('Reviews succesvol verborgen'))
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
             ]);
     }
 }

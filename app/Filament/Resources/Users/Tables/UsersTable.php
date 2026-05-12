@@ -6,10 +6,9 @@ use App\Models\User;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -124,21 +123,19 @@ class UsersTable
                     }),
             ])
             ->bulkActions([
-                BulkActionGroup::make([
-                    // Aangepaste Bulk Delete actie (Soft)
-                    DeleteBulkAction::make()
-                        ->label(__('Selectie deactiveren'))
-                        ->modalHeading(__('Geselecteerde gebruikers deactiveren'))
-                        ->action(function (Collection $records) {
-                            $records->each(fn(User $record) => $record->update(['is_active' => false]));
+                // Aangepaste Bulk Delete actie (Soft)
+                Action::make('delete')
+                    ->label(__('Selectie deactiveren'))
+                    ->modalHeading(__('Geselecteerde gebruikers deactiveren'))
+                    ->action(function (Collection $records) {
+                        $records->each(fn(User $record) => $record->update(['is_active' => false]));
 
-                            Notification::make()
-                                ->title(__('Gebruikers gedeactiveerd'))
-                                ->success()
-                                ->send();
-                        })
-                        ->deselectRecordsAfterCompletion(),
-                ]),
+                        Notification::make()
+                            ->title(__('Gebruikers gedeactiveerd'))
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
             ]);
     }
 }

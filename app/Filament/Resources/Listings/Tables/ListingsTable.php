@@ -5,10 +5,9 @@ namespace App\Filament\Resources\Listings\Tables;
 use App\Models\Listing;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -117,22 +116,20 @@ class ListingsTable
                     }),
             ])
             ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make()
-                        ->label(__('Selectie archiveren'))
-                        ->modalHeading(__('Geselecteerde advertenties archiveren'))
-                        ->action(function (Collection $records) {
-                            $records->each(fn(Listing $record) => $record->update([
-                                Listing::LISTING_STATUS => 'archived',
-                            ]));
+                Action::make('delete')
+                    ->label(__('Selectie archiveren'))
+                    ->modalHeading(__('Geselecteerde advertenties archiveren'))
+                    ->action(function (Collection $records) {
+                        $records->each(fn(Listing $record) => $record->update([
+                            Listing::LISTING_STATUS => 'archived',
+                        ]));
 
-                            Notification::make()
-                                ->title(__('Advertenties gearchiveerd'))
-                                ->success()
-                                ->send();
-                        })
-                        ->deselectRecordsAfterCompletion(),
-                ]),
+                        Notification::make()
+                            ->title(__('Advertenties gearchiveerd'))
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
             ]);
     }
 }
