@@ -34,6 +34,13 @@ class BidResource extends Resource
         return static::getModel()::count();
     }
 
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\BidStatsOverview::class,
+        ];
+    }
+
     public static function getRelations(): array
     {
         return [

@@ -36,6 +36,13 @@ class ReviewResource extends Resource
         return static::getModel()::count();
     }
 
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\ReviewStatsOverview::class,
+        ];
+    }
+
     public static function getRelations(): array
     {
         return [

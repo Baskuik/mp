@@ -11,6 +11,13 @@ class ListListings extends ListRecords
 {
     protected static string $resource = ListingResource::class;
 
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\ListingStatsOverview::class,
+        ];
+    }
+
     protected function getHeaderActions(): array
     {
         $activeTabs = request()->query('tab', []);
@@ -20,8 +27,8 @@ class ListListings extends ListRecords
         }
 
         $options = [
-            'active'   => 'Actief',
-            'sold'     => 'Verkocht',
+            'active' => 'Actief',
+            'sold' => 'Verkocht',
             'archived' => 'Gearchiveerd',
         ];
 
@@ -36,8 +43,8 @@ class ListListings extends ListRecords
 
         foreach ($options as $value => $label) {
             $isActive = in_array($value, $activeTabs);
-            $newTabs  = $isActive
-                ? array_filter($activeTabs, fn ($t) => $t !== $value)
+            $newTabs = $isActive
+                ? array_filter($activeTabs, fn($t) => $t !== $value)
                 : array_merge($activeTabs, [$value]);
 
             $actions[] = Actions\Action::make("tab-{$value}")
@@ -64,7 +71,7 @@ class ListListings extends ListRecords
         }
 
         if (!empty($activeTabs)) {
-            $table->modifyQueryUsing(fn ($query) => $query->whereIn(Listing::LISTING_STATUS, $activeTabs));
+            $table->modifyQueryUsing(fn($query) => $query->whereIn(Listing::LISTING_STATUS, $activeTabs));
         }
 
         return $table;

@@ -33,6 +33,13 @@ class CategoryResource extends Resource
         return static::getModel()::count();
     }
 
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\CategoryStatsOverview::class,
+        ];
+    }
+
     public static function getRelations(): array
     {
         return [

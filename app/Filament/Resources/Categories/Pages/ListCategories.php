@@ -10,6 +10,13 @@ class ListCategories extends ListRecords
 {
     protected static string $resource = CategoryResource::class;
 
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\CategoryStatsOverview::class,
+        ];
+    }
+
     protected function getHeaderActions(): array
     {
         $activeTabs = request()->query('tab', []);
@@ -19,7 +26,7 @@ class ListCategories extends ListRecords
         }
 
         $options = [
-            'actief'   => 'Actief',
+            'actief' => 'Actief',
             'inactief' => 'Inactief',
         ];
 
@@ -34,8 +41,8 @@ class ListCategories extends ListRecords
 
         foreach ($options as $value => $label) {
             $isActive = in_array($value, $activeTabs);
-            $newTabs  = $isActive
-                ? array_filter($activeTabs, fn ($t) => $t !== $value)
+            $newTabs = $isActive
+                ? array_filter($activeTabs, fn($t) => $t !== $value)
                 : array_merge($activeTabs, [$value]);
 
             $actions[] = Actions\Action::make("tab-{$value}")

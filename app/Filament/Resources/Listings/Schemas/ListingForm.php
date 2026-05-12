@@ -68,6 +68,7 @@ class ListingForm
         'active'   => 'Actief',
         'sold'     => 'Verkocht',
         'archived' => 'Gearchiveerd',
+        'inactive' => 'Inactief',
     ])
     ->required()
     ->default('active')

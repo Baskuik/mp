@@ -44,6 +44,13 @@ class ListingResource extends Resource
     // Zorg ook dat deze op oranje staat
     protected static ?string $navigationBadgeColor = 'primary';
 
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\ListingStatsOverview::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [

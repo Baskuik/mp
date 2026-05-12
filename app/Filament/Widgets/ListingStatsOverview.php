@@ -30,6 +30,11 @@ class ListingStatsOverview extends BaseWidget
                 ->description('Inactieve aanbiedingen')
                 ->descriptionIcon('heroicon-m-x-circle')
                 ->color('danger'),
+
+            Stat::make('Gearchiveerd', Listing::where('status', 'archived')->count())
+                ->description('Gearchiveerde aanbiedingen')
+                ->descriptionIcon('heroicon-m-archive-box')
+                ->color('warning'),
         ];
     }
 }

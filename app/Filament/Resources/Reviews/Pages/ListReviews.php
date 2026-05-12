@@ -12,10 +12,17 @@ class ListReviews extends ListRecords
 {
     protected static string $resource = ReviewResource::class;
 
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\ReviewStatsOverview::class,
+        ];
+    }
+
     protected function getHeaderActions(): array
     {
         $dateFrom = request()->query('date_from');
-        $dateTo   = request()->query('date_to');
+        $dateTo = request()->query('date_to');
 
         $hasFilter = $dateFrom || $dateTo;
 
@@ -42,17 +49,17 @@ class ListReviews extends ListRecords
                 DatePicker::make('date_from')
                     ->label('Van')
                     ->default($dateFrom)
-                    ->maxDate(fn (callable $get) => $get('date_to') ?: now()),
+                    ->maxDate(fn(callable $get) => $get('date_to') ?: now()),
                 DatePicker::make('date_to')
                     ->label('Tot en met')
                     ->default($dateTo)
-                    ->minDate(fn (callable $get) => $get('date_from'))
+                    ->minDate(fn(callable $get) => $get('date_from'))
                     ->maxDate(now()),
             ])
             ->action(function (array $data): void {
                 $params = array_filter([
                     'date_from' => $data['date_from'] ?? null,
-                    'date_to'   => $data['date_to']   ?? null,
+                    'date_to' => $data['date_to'] ?? null,
                 ]);
 
                 $this->redirect('?' . http_build_query($params));
@@ -72,7 +79,7 @@ class ListReviews extends ListRecords
         $table = parent::getTable();
 
         $dateFrom = request()->query('date_from');
-        $dateTo   = request()->query('date_to');
+        $dateTo = request()->query('date_to');
 
         if ($dateFrom || $dateTo) {
             $table->modifyQueryUsing(function ($query) use ($dateFrom, $dateTo) {
