@@ -34,6 +34,7 @@
 
                     <div>
                         <label class="text-xs font-semibold text-[#2D6A4F]">Beschrijving</label>
+                        <p class="mt-1 text-xs text-gray-400">Maximaal 400 woorden.</p>
                         <textarea
                             name="description"
                             rows="4"
@@ -47,12 +48,16 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="text-xs font-semibold text-[#2D6A4F]">Label</label>
-                            <input
+                            <select
                                 name="label"
-                                value="{{ old('label', $listing->label) }}"
-                                type="text"
-                                placeholder="Bijv. Premium, Budget"
                                 class="mt-1 w-full rounded-xl border border-[#2D6A4F]/15 bg-white px-4 py-2 text-sm text-gray-800">
+                                <option value="">Kies een label</option>
+                                @foreach ($labels as $label)
+                                    <option value="{{ $label }}" @selected(old('label', $listing->label) === $label)>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
                             @error('label')
                                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                             @enderror
@@ -100,7 +105,27 @@
                             multiple
                             accept="image/*"
                             class="mt-1 w-full rounded-xl border border-[#2D6A4F]/15 bg-white px-4 py-2 text-sm text-gray-800">
-                        <p class="mt-1 text-xs text-gray-400">Je hebt {{ $listing->images->count() }} foto's gekoppeld.</p>
+                        <p class="mt-1 text-xs text-gray-400">
+                            Je hebt {{ $listing->images->count() }} foto's gekoppeld. Gebruik Ctrl/Shift om meerdere tegelijk te kiezen.
+                        </p>
+                        @if ($listing->images->isNotEmpty())
+                            <div class="mt-3 grid grid-cols-3 gap-2">
+                                @foreach ($listing->images as $image)
+                                    <div class="group relative h-20 rounded-lg overflow-hidden bg-[#2D6A4F]/10">
+                                        <img
+                                            class="w-full h-full object-cover"
+                                            src="{{ asset('storage/' . $image->path) }}"
+                                            alt="{{ $listing->title }}">
+                                        <button
+                                            type="submit"
+                                            form="delete-image-{{ $image->id }}"
+                                            class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition h-6 w-6 rounded-full bg-white/90 text-red-600 text-xs font-semibold shadow">
+                                            X
+                                        </button>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
                         @error('images')
                             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                         @enderror
@@ -114,6 +139,16 @@
                         Wijzigingen opslaan
                     </button>
                 </form>
+
+                @foreach ($listing->images as $image)
+                    <form
+                        id="delete-image-{{ $image->id }}"
+                        method="POST"
+                        action="{{ route('listings.images.destroy', [$listing, $image]) }}">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                @endforeach
             </div>
         </div>
     </div>

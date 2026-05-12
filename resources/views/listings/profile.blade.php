@@ -53,6 +53,7 @@
 
                             <div>
                                 <label class="text-xs font-semibold text-[#2D6A4F]">Beschrijving</label>
+                                <p class="mt-1 text-xs text-gray-400">Maximaal 400 woorden.</p>
                                 <textarea
                                     name="description"
                                     rows="4"
@@ -66,12 +67,16 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="text-xs font-semibold text-[#2D6A4F]">Label</label>
-                                    <input
+                                    <select
                                         name="label"
-                                        value="{{ old('label') }}"
-                                        type="text"
-                                        placeholder="Bijv. Premium, Budget"
                                         class="mt-1 w-full rounded-xl border border-[#2D6A4F]/15 bg-white px-4 py-2 text-sm text-gray-800">
+                                        <option value="">Kies een label</option>
+                                        @foreach ($labels as $label)
+                                            <option value="{{ $label }}" @selected(old('label') === $label)>
+                                                {{ $label }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                     @error('label')
                                         <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                     @enderror
@@ -117,6 +122,9 @@
                                     multiple
                                     accept="image/*"
                                     class="mt-1 w-full rounded-xl border border-[#2D6A4F]/15 bg-white px-4 py-2 text-sm text-gray-800">
+                                <p class="mt-1 text-xs text-gray-400">
+                                    Je kunt meerdere foto's tegelijk selecteren (Ctrl/Shift).
+                                </p>
                                 @error('images')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                 @enderror
@@ -190,6 +198,11 @@
                                             class="text-[#2D6A4F] font-semibold"
                                             href="{{ route('listings.edit', $listing) }}">
                                             Bewerken
+                                        </a>
+                                        <a
+                                            class="text-[#2D6A4F] font-semibold"
+                                            href="{{ route('listings.show', $listing) }}">
+                                            Bekijken
                                         </a>
                                         <form
                                             method="POST"

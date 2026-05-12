@@ -5,15 +5,7 @@
 @section('content')
     @php
         $searchChips = ['Vandaag toegevoegd', 'In jouw buurt', 'Vraagprijs tot 250'];
-        $searchCategories = ['Alles', 'Elektronica', 'Huis & Tuin', 'Mode', 'Voertuigen'];
-        $categoryCards = [
-            ['label' => 'Elektronica', 'icon' => 'M7 3h10a2 2 0 012 2v10a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2zm2 14h6'],
-            ['label' => 'Huis & Tuin', 'icon' => 'M3 11l9-7 9 7v9a2 2 0 01-2 2h-4v-6H9v6H5a2 2 0 01-2-2z'],
-            ['label' => 'Mode', 'icon' => 'M9 4l-2 4v3h10V8l-2-4-3 2-3-2zm-1 7h8v9H8z'],
-            ['label' => 'Voertuigen', 'icon' => 'M5 11l1-3h12l1 3v5a1 1 0 01-1 1h-1a2 2 0 01-4 0H9a2 2 0 01-4 0H4a1 1 0 01-1-1v-5zm3 7a1 1 0 102 0 1 1 0 00-2 0zm6 0a1 1 0 102 0 1 1 0 00-2 0z'],
-            ['label' => 'Hobby', 'icon' => 'M12 6l2.2 4.5L19 11l-3.5 3.4.8 4.6L12 16.8 7.7 19l.8-4.6L5 11l4.8-.5z'],
-            ['label' => 'Meer', 'icon' => 'M6 12a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm4.5 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm4.5 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z'],
-        ];
+        $searchCategories = array_merge(['Alles'], $labels);
         $tips = [
             ['title' => 'Verkoop sneller', 'body' => 'Tips om je advertentie beter te laten scoren.'],
             ['title' => 'Koop slimmer', 'body' => 'Prijsalerts en opgeslagen zoekopdrachten.'],
@@ -55,7 +47,9 @@
                                     <select
                                         class="mt-1 w-full rounded-xl border border-[#2D6A4F]/15 bg-[#F7F5F2] px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-4 focus:ring-[#2D6A4F]/15">
                                         @foreach ($searchCategories as $category)
-                                            <option>{{ $category }}</option>
+                                            <option @selected(($activeLabel ?? 'Alles') === $category)>
+                                                {{ $category }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -101,12 +95,17 @@
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
             <div class="flex items-center justify-between">
                 <h2 class="text-xl sm:text-2xl font-semibold text-[#1f4a34]">Populaire categorieen</h2>
-                <button class="text-sm font-semibold text-[#2D6A4F] hover:text-[#1f4a34]">Bekijk alles</button>
+                <a
+                    href="{{ route('home') }}"
+                    class="text-sm font-semibold text-[#2D6A4F] hover:text-[#1f4a34]">
+                    Bekijk alles
+                </a>
             </div>
             <div class="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                @foreach ($categoryCards as $cat)
-                    <div
-                        class="bg-white rounded-2xl border border-[#2D6A4F]/10 px-4 py-5 text-center shadow-sm hover:shadow-md transition">
+                @foreach ($labelCards as $cat)
+                    <a
+                        href="{{ route('home', ['label' => $cat['label'], 'sort' => $sort]) }}"
+                        class="bg-white rounded-2xl border border-[#2D6A4F]/10 px-4 py-5 text-center shadow-sm hover:shadow-md transition {{ $activeLabel === $cat['label'] ? 'ring-2 ring-[#2D6A4F]/40' : '' }}">
                         <div
                             class="mx-auto w-10 h-10 rounded-full bg-[#2D6A4F]/10 flex items-center justify-center text-[#2D6A4F]">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,7 +113,7 @@
                             </svg>
                         </div>
                         <p class="mt-3 text-sm font-semibold text-gray-800">{{ $cat['label'] }}</p>
-                    </div>
+                    </a>
                 @endforeach
             </div>
         </section>
@@ -144,8 +143,9 @@
             @else
                 <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                     @foreach ($listings as $listing)
-                        <article
-                            class="bg-white rounded-2xl border border-[#2D6A4F]/10 p-4 shadow-sm hover:shadow-lg transition">
+                        <a
+                            href="{{ route('listings.show', $listing) }}"
+                            class="bg-white rounded-2xl border border-[#2D6A4F]/10 p-4 shadow-sm hover:shadow-lg transition block">
                             <div class="h-36 rounded-xl overflow-hidden bg-[#2D6A4F]/10">
                                 @if ($listing->primaryImage)
                                     <img class="w-full h-full object-cover"
@@ -173,7 +173,7 @@
                                 <span>{{ $listing->user?->name ?? 'Verkoper' }}</span>
                                 <span>Nieuw</span>
                             </div>
-                        </article>
+                        </a>
                     @endforeach
                 </div>
             @endif

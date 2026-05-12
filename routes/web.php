@@ -7,6 +7,7 @@ use App\Http\Controllers\ListingController;
 
 // View routes
 Route::get('/', [ListingController::class, 'home'])->name('home');
+Route::get('/listings/{listing}', [ListingController::class, 'show'])->name('listings.show');
 
 // Route::get('/favorieten', function () {
 //     return view('favorieten');
@@ -40,6 +41,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/listings/{listing}/edit', [ListingController::class, 'edit'])->name('listings.edit');
     Route::put('/listings/{listing}', [ListingController::class, 'update'])->name('listings.update');
     Route::delete('/listings/{listing}', [ListingController::class, 'destroy'])->name('listings.destroy');
+    Route::delete('/listings/{listing}/images/{image}', [ListingController::class, 'destroyImage'])
+        ->name('listings.images.destroy');
 });
 
 // Wachtwoord vergeten / resetten
