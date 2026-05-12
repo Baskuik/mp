@@ -50,6 +50,9 @@ class AdminPanelProvider extends PanelProvider
                 fn() => new HtmlString('
     <script>
     (function () {
+        const STORAGE_KEY = "dd_sidebar_collapsed";
+        let sidebarObserver = null;
+
         function init() {
             const old = document.getElementById("dd-sidebar-toggle");
             if (old) old.remove();
@@ -81,10 +84,16 @@ class AdminPanelProvider extends PanelProvider
 
             footer.appendChild(btn);
 
+            // Disconnect old observer before creating new one
+            if (sidebarObserver) {
+                sidebarObserver.disconnect();
+            }
+
             // Luister naar sidebar-klasse wijzigingen voor icoon-update
             const sidebar = document.querySelector(".fi-sidebar");
             if (sidebar) {
-                new MutationObserver(updateIcon).observe(sidebar, {
+                sidebarObserver = new MutationObserver(updateIcon);
+                sidebarObserver.observe(sidebar, {
                     attributes: true,
                     attributeFilter: ["style", "class"]
                 });

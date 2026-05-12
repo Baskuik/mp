@@ -17,7 +17,7 @@ class UserStatsOverview extends BaseWidget
                 ->color('success'),
 
             Stat::make('Actief', User::where('is_active', true)->count())
-                ->description('100% actief')
+                ->description('Actieve accounts')
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
 

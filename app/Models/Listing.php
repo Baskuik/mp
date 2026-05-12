@@ -22,7 +22,6 @@ class Listing extends Model
 
 
     protected $fillable = [
-        'listing_id',
         'user_id',
         'category_id',
         'title',
@@ -30,23 +29,10 @@ class Listing extends Model
         'price',
         'status',
         'location',
-        'created_at',
-        'updated_at',
     ];
 
     public function seller(): BelongsTo
     {
         return $this->belongsTo(User::class, User::USER_ID);
     }
-
-    public function buyer(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'buyer_id');
-    }
-    protected function getHeaderWidgets(): array
-{
-    return [
-        \App\Filament\Widgets\UserStatsOverview::class,
-    ];
-}
 }

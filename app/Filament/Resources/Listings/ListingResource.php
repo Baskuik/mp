@@ -41,8 +41,10 @@ class ListingResource extends Resource
         return static::getModel()::count();
     }
 
-    // Zorg ook dat deze op oranje staat
-    protected static ?string $navigationBadgeColor = 'primary';
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'warning';
+    }
 
     public static function getWidgets(): array
     {

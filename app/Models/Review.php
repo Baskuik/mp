@@ -22,14 +22,11 @@ class Review extends Model
 
 
     protected $fillable = [
-        'review_id',
         'reviewer_id',
         'reviewee_id',
         'listing_id',
         'reviews_active',
         'rating',
         'comment',
-        'created_at',
-        'updated_at',
     ];
 }
