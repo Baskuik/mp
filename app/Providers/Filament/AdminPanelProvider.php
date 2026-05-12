@@ -35,9 +35,9 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('DirectDeal')
 
             ->colors([
-    'primary' => Color::hex('#1a3d2b'), // Jouw Forest Green als de basis van het hele systeem
-    'gray' => Color::Zinc,
-])
+                'primary' => Color::hex('#1a3d2b'), // Jouw Forest Green als de basis van het hele systeem
+                'gray' => Color::Zinc,
+            ])
             ->sidebarCollapsibleOnDesktop()
             ->sidebarWidth('20rem')
             ->userMenu(position: UserMenuPosition::Sidebar)
@@ -45,9 +45,9 @@ class AdminPanelProvider extends PanelProvider
             ->assets([
                 \Filament\Support\Assets\Css::make('custom-stylesheet', asset('css/filament.css')),
             ])
-           ->renderHook(
-    'panels::body.end',
-    fn() => new HtmlString('
+            ->renderHook(
+                'panels::body.end',
+                fn() => new HtmlString('
     <script>
     (function () {
         function init() {
@@ -62,62 +62,32 @@ class AdminPanelProvider extends PanelProvider
             btn.title = "Sidebar in-/uitklappen";
             btn.setAttribute("aria-label", "Sidebar in-/uitklappen");
 
-            function getAlpineData() {
-                // Stap 1: probeer .fi-layout direct (hoofd-layout element van Filament)
-                const layoutEl = document.querySelector(".fi-layout");
-                if (layoutEl && window.Alpine) {
-                    try {
-                        const data = Alpine.$data(layoutEl);
-                        if (typeof data.sidebarIsOpen !== "undefined") return data;
-                    } catch(e) {}
-                }
-
-                // Stap 2: loop omhoog vanaf de sidebar zelf
-                const sidebar = document.querySelector(".fi-sidebar");
-                if (sidebar && window.Alpine) {
-                    let el = sidebar.parentElement;
-                    while (el && el !== document.body) {
-                        try {
-                            const data = Alpine.$data(el);
-                            if (typeof data.sidebarIsOpen !== "undefined") return data;
-                        } catch(e) {}
-                        el = el.parentElement;
-                    }
-                }
-                return null;
-            }
-
-            function isCollapsed() {
-                const data = getAlpineData();
-                if (data) return !data.sidebarIsOpen;
-                return false;
+            function isOpen() {
+                return window.Alpine && Alpine.store("sidebar") && Alpine.store("sidebar").isOpen;
             }
 
             function updateIcon() {
-                btn.textContent = isCollapsed() ? ">>" : "<<";
+                btn.textContent = isOpen() ? "<<" : ">>";
             }
 
             updateIcon();
 
             btn.addEventListener("click", function () {
-                const data = getAlpineData();
-                if (data) {
-                    data.sidebarIsOpen = !data.sidebarIsOpen;
-                } else {
-                    // Fallback: klik Filament\'s eigen topbar toggle knop
-                    const topbarBtn = document.querySelector(".fi-topbar-sidebar-toggle-btn");
-                    if (topbarBtn) topbarBtn.click();
+                if (window.Alpine && Alpine.store("sidebar")) {
+                    Alpine.store("sidebar").isOpen = !Alpine.store("sidebar").isOpen;
+                    setTimeout(updateIcon, 150);
                 }
-                setTimeout(updateIcon, 300);
             });
 
             footer.appendChild(btn);
 
-            // Update icoon als Filament zelf de sidebar toggle triggert
-            const observer = new MutationObserver(() => updateIcon());
+            // Luister naar sidebar-klasse wijzigingen voor icoon-update
             const sidebar = document.querySelector(".fi-sidebar");
             if (sidebar) {
-                observer.observe(sidebar, { attributes: true, attributeFilter: ["style", "class"] });
+                new MutationObserver(updateIcon).observe(sidebar, {
+                    attributes: true,
+                    attributeFilter: ["style", "class"]
+                });
             }
         }
 
@@ -131,7 +101,7 @@ class AdminPanelProvider extends PanelProvider
     })();
     </script>
     ')
-)
+            )
             ->resources([
                 UserResource::class,
                 CategoryResource::class,
