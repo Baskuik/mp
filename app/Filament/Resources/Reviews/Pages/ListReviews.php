@@ -21,17 +21,29 @@ class ListReviews extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        $dateFrom = request()->query('date_from');
-        $dateTo = request()->query('date_to');
+        // Validate and normalize date parameters
+        $normalizeDate = static function (mixed $value): ?string {
+            if (!is_string($value) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+                return null;
+            }
+
+            [$year, $month, $day] = array_map('intval', explode('-', $value));
+
+            return checkdate($month, $day, $year) ? $value : null;
+        };
+
+        $dateFrom = $normalizeDate(request()->query('date_from'));
+        $dateTo = $normalizeDate(request()->query('date_to'));
 
         $hasFilter = $dateFrom || $dateTo;
 
         $actions = [];
 
-        // "Alle" reset-knop — altijd zichtbaar
+        // "Alle" reset-knop — altijd zichtbaar, maar behoudt andere query params
+        $baseParams = array_diff_key(request()->query(), ['date_from' => true, 'date_to' => true]);
         $actions[] = Actions\Action::make('filter-reset')
             ->label('Alle')
-            ->url('?')
+            ->url('?' . http_build_query($baseParams))
             ->color('success')
             ->outlined($hasFilter)
             ->size('sm');
@@ -76,10 +88,21 @@ class ListReviews extends ListRecords
 
     public function getTable(): \Filament\Tables\Table
     {
-        $table = parent::getTable();
+        // Validate and normalize date parameters
+        $normalizeDate = static function (mixed $value): ?string {
+            if (!is_string($value) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+                return null;
+            }
 
-        $dateFrom = request()->query('date_from');
-        $dateTo = request()->query('date_to');
+            [$year, $month, $day] = array_map('intval', explode('-', $value));
+
+            return checkdate($month, $day, $year) ? $value : null;
+        };
+
+        $dateFrom = $normalizeDate(request()->query('date_from'));
+        $dateTo = $normalizeDate(request()->query('date_to'));
+
+        $table = parent::getTable();
 
         if ($dateFrom || $dateTo) {
             $table->modifyQueryUsing(function ($query) use ($dateFrom, $dateTo) {

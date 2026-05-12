@@ -5,10 +5,10 @@ namespace App\Filament\Resources\Listings\Tables;
 use App\Models\Listing;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -19,21 +19,21 @@ class ListingsTable
         return $table
             ->columns([
                 TextColumn::make(Listing::LISTING_ID)
-                    ->label('ID')
+                    ->label(__('ID'))
                     ->prefix('#')
                     ->sortable()
                     ->color('gray')
                     ->toggleable(),
 
                 TextColumn::make(Listing::USER_ID)
-                    ->label('VERKOPER')
+                    ->label(__('VERKOPER'))
                     ->searchable()
                     ->sortable()
                     ->weight('medium')
                     ->toggleable(),
 
                 TextColumn::make(Listing::CATEGORY_ID)
-                    ->label('CATEGORIE')
+                    ->label(__('CATEGORIE'))
                     ->badge()
                     ->color('gray')
                     ->searchable()
@@ -41,37 +41,37 @@ class ListingsTable
                     ->toggleable(),
 
                 TextColumn::make(Listing::LISTING_TITLE)
-                    ->label('TITEL')
+                    ->label(__('TITEL'))
                     ->limit(30)
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
 
                 TextColumn::make(Listing::LISTING_DESCRIPTION)
-                    ->label('BESCHRIJVING')
+                    ->label(__('BESCHRIJVING'))
                     ->searchable()
                     ->toggleable(),
 
                 TextColumn::make(Listing::LISTING_PRICE)
-                    ->label('PRIJS')
+                    ->label(__('PRIJS'))
                     ->money('EUR')
                     ->sortable()
                     ->toggleable(),
 
                 TextColumn::make(Listing::LISTING_STATUS)
-                    ->label('STATUS')
+                    ->label(__('STATUS'))
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'active'            => 'success',
-                        'sold', 'archived'  => 'danger',
-                        default             => 'gray',
+                    ->color(fn(string $state): string => match ($state) {
+                        'active' => 'success',
+                        'sold', 'archived' => 'danger',
+                        default => 'gray',
                     })
-                    ->formatStateUsing(fn (string $state) => ucfirst($state))
+                    ->formatStateUsing(fn(string $state) => ucfirst($state))
                     ->sortable()
                     ->toggleable(),
 
                 TextColumn::make(Listing::LISTING_LOCATION)
-                    ->label('LOCATIE')
+                    ->label(__('LOCATIE'))
                     ->icon('heroicon-m-map-pin')
                     ->iconColor('gray')
                     ->sortable()
@@ -79,14 +79,14 @@ class ListingsTable
                     ->toggleable(),
 
                 TextColumn::make(Listing::CREATED_AT)
-                    ->label('AANGEMAAKT')
+                    ->label(__('AANGEMAAKT'))
                     ->dateTime('d-m-Y H:i')
                     ->color('gray')
                     ->sortable()
                     ->toggleable(),
 
                 TextColumn::make(Listing::UPDATED_AT)
-                    ->label('LAATSTE UPDATE')
+                    ->label(__('LAATSTE UPDATE'))
                     ->dateTime('d-m-Y H:i')
                     ->color('gray')
                     ->sortable()
@@ -104,14 +104,14 @@ class ListingsTable
                 DeleteAction::make()
                     ->label(false)
                     ->icon('heroicon-m-trash')
-                    ->modalHeading('Advertentie archiveren')
-                    ->modalDescription('Weet je zeker dat je deze advertentie wilt archiveren? Hij blijft bewaard in het systeem.')
-                    ->modalSubmitActionLabel('Ja, archiveer')
+                    ->modalHeading(__('Advertentie archiveren'))
+                    ->modalDescription(__('Weet je zeker dat je deze advertentie wilt archiveren? Hij blijft bewaard in het systeem.'))
+                    ->modalSubmitActionLabel(__('Ja, archiveer'))
                     ->action(function (Listing $record) {
                         $record->update([Listing::LISTING_STATUS => 'archived']);
 
                         Notification::make()
-                            ->title('Advertentie gearchiveerd')
+                            ->title(__('Advertentie gearchiveerd'))
                             ->success()
                             ->send();
                     }),
@@ -119,15 +119,15 @@ class ListingsTable
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
-                        ->label('Selectie archiveren')
-                        ->modalHeading('Geselecteerde advertenties archiveren')
+                        ->label(__('Selectie archiveren'))
+                        ->modalHeading(__('Geselecteerde advertenties archiveren'))
                         ->action(function (Collection $records) {
-                            $records->each(fn (Listing $record) => $record->update([
+                            $records->each(fn(Listing $record) => $record->update([
                                 Listing::LISTING_STATUS => 'archived',
                             ]));
 
                             Notification::make()
-                                ->title('Advertenties gearchiveerd')
+                                ->title(__('Advertenties gearchiveerd'))
                                 ->success()
                                 ->send();
                         })

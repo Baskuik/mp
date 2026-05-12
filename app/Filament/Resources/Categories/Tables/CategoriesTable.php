@@ -6,10 +6,10 @@ use App\Models\Category;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -20,35 +20,35 @@ class CategoriesTable
         return $table
             ->columns([
                 TextColumn::make(Category::CATEGORY_ID)
-                    ->label('ID')
+                    ->label(__('ID'))
                     ->prefix('#')
                     ->toggleable()
                     ->sortable()
                     ->color('gray'),
 
                 TextColumn::make(Category::CATEGORY_NAME)
-                    ->label('CATEGORIE NAAM')
+                    ->label(__('CATEGORIE NAAM'))
                     ->searchable()
                     ->toggleable()
                     ->sortable()
                     ->weight('medium'),
 
                 TextColumn::make(Category::CATEGORY_SLUG)
-                    ->label('TITEL')
+                    ->label(__('TITEL'))
                     ->searchable()
                     ->toggleable()
                     ->sortable()
                     ->color('gray'),
 
                 TextColumn::make('parent.name')
-                    ->label('BOVENLIGGENDE CATEGORIE')
+                    ->label(__('BOVENLIGGENDE CATEGORIE'))
                     ->placeholder('Geen (hoofdcategorie)')
                     ->toggleable()
                     ->sortable()
                     ->color('gray'),
 
                 TextColumn::make(Category::CATEGORY_ACTIVE)
-                    ->label('IS ACTIEF')
+                    ->label(__('IS ACTIEF'))
                     ->badge()
                     ->formatStateUsing(fn($state) => $state ? 'Ja' : 'Nee')
                     ->color(fn($state) => $state ? 'success' : 'danger')
@@ -56,36 +56,36 @@ class CategoriesTable
                     ->sortable(),
 
                 TextColumn::make(Category::CREATED_AT)
-                    ->label('AANGEMAAKT OP')
+                    ->label(__('AANGEMAAKT OP'))
                     ->dateTime('d-m-Y H:i')
                     ->toggleable()
                     ->sortable()
                     ->color('gray'),
 
                 TextColumn::make(Category::UPDATED_AT)
-                    ->label('LAATSTE UPDATE')
+                    ->label(__('LAATSTE UPDATE'))
                     ->dateTime('d-m-Y H:i')
                     ->toggleable()
                     ->sortable()
                     ->color('gray'),
             ])
             ->filters([
-    SelectFilter::make('category_name')
-        ->label('Categorie')
-        ->multiple()
-        ->native(false)      // ✅ Gebruik de Filament-stijl dropdown
-        ->searchable()       // ✅ Voegt de zoekbalk toe
-        ->options(
-            Category::query()
-                ->pluck(Category::CATEGORY_NAME, Category::CATEGORY_NAME)
-                ->toArray()
-        )
-        ->query(function ($query, array $data) {
-            if (!empty($data['values'])) {
-                $query->whereIn(Category::CATEGORY_NAME, $data['values']);
-            }
-        }),
-])
+                SelectFilter::make('category_name')
+                    ->label(__('Categorie'))
+                    ->multiple()
+                    ->native(false)      // ✅ Gebruik de Filament-stijl dropdown
+                    ->searchable()       // ✅ Voegt de zoekbalk toe
+                    ->options(
+                        Category::query()
+                            ->pluck(Category::CATEGORY_NAME, Category::CATEGORY_NAME)
+                            ->toArray()
+                    )
+                    ->query(function ($query, array $data) {
+                        if (!empty($data['values'])) {
+                            $query->whereIn(Category::CATEGORY_NAME, $data['values']);
+                        }
+                    }),
+            ])
             ->actions([
                 EditAction::make()
                     ->label(false)
@@ -95,13 +95,13 @@ class CategoriesTable
                 DeleteAction::make()
                     ->label(false)
                     ->icon('heroicon-m-trash')
-                    ->modalHeading('Categorie deactiveren')
-                    ->modalDescription('Deze categorie wordt onzichtbaar voor klanten.')
+                    ->modalHeading(__('Categorie deactiveren'))
+                    ->modalDescription(__('Deze categorie wordt onzichtbaar voor klanten.'))
                     ->action(function (Category $record) {
                         $record->update([Category::CATEGORY_ACTIVE => false]);
 
                         Notification::make()
-                            ->title('Categorie gedeactiveerd')
+                            ->title(__('Categorie gedeactiveerd'))
                             ->success()
                             ->send();
                     }),
@@ -109,14 +109,14 @@ class CategoriesTable
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
-                        ->label('Selectie deactiveren')
+                        ->label(__('Selectie deactiveren'))
                         ->action(function (Collection $records) {
                             $records->each(fn(Category $record) => $record->update([
                                 Category::CATEGORY_ACTIVE => false,
                             ]));
 
                             Notification::make()
-                                ->title('Categorieën gedeactiveerd')
+                                ->title(__('Categorieën gedeactiveerd'))
                                 ->success()
                                 ->send();
                         })

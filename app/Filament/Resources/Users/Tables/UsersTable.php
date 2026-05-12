@@ -6,10 +6,10 @@ use App\Models\User;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -30,14 +30,14 @@ class UsersTable
                     ->size(36),
 
                 TextColumn::make(User::USER_ID)
-                    ->label('ID')
+                    ->label(__('ID'))
                     ->prefix('#')
                     ->toggleable()
                     ->sortable()
                     ->color('gray'),
 
                 TextColumn::make(User::USER_NAME)
-                    ->label('NAAM')
+                    ->label(__('NAAM'))
                     ->description(fn(User $record): string => $record->email)
                     ->searchable()
                     ->toggleable()
@@ -45,7 +45,7 @@ class UsersTable
                     ->weight('medium'),
 
                 TextColumn::make(User::USER_EMAIL_VERIFIED_AT)
-                    ->label('EMAIL GEVERIFIEERD')
+                    ->label(__('EMAIL GEVERIFIEERD'))
                     ->badge()
                     ->getStateUsing(fn(User $record) => !is_null($record->email_verified_at))
                     ->formatStateUsing(fn($state) => $state ? '✓ Ja' : '✗ Nee')
@@ -54,7 +54,7 @@ class UsersTable
                     ->sortable(),
 
                 TextColumn::make(User::USER_IS_ADMIN)
-                    ->label('IS ADMIN')
+                    ->label(__('IS ADMIN'))
                     ->badge()
                     ->formatStateUsing(fn($state) => $state ? '★ Admin' : 'User')
                     ->color(fn($state) => $state ? 'warning' : 'gray')
@@ -62,7 +62,7 @@ class UsersTable
                     ->sortable(),
 
                 TextColumn::make(User::USER_IS_ACTIVE)
-                    ->label('IS ACTIEF')
+                    ->label(__('IS ACTIEF'))
                     ->badge()
                     ->formatStateUsing(fn($state) => $state ? 'Actief' : 'Gedeactiveerd')
                     ->color(fn($state) => $state ? 'success' : 'danger')
@@ -70,7 +70,7 @@ class UsersTable
                     ->sortable(),
 
                 TextColumn::make(User::USER_IS_BANNED)
-                    ->label('VERBANNEN')
+                    ->label(__('VERBANNEN'))
                     ->badge()
                     ->formatStateUsing(fn($state) => $state ? '⛔ Verbannen' : 'Niet verbannen')
                     ->color(fn($state) => $state ? 'danger' : 'gray')
@@ -78,27 +78,27 @@ class UsersTable
                     ->sortable(),
 
                 TextColumn::make(User::USER_USERNAME)
-                    ->label('USERNAME')
+                    ->label(__('USERNAME'))
                     ->color('gray')
                     ->sortable()
                     ->toggleable()
                     ->searchable(),
 
                 TextColumn::make(User::USER_BIO)
-                    ->label('ACCOUNT BIO')
+                    ->label(__('ACCOUNT BIO'))
                     ->color('gray')
                     ->sortable()
                     ->toggleable()
                     ->searchable(),
 
                 TextColumn::make(User::USER_CREATED_AT)
-                    ->label('AANGEMAAKT OP')
+                    ->label(__('AANGEMAAKT OP'))
                     ->dateTime('d-m-Y H:i')
                     ->toggleable()
                     ->sortable(),
 
                 TextColumn::make(User::USER_UPDATED_AT)
-                    ->label('LAATSTE UPDATE')
+                    ->label(__('LAATSTE UPDATE'))
                     ->dateTime('d-m-Y H:i')
                     ->toggleable()
                     ->sortable(),
@@ -113,14 +113,14 @@ class UsersTable
                 DeleteAction::make()
                     ->label(false)
                     ->icon('heroicon-m-trash')
-                    ->modalHeading('Gebruiker deactiveren')
-                    ->modalDescription('Weet je zeker dat je deze gebruiker op inactief wilt zetten?')
-                    ->modalSubmitActionLabel('Ja, deactiveer')
+                    ->modalHeading(__('Gebruiker deactiveren'))
+                    ->modalDescription(__('Weet je zeker dat je deze gebruiker op inactief wilt zetten?'))
+                    ->modalSubmitActionLabel(__('Ja, deactiveer'))
                     ->action(function (User $record) {
                         $record->update(['is_active' => false]);
 
                         Notification::make()
-                            ->title('Gebruiker gedeactiveerd')
+                            ->title(__('Gebruiker gedeactiveerd'))
                             ->success()
                             ->send();
                     }),
@@ -129,13 +129,13 @@ class UsersTable
                 BulkActionGroup::make([
                     // Aangepaste Bulk Delete actie (Soft)
                     DeleteBulkAction::make()
-                        ->label('Selectie deactiveren')
-                        ->modalHeading('Geselecteerde gebruikers deactiveren')
+                        ->label(__('Selectie deactiveren'))
+                        ->modalHeading(__('Geselecteerde gebruikers deactiveren'))
                         ->action(function (Collection $records) {
                             $records->each(fn(User $record) => $record->update(['is_active' => false]));
 
                             Notification::make()
-                                ->title('Gebruikers gedeactiveerd')
+                                ->title(__('Gebruikers gedeactiveerd'))
                                 ->success()
                                 ->send();
                         })

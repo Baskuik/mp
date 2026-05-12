@@ -19,13 +19,10 @@ class Bid extends Model
 
 
     protected $fillable = [
-        'bid_id',
         'listing_id',
         'buyer_id',
         'amount',
         'status',
-        'created_at',
-        'updated_at',
     ];
 
     public function listing(): BelongsTo

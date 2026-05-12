@@ -3,11 +3,14 @@
 namespace App\Filament\Resources\Categories\Pages;
 
 use App\Filament\Resources\Categories\CategoryResource;
+use App\Filament\Resources\Traits\HasQueryTabActions;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class ListCategories extends ListRecords
 {
+    use HasQueryTabActions;
+
     protected static string $resource = CategoryResource::class;
 
     protected function getHeaderWidgets(): array
@@ -19,40 +22,12 @@ class ListCategories extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        $activeTabs = request()->query('tab', []);
-
-        if (is_string($activeTabs)) {
-            $activeTabs = [$activeTabs];
-        }
-
-        $options = [
+        $tabOptions = [
             'actief' => 'Actief',
             'inactief' => 'Inactief',
         ];
 
-        $actions = [
-            Actions\Action::make('tab-alle')
-                ->label('Alle')
-                ->url('?')
-                ->color('success')
-                ->outlined(!empty($activeTabs))
-                ->size('sm'),
-        ];
-
-        foreach ($options as $value => $label) {
-            $isActive = in_array($value, $activeTabs);
-            $newTabs = $isActive
-                ? array_filter($activeTabs, fn($t) => $t !== $value)
-                : array_merge($activeTabs, [$value]);
-
-            $actions[] = Actions\Action::make("tab-{$value}")
-                ->label($label)
-                ->url('?' . http_build_query(['tab' => array_values($newTabs)]))
-                ->color('success')
-                ->outlined(!$isActive)
-                ->size('sm');
-        }
-
+        $actions = $this->buildTabActions($tabOptions);
         $actions[] = Actions\CreateAction::make()->label('Categorie aanmaken');
 
         return $actions;

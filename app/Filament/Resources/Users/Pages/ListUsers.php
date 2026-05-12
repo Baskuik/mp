@@ -20,10 +20,12 @@ class ListUsers extends ListRecords
             'verbannen' => 'Verbannen',
         ];
 
+        // "Alle" knop behoudt andere query params
+        $baseParams = array_diff_key(request()->query(), ['tab' => true]);
         $actions = [
             Actions\Action::make('tab-alle')
                 ->label('Alle')
-                ->url('?')
+                ->url('?' . http_build_query($baseParams))
                 ->color('success')
                 ->outlined(!empty($activeTab))
                 ->size('sm'),
