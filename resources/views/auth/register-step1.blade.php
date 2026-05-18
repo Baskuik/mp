@@ -15,23 +15,22 @@
 
             <div class="relative z-10">
                 <h1 class="font-display text-5xl text-white leading-tight mb-4">
-                    Jouw eerste<br>
-                    <em class="text-[#F4A261] not-italic font-display">advertentie wacht</em>
+                    {{ __('messages.register_hero_title') }}<br>
+                    <em class="text-[#F4A261] not-italic font-display">{{ __('messages.register_hero_subtitle') }}</em>
                 </h1>
                 <p class="text-white/60 text-base leading-relaxed max-w-sm">
-                    Maak gratis een account aan en zet je eerste advertentie live in minder dan 2 minuten.
+                    {{ __('messages.register_hero_desc') }}
                 </p>
             </div>
 
             {{-- Stappen indicator --}}
             <div class="flex justify-start items-end gap-4 relative z-10">
-                @foreach (['Account aanmaken', 'Profiel inrichten', 'Email verifiëren'] as $index => $title)
+                @foreach ([__('messages.register_step1_label'), __('messages.register_step2_label'), __('messages.register_step3_label')] as $index => $title)
                     <div class="flex flex-col items-center gap-2">
                         <div
-                            class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold 
+                            class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold
                             @if ($index === 0) bg-[#F4A261] text-[#2D6A4F]
-                            @else 
-                                bg-white/20 text-white @endif
+                            @else bg-white/20 text-white @endif
                             transition-all duration-300">
                             {{ $index + 1 }}
                         </div>
@@ -55,10 +54,9 @@
                     @foreach (['1', '2', '3'] as $index => $num)
                         <div class="flex flex-col items-center gap-1">
                             <div
-                                class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold 
+                                class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold
                                 @if ($index === 0) bg-[#2D6A4F] text-white
-                                @else 
-                                    bg-gray-200 text-gray-600 @endif
+                                @else bg-gray-200 text-gray-600 @endif
                                 transition-all">
                                 {{ $num }}
                             </div>
@@ -68,10 +66,12 @@
 
                 {{-- Header --}}
                 <div class="mb-8">
-                    <h2 class="font-display text-3xl text-gray-900 mb-2">Account aanmaken</h2>
+                    <h2 class="font-display text-3xl text-gray-900 mb-2">{{ __('messages.register_heading') }}</h2>
                     <p class="text-gray-500 text-sm">
-                        Al een account?
-                        <a href="{{ route('login') }}" class="text-[#2D6A4F] font-medium hover:underline">Log hier in</a>
+                        {{ __('messages.register_has_account') }}
+                        <a href="{{ route('login') }}" class="text-[#2D6A4F] font-medium hover:underline">
+                            {{ __('messages.register_login_here') }}
+                        </a>
                     </p>
                 </div>
 
@@ -91,7 +91,7 @@
                     {{-- Naam --}}
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">
-                            Volledige naam
+                            {{ __('messages.register_full_name') }}
                         </label>
                         <div class="relative">
                             <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none"
@@ -100,7 +100,7 @@
                                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                             <input id="name" type="text" name="name" value="{{ old('name') }}" required
-                                autofocus placeholder="Jan de Vries"
+                                autofocus placeholder="{{ __('messages.register_name_placeholder') }}"
                                 class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-[#2D6A4F] focus:ring-4 focus:ring-[#2D6A4F]/10 transition-all @error('name') border-red-400 @enderror">
                         </div>
                     </div>
@@ -108,7 +108,7 @@
                     {{-- E-mail --}}
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">
-                            E-mailadres
+                            {{ __('messages.welcome_email') }}
                         </label>
                         <div class="relative">
                             <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none"
@@ -117,7 +117,7 @@
                                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                             <input id="email" type="email" name="email" value="{{ old('email') }}" required
-                                placeholder="jouwemail@example.com"
+                                placeholder="{{ __('messages.register_email_placeholder') }}"
                                 class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-[#2D6A4F] focus:ring-4 focus:ring-[#2D6A4F]/10 transition-all @error('email') border-red-400 @enderror">
                         </div>
                     </div>
@@ -125,7 +125,7 @@
                     {{-- Wachtwoord --}}
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-1.5">
-                            Wachtwoord
+                            {{ __('messages.welcome_password') }}
                         </label>
                         <div class="relative">
                             <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none"
@@ -134,7 +134,7 @@
                                     d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                             </svg>
                             <input id="password" type="password" name="password" required
-                                placeholder="Wachtwoord (minimaal 8 tekens)"
+                                placeholder="{{ __('messages.register_password_placeholder') }}"
                                 class="w-full pl-10 pr-11 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-[#2D6A4F] focus:ring-4 focus:ring-[#2D6A4F]/10 transition-all @error('password') border-red-400 @enderror">
                             <button type="button" onclick="togglePassword('password', this)"
                                 class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors">
@@ -149,14 +149,10 @@
 
                         {{-- Wachtwoordsterkte indicator --}}
                         <div class="mt-2 flex gap-1.5" id="strength-bars">
-                            <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors duration-300" id="bar-1">
-                            </div>
-                            <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors duration-300" id="bar-2">
-                            </div>
-                            <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors duration-300" id="bar-3">
-                            </div>
-                            <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors duration-300" id="bar-4">
-                            </div>
+                            <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors duration-300" id="bar-1"></div>
+                            <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors duration-300" id="bar-2"></div>
+                            <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors duration-300" id="bar-3"></div>
+                            <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors duration-300" id="bar-4"></div>
                         </div>
                         <p class="text-xs text-gray-400 mt-1" id="strength-label"></p>
                     </div>
@@ -164,7 +160,7 @@
                     {{-- Wachtwoord bevestigen --}}
                     <div>
                         <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1.5">
-                            Wachtwoord bevestigen
+                            {{ __('messages.register_password_confirm') }}
                         </label>
                         <div class="relative">
                             <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none"
@@ -173,7 +169,7 @@
                                     d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                             </svg>
                             <input id="password_confirmation" type="password" name="password_confirmation" required
-                                placeholder="Herhaal je wachtwoord"
+                                placeholder="{{ __('messages.register_password_confirm_placeholder') }}"
                                 class="w-full pl-10 pr-11 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-[#2D6A4F] focus:ring-4 focus:ring-[#2D6A4F]/10 transition-all">
                             <button type="button" onclick="togglePassword('password_confirmation', this)"
                                 class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors">
@@ -192,17 +188,17 @@
                         <input id="terms" type="checkbox" name="terms" required
                             class="w-4 h-4 mt-0.5 rounded border-gray-300 text-[#2D6A4F] focus:ring-[#2D6A4F]/20 cursor-pointer">
                         <label for="terms" class="text-sm text-gray-600 cursor-pointer leading-snug">
-                            Ik ga akkoord met de
-                            <a href="#" class="text-[#2D6A4F] hover:underline">algemene voorwaarden</a>
-                            en het
-                            <a href="#" class="text-[#2D6A4F] hover:underline">privacybeleid</a>
+                            {{ __('messages.register_terms_1') }}
+                            <a href="#" class="text-[#2D6A4F] hover:underline">{{ __('messages.register_terms_2') }}</a>
+                            {{ __('messages.register_terms_and') }}
+                            <a href="#" class="text-[#2D6A4F] hover:underline">{{ __('messages.register_terms_3') }}</a>
                         </label>
                     </div>
 
                     {{-- Submit --}}
                     <button type="submit"
                         class="w-full bg-[#2D6A4F] hover:bg-[#1B4332] text-white font-medium py-3 px-6 rounded-xl text-sm transition-all duration-200 hover:shadow-lg hover:shadow-[#2D6A4F]/25 active:scale-[0.98] mt-2">
-                        Volgende
+                        {{ __('messages.next') }}
                     </button>
                 </form>
             </div>
@@ -219,7 +215,12 @@
                 `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>`;
         }
 
-        // Password strength meter
+const strengthLabels = {{ Js::from([
+    __('messages.password_weak'),
+    __('messages.password_fair'),
+    __('messages.password_good'),
+    __('messages.password_strong'),
+]) }};
         document.getElementById('password').addEventListener('input', function() {
             const val = this.value;
             let strength = 0;
@@ -229,15 +230,13 @@
             if (/[^A-Za-z0-9]/.test(val)) strength++;
 
             const colors = ['bg-red-400', 'bg-orange-400', 'bg-yellow-400', 'bg-green-500'];
-            const labels = ['Zwak', 'Matig', 'Goed', 'Sterk'];
 
             for (let i = 1; i <= 4; i++) {
                 const bar = document.getElementById('bar-' + i);
                 bar.className = 'h-1 flex-1 rounded-full transition-colors duration-300 ' +
                     (i <= strength ? colors[strength - 1] : 'bg-gray-200');
             }
-            document.getElementById('strength-label').textContent = val.length > 0 ? labels[strength - 1] ?? '' :
-            '';
+            document.getElementById('strength-label').textContent = val.length > 0 ? strengthLabels[strength - 1] ?? '' : '';
         });
     </script>
 @endsection

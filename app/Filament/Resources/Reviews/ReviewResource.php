@@ -18,7 +18,8 @@ class ReviewResource extends Resource
 {
     protected static ?string $model = Review::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-chat-bubble-left-right';
+    protected static \UnitEnum|string|null $navigationGroup = 'BEHEER';
 
     public static function form(Schema $schema): Schema
     {
@@ -28,6 +29,18 @@ class ReviewResource extends Resource
     public static function table(Table $table): Table
     {
         return ReviewsTable::configure($table);
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\ReviewStatsOverview::class,
+        ];
     }
 
     public static function getRelations(): array

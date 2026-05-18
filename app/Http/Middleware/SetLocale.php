@@ -16,7 +16,7 @@ class SetLocale
     public function handle(Request $request, Closure $next): Response
     {
         // Whitelist of supported locales
-        $supportedLocales = ['nl', 'de', 'en', 'be'];
+        $supportedLocales = ['nl', 'de', 'en'];
 
         // Check if locale is set in session
         if (session()->has('locale')) {

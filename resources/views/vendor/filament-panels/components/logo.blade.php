@@ -1,0 +1,1 @@
+<div style="font-family: Georgia, serif; font-size: 20px; display: flex; align-items: center; gap: 0; letter-spacing: -0.3px;"><span style="color: #2D5A3D;">Direct</span><span style="color: #D4782A;">Deal</span></div>

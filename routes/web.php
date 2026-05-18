@@ -59,8 +59,8 @@ Route::middleware(['throttle:5,1'])->group(function () {
 });
 
 // Language switcher
-Route::post('/set-language/{lang}', function ($lang) {
-    if (in_array($lang, ['nl', 'de', 'en', 'be'])) {
+Route::get('/set-language/{lang}', function ($lang) {
+    if (in_array($lang, ['nl', 'de', 'en'])) {
         session(['locale' => $lang]);
     }
     return back();

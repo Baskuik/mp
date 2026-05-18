@@ -6,7 +6,6 @@
 
         {{-- Linkerpaneel --}}
         <div class="hidden lg:flex flex-col justify-between bg-[#2D6A4F] p-12 relative overflow-hidden">
-            {{-- Decoratieve cirkels --}}
             <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white/5"></div>
             <div class="absolute -bottom-16 -left-16 w-72 h-72 rounded-full bg-white/4"></div>
 
@@ -18,27 +17,27 @@
             {{-- Hero tekst --}}
             <div class="relative z-10">
                 <h1 class="font-display text-5xl text-white leading-tight mb-4">
-                    Koop & verkoop<br>
-                    <em class="text-[#F4A261] not-italic font-display">lokaal & eerlijk</em>
+                    {{ __('messages.welcome_title_login') }}<br>
+                    <em class="text-[#F4A261] not-italic font-display">{{ __('messages.welcome_subtitle_login') }}</em>
                 </h1>
                 <p class="text-white/60 text-base leading-relaxed max-w-sm">
-                    Duizenden advertenties in jouw buurt. Snel, veilig en persoonlijk.
+                    {{ __('messages.welcome_description') }}
                 </p>
             </div>
 
             {{-- Stats --}}
             <div class="flex gap-10 relative z-10">
                 <div>
-                    <strong class="block font-display text-2xl text-white">12.400+</strong>
-                    <span class="text-white/50 text-sm">Advertenties</span>
+                    <strong class="block font-display text-2xl text-white">{{ __('messages.welcome_stats_ads_login') }}</strong>
+                    <span class="text-white/50 text-sm">{{ __('messages.welcome_stats_ads_desc_login') }}</span>
                 </div>
                 <div>
-                    <strong class="block font-display text-2xl text-white">3.800+</strong>
-                    <span class="text-white/50 text-sm">Gebruikers</span>
+                    <strong class="block font-display text-2xl text-white">{{ __('messages.welcome_stats_users_login') }}</strong>
+                    <span class="text-white/50 text-sm">{{ __('messages.welcome_stats_users_desc_login') }}</span>
                 </div>
                 <div>
-                    <strong class="block font-display text-2xl text-white">98%</strong>
-                    <span class="text-white/50 text-sm">Tevreden kopers</span>
+                    <strong class="block font-display text-2xl text-white">{{ __('messages.welcome_stats_satisfaction') }}</strong>
+                    <span class="text-white/50 text-sm">{{ __('messages.welcome_stats_satisfaction_desc') }}</span>
                 </div>
             </div>
         </div>
@@ -54,11 +53,14 @@
 
                 {{-- Header --}}
                 <div class="mb-8">
-                    <h2 class="font-display text-3xl text-gray-900 mb-2">Welkom terug</h2>
+                    <h2 class="font-display text-3xl text-gray-900 mb-2">
+                        {{ __('messages.welcome_back') }}
+                    </h2>
                     <p class="text-gray-500 text-sm">
-                        Nog geen account?
-                        <a href="{{ route('register.step1') }}"
-                            class="text-[#2D6A4F] font-medium hover:underline">Registreer hier</a>
+                        {{ __('messages.welcome_back_subtitle') }}
+                        <a href="{{ route('register.step1') }}" class="text-[#2D6A4F] font-medium hover:underline">
+                            {{ __('messages.welcome_register_prompt') }}
+                        </a>
                     </p>
                 </div>
 
@@ -76,7 +78,7 @@
                     {{-- E-mail --}}
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">
-                            E-mailadres
+                            {{ __('messages.welcome_email') }}
                         </label>
                         <div class="relative">
                             <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none"
@@ -85,7 +87,8 @@
                                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                             <input id="email" type="email" name="email" value="{{ old('email') }}" required
-                                autofocus autocomplete="username" placeholder="jouw@email.nl"
+                                autofocus autocomplete="username"
+                                placeholder="{{ __('messages.welcome_email_placeholder') }}"
                                 class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-[#2D6A4F] focus:ring-4 focus:ring-[#2D6A4F]/10 transition-all @error('email') border-red-400 @enderror">
                         </div>
                     </div>
@@ -94,10 +97,10 @@
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
                             <label for="password" class="block text-sm font-medium text-gray-700">
-                                Wachtwoord
+                                {{ __('messages.welcome_password') }}
                             </label>
                             <a href="{{ route('password.request') }}" class="text-xs text-[#2D6A4F] hover:underline">
-                                Vergeten?
+                                {{ __('messages.welcome_forgot_password') }}
                             </a>
                         </div>
                         <div class="relative">
@@ -106,7 +109,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                     d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                             </svg>
-                            <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="••••••••"
+                            <input id="password" type="password" name="password" required
+                                autocomplete="current-password" placeholder="••••••••"
                                 class="w-full pl-10 pr-11 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-[#2D6A4F] focus:ring-4 focus:ring-[#2D6A4F]/10 transition-all @error('password') border-red-400 @enderror">
                             <button type="button" onclick="togglePassword('password', this)"
                                 class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors">
@@ -125,18 +129,17 @@
                         <input id="remember" type="checkbox" name="remember"
                             class="w-4 h-4 rounded border-gray-300 text-[#2D6A4F] focus:ring-[#2D6A4F]/20 cursor-pointer">
                         <label for="remember" class="text-sm text-gray-600 cursor-pointer">
-                            Onthoud mij
+                            {{ __('messages.welcome_remember_me') }}
                         </label>
                     </div>
 
                     {{-- Submit --}}
                     <button type="submit"
                         class="w-full bg-[#2D6A4F] hover:bg-[#1B4332] text-white font-medium py-3 px-6 rounded-xl text-sm transition-all duration-200 hover:shadow-lg hover:shadow-[#2D6A4F]/25 active:scale-[0.98]">
-                        Inloggen
+                        {{ __('messages.welcome_login_button') }}
                     </button>
                 </form>
             </div>
         </div>
     </div>
-
 @endsection

@@ -16,10 +16,8 @@ use Filament\Tables\Table;
 
 class CategoryResource extends Resource
 {
-    protected static ?string $model = Category::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
+    protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-tag';
+    protected static \UnitEnum|string|null $navigationGroup = 'BEHEER';
     public static function form(Schema $schema): Schema
     {
         return CategoryForm::configure($schema);
@@ -28,6 +26,18 @@ class CategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return CategoriesTable::configure($table);
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\CategoryStatsOverview::class,
+        ];
     }
 
     public static function getRelations(): array
