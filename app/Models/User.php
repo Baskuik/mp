@@ -8,6 +8,7 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -80,6 +81,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         ];
     }
 
+<<<<<<< HEAD
     public function isAdmin(): bool
     {
         return $this->is_admin === true;
@@ -122,5 +124,10 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     public function forceDelete()
     {
         return parent::delete();
+=======
+    public function listings(): HasMany
+    {
+        return $this->hasMany(Listing::class, 'user_id', 'user_id');
+>>>>>>> mainpage
     }
 }

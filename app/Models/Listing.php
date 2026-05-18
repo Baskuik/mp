@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+<<<<<<< HEAD
 
 class Listing extends Model
 {
@@ -20,6 +22,14 @@ class Listing extends Model
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
+=======
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
+class Listing extends Model
+{
+    use HasFactory;
+>>>>>>> mainpage
 
     protected $fillable = [
         'user_id',
@@ -29,6 +39,7 @@ class Listing extends Model
         'price',
         'status',
         'location',
+<<<<<<< HEAD
     ];
 
     public function seller(): BelongsTo
@@ -36,3 +47,28 @@ class Listing extends Model
         return $this->belongsTo(User::class, User::USER_ID);
     }
 }
+=======
+        'label',
+    ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(ListingImage::class);
+    }
+
+    public function primaryImage(): HasOne
+    {
+        return $this->hasOne(ListingImage::class)->where('is_primary', true);
+    }
+}
+>>>>>>> mainpage
