@@ -100,14 +100,18 @@
                     <div>
                         <label class="text-xs font-semibold text-[#2D6A4F]">Extra foto's toevoegen</label>
                         <input
+                            id="edit-images"
                             name="images[]"
                             type="file"
                             multiple
                             accept="image/*"
+                            data-multi-file
+                            data-counter="edit-images-count"
                             class="mt-1 w-full rounded-xl border border-[#2D6A4F]/15 bg-white px-4 py-2 text-sm text-gray-800">
                         <p class="mt-1 text-xs text-gray-400">
                             Je hebt {{ $listing->images->count() }} foto's gekoppeld. Gebruik Ctrl/Shift om meerdere tegelijk te kiezen.
                         </p>
+                        <p id="edit-images-count" class="mt-1 text-xs text-gray-400">0 geselecteerd.</p>
                         @if ($listing->images->isNotEmpty())
                             <div class="mt-3 grid grid-cols-3 gap-2">
                                 @foreach ($listing->images as $image)
@@ -152,4 +156,22 @@
             </div>
         </div>
     </div>
+    <script>
+        document.querySelectorAll('input[data-multi-file]').forEach((input) => {
+            const dataTransfer = new DataTransfer();
+
+            input.addEventListener('change', () => {
+                Array.from(input.files).forEach((file) => dataTransfer.items.add(file));
+                input.files = dataTransfer.files;
+
+                const counterId = input.getAttribute('data-counter');
+                if (counterId) {
+                    const counter = document.getElementById(counterId);
+                    if (counter) {
+                        counter.textContent = `${dataTransfer.files.length} geselecteerd.`;
+                    }
+                }
+            });
+        });
+    </script>
 @endsection

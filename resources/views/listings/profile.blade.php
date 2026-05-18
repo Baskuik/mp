@@ -117,14 +117,18 @@
                             <div>
                                 <label class="text-xs font-semibold text-[#2D6A4F]">Foto's (max 8)</label>
                                 <input
+                                    id="create-images"
                                     name="images[]"
                                     type="file"
                                     multiple
                                     accept="image/*"
+                                    data-multi-file
+                                    data-counter="create-images-count"
                                     class="mt-1 w-full rounded-xl border border-[#2D6A4F]/15 bg-white px-4 py-2 text-sm text-gray-800">
                                 <p class="mt-1 text-xs text-gray-400">
                                     Je kunt meerdere foto's tegelijk selecteren (Ctrl/Shift).
                                 </p>
+                                <p id="create-images-count" class="mt-1 text-xs text-gray-400">0 geselecteerd.</p>
                                 @error('images')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                 @enderror
@@ -221,4 +225,22 @@
             </div>
         </div>
     </div>
+    <script>
+        document.querySelectorAll('input[data-multi-file]').forEach((input) => {
+            const dataTransfer = new DataTransfer();
+
+            input.addEventListener('change', () => {
+                Array.from(input.files).forEach((file) => dataTransfer.items.add(file));
+                input.files = dataTransfer.files;
+
+                const counterId = input.getAttribute('data-counter');
+                if (counterId) {
+                    const counter = document.getElementById(counterId);
+                    if (counter) {
+                        counter.textContent = `${dataTransfer.files.length} geselecteerd.`;
+                    }
+                }
+            });
+        });
+    </script>
 @endsection
