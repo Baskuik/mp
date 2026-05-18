@@ -238,5 +238,5 @@ const strengthLabels = {{ Js::from([
             }
             document.getElementById('strength-label').textContent = val.length > 0 ? strengthLabels[strength - 1] ?? '' : '';
         });
-    </script>
+    </script> 
 @endsection
