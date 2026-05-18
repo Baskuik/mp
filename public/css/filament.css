@@ -53,7 +53,9 @@ body {
 
 /* ===== SIDEBAR EXPANDED/COLLAPSED ===== */
 .fi-sidebar.sidebar-collapsed {
-    width: 4.5rem !important;
+    width: 6rem !important;
+    max-width: 6rem !important;
+    min-width: 6rem !important;
 }
 
 /* ===== TABLE STYLING ===== */
