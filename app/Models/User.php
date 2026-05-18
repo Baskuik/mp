@@ -62,6 +62,10 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'username',
         'bio',
         'profile_photo_path',
+        'phone_number',
+        'phone_verified',
+        'phone_verification_code',
+        'phone_verification_sent_at',
     ];
 
     protected $hidden = [
@@ -77,6 +81,8 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             'is_admin' => 'boolean',
             'is_active' => 'boolean',
             'is_banned' => 'boolean',
+            'phone_verified' => 'boolean',
+            'phone_verification_sent_at' => 'datetime',
         ];
     }
 
