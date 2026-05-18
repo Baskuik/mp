@@ -7,7 +7,6 @@ use App\Filament\Widgets\CategoryStatsOverview;
 use App\Filament\Widgets\ListingStatsOverview;
 use App\Filament\Widgets\ReviewStatsOverview;
 use App\Filament\Widgets\UserStatsOverview;
-use Filament\Pages\Dashboard;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {

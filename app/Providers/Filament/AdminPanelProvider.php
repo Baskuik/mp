@@ -48,68 +48,227 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 'panels::body.end',
                 fn() => new HtmlString('
-    <script>
-    (function () {
-        const STORAGE_KEY = "dd_sidebar_collapsed";
-        let sidebarObserver = null;
+                    <style>
+                        /* Sidebar smooth collapse animation */
+                        .fi-sidebar {
+                            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                        }
 
-        function init() {
-            const old = document.getElementById("dd-sidebar-toggle");
-            if (old) old.remove();
+                        .fi-sidebar.sidebar-collapsed {
+                            width: 6rem !important;
+                            max-width: 6rem !important;
+                        }
 
-            const footer = document.querySelector(".fi-sidebar-footer");
-            if (!footer) return;
+                        /* Content area */
+                        .fi-sidebar-content {
+                            flex: 1 !important;
+                            overflow-y: auto !important;
+                            overflow-x: hidden !important;
+                        }
 
-            const btn = document.createElement("button");
-            btn.id = "dd-sidebar-toggle";
-            btn.title = "Sidebar in-/uitklappen";
-            btn.setAttribute("aria-label", "Sidebar in-/uitklappen");
+                        /* Header logo fade */
+                        .fi-sidebar .fi-sidebar-logo {
+                            transition: opacity 0.4s ease !important;
+                            opacity: 1 !important;
+                        }
 
-            function isOpen() {
-                return window.Alpine && Alpine.store("sidebar") && Alpine.store("sidebar").isOpen;
-            }
+                        .fi-sidebar.sidebar-collapsed .fi-sidebar-logo {
+                            opacity: 0 !important;
+                            pointer-events: none !important;
+                        }
 
-            function updateIcon() {
-                btn.textContent = isOpen() ? "<<" : ">>";
-            }
+                        /* Nav text fade */
+                        .fi-sidebar .fi-sidebar-nav span:not(.fi-icon) {
+                            transition: opacity 0.4s ease, width 0.4s ease !important;
+                            opacity: 1 !important;
+                            width: auto !important;
+                        }
 
-            updateIcon();
+                        .fi-sidebar.sidebar-collapsed .fi-sidebar-nav span:not(.fi-icon) {
+                            opacity: 0 !important;
+                            width: 0 !important;
+                            overflow: hidden !important;
+                            margin: 0 !important;
+                        }
 
-            btn.addEventListener("click", function () {
-                if (window.Alpine && Alpine.store("sidebar")) {
-                    Alpine.store("sidebar").isOpen = !Alpine.store("sidebar").isOpen;
-                    setTimeout(updateIcon, 150);
-                }
-            });
+                        /* Groups fade */
+                        .fi-sidebar .fi-sidebar-groups {
+                            transition: opacity 0.4s ease !important;
+                            opacity: 1 !important;
+                        }
 
-            footer.appendChild(btn);
+                        .fi-sidebar.sidebar-collapsed .fi-sidebar-groups {
+                            opacity: 0 !important;
+                            pointer-events: none !important;
+                        }
 
-            // Disconnect old observer before creating new one
-            if (sidebarObserver) {
-                sidebarObserver.disconnect();
-            }
+                        /* Collapsed nav styling */
+                        .fi-sidebar.sidebar-collapsed .fi-sidebar-nav {
+                            display: flex !important;
+                            flex-direction: column !important;
+                            gap: 0.25rem !important;
+                            padding: 0.5rem !important;
+                        }
 
-            // Luister naar sidebar-klasse wijzigingen voor icoon-update
-            const sidebar = document.querySelector(".fi-sidebar");
-            if (sidebar) {
-                sidebarObserver = new MutationObserver(updateIcon);
-                sidebarObserver.observe(sidebar, {
-                    attributes: true,
-                    attributeFilter: ["style", "class"]
-                });
-            }
-        }
+                        .fi-sidebar.sidebar-collapsed .fi-sidebar-nav li {
+                            display: flex !important;
+                            align-items: center !important;
+                            justify-content: center !important;
+                        }
 
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", init);
-        } else {
-            setTimeout(init, 100);
-        }
+                        .fi-sidebar.sidebar-collapsed .fi-sidebar-nav a {
+                            width: 100% !important;
+                            padding: 0.75rem !important;
+                            display: flex !important;
+                            align-items: center !important;
+                            justify-content: center !important;
+                            border-radius: 0.5rem !important;
+                        }
 
-        document.addEventListener("livewire:navigated", () => setTimeout(init, 100));
-    })();
-    </script>
-    ')
+                        .fi-sidebar.sidebar-collapsed .fi-sidebar-nav a:hover {
+                            background: rgba(255, 255, 255, 0.1) !important;
+                        }
+
+                        /* Footer styling */
+                        .fi-sidebar-footer {
+                            margin-top: auto !important;
+                            border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+                            display: flex !important;
+                            flex-direction: column !important;
+                            gap: 0.5rem !important;
+                            padding: 1rem 0.5rem !important;
+                            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                        }
+
+                        .fi-sidebar.sidebar-collapsed .fi-sidebar-footer {
+                            padding: 0.75rem 0.5rem !important;
+                            gap: 0 !important;
+                        }
+
+                        /* Footer items fade */
+                        .fi-sidebar-footer > *:not(#sidebar-toggle-btn) {
+                            transition: opacity 0.3s ease !important;
+                            opacity: 1 !important;
+                        }
+
+                        .fi-sidebar.sidebar-collapsed .fi-sidebar-footer > *:not(#sidebar-toggle-btn) {
+                            opacity: 0 !important;
+                            pointer-events: none !important;
+                            height: 0 !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            overflow: hidden !important;
+                        }
+
+                        /* Toggle button */
+                        #sidebar-toggle-btn {
+                            width: calc(100% - 1rem) !important;
+                            margin: 0.5rem !important;
+                            padding: 0.8rem !important;
+                            border: 2px solid rgba(255, 255, 255, 0.25) !important;
+                            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+                            color: rgba(255, 255, 255, 0.95) !important;
+                            font-size: 1.25rem !important;
+                            cursor: pointer !important;
+                            display: flex !important;
+                            align-items: center !important;
+                            justify-content: center !important;
+                            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                            border-radius: 0.55rem !important;
+                            font-weight: 700 !important;
+                            backdrop-filter: blur(10px) !important;
+                        }
+
+                        #sidebar-toggle-btn:hover {
+                            background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
+                            border-color: rgba(255, 255, 255, 0.4) !important;
+                        }
+
+                        .fi-sidebar:not(.sidebar-collapsed) #sidebar-toggle-btn:hover {
+                            transform: translateX(-2px) !important;
+                        }
+
+                        .fi-sidebar.sidebar-collapsed #sidebar-toggle-btn:hover {
+                            transform: translateX(2px) !important;
+                        }
+
+                        #sidebar-toggle-btn:active {
+                            transform: scale(0.98) !important;
+                        }
+
+                        /* Toggle icon animation */
+                        .toggle-icon {
+                            display: inline-block !important;
+                            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                        }
+
+                        .fi-sidebar.sidebar-collapsed .toggle-icon {
+                            transform: scaleX(-1) !important;
+                        }
+                    </style>
+                    <script>
+                    (function () {
+                        const STORAGE_KEY = "sidebar_collapsed";
+                        let initialized = false;
+
+                        function getSidebar() {
+                            return document.querySelector(".fi-sidebar");
+                        }
+
+                        function getFooter() {
+                            return document.querySelector(".fi-sidebar-footer");
+                        }
+
+                        function initToggleButton() {
+                            const sidebar = getSidebar();
+                            const footer = getFooter();
+                            
+                            if (!sidebar || !footer || initialized) {
+                                return;
+                            }
+
+                            // Remove old button
+                            const oldBtn = document.getElementById("sidebar-toggle-btn");
+                            if (oldBtn) oldBtn.remove();
+
+                            // Create button
+                            const btn = document.createElement("button");
+                            btn.id = "sidebar-toggle-btn";
+                            btn.type = "button";
+                            btn.setAttribute("title", "Sidebar in-/uitklappen");
+                            btn.innerHTML = `<span class="toggle-icon">←</span>`;
+                            
+                            // Restore state
+                            const isCollapsed = localStorage.getItem(STORAGE_KEY) === "true";
+                            if (isCollapsed) {
+                                sidebar.classList.add("sidebar-collapsed");
+                            }
+
+                            // Toggle event
+                            btn.addEventListener("click", function (e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                sidebar.classList.toggle("sidebar-collapsed");
+                                localStorage.setItem(STORAGE_KEY, sidebar.classList.contains("sidebar-collapsed"));
+                            });
+
+                            footer.appendChild(btn);
+                            initialized = true;
+                        }
+
+                        if (document.readyState === "loading") {
+                            document.addEventListener("DOMContentLoaded", initToggleButton);
+                        } else {
+                            initToggleButton();
+                        }
+
+                        document.addEventListener("livewire:navigated", function() {
+                            initialized = false;
+                            setTimeout(initToggleButton, 100);
+                        });
+                    })();
+                    </script>
+                ')
             )
             ->resources([
                 UserResource::class,

@@ -4,9 +4,11 @@ namespace App\Filament\Resources\Users\Schemas;
 
 use App\Models\User;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class UserForm
@@ -41,6 +43,15 @@ class UserForm
                     ->unique(User::class, 'email', ignoreRecord: true)
                     ->maxLength(255),
 
+                FileUpload::make('profile_photo_path')
+                    ->label('Profielfoto')
+                    ->avatar()
+                    ->disk('public')
+                    ->directory('profile-photos')
+                    ->image()
+                    ->maxSize(5 * 1024) // 5MB
+                    ->nullable(),
+
                 Textarea::make('bio')
                     ->label('Bio')
                     ->placeholder('Vertel iets over deze gebruiker…')
@@ -70,22 +81,25 @@ class UserForm
                     ->dehydrated(false)
                     ->same('password'),
 
-                Checkbox::make('is_admin')
-                    ->label('Admin')
+                Toggle::make('is_admin')
+                    ->label('★ Admin')
                     ->default(false)
+                    ->inline(false)
                     ->helperText('Geeft beheerderrechten op het platform.'),
 
-                Checkbox::make('is_active')
-                    ->label('Actief')
+                Toggle::make('is_active')
+                    ->label('✓ Actief')
                     ->default(true)
+                    ->inline(false)
                     ->disabled(fn($get) => $get('is_banned') === true)
                     ->helperText(fn($get) => $get('is_banned')
                         ? 'Verbannen gebruikers kunnen niet actief zijn.'
                         : 'Inactieve gebruikers kunnen niet inloggen.'),
 
-                Checkbox::make('is_banned')
-                    ->label('Verbannen')
+                Toggle::make('is_banned')
+                    ->label('⛔ Verbannen')
                     ->default(false)
+                    ->inline(false)
                     ->afterStateUpdated(function ($set, $state) {
                         // Als verbannen wordt geactiveerd, zet is_active op false
                         if ($state === true) {

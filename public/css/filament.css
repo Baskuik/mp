@@ -22,6 +22,7 @@
     --dd-radius-sm: 7px;
     --dd-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     --dd-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+    --dd-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
 /* ===== GLOBAL FONT ===== */
@@ -46,11 +47,179 @@ body {
     min-height: 100vh !important;
     display: flex !important;
     flex-direction: column !important;
-    transition: width 0.25s ease, min-width 0.25s ease !important;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
     top: 0 !important;
-    height: 100vh !important;
-    position: sticky !important;
-    box-shadow: 2px 0 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* ===== SIDEBAR EXPANDED/COLLAPSED ===== */
+.fi-sidebar.sidebar-collapsed {
+    width: 4.5rem !important;
+}
+
+/* ===== TABLE STYLING ===== */
+.fi-table-container {
+    border-radius: var(--dd-radius-lg) !important;
+    overflow: hidden !important;
+    box-shadow: var(--dd-shadow-md) !important;
+    background: var(--dd-white) !important;
+    margin: 1.5rem !important;
+}
+
+/* Table rows spacing */
+.fi-ta-body-row {
+    border-bottom: 1px solid #F0F3F2 !important;
+    transition: background-color 0.2s ease !important;
+}
+
+.fi-ta-body-row:hover {
+    background-color: #F8FBFA !important;
+}
+
+.fi-ta-body-row td {
+    padding: 1rem 1.25rem !important;
+    vertical-align: middle !important;
+    font-size: 0.95rem !important;
+}
+
+.fi-ta-body-row th {
+    padding: 1rem 1.25rem !important;
+    background-color: #F5F9F8 !important;
+    font-weight: 600 !important;
+    color: var(--dd-ink-soft) !important;
+    text-transform: uppercase !important;
+    font-size: 0.8rem !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* ===== BADGES ===== */
+.fi-badge {
+    padding: 0.45rem 0.85rem !important;
+    border-radius: var(--dd-radius-sm) !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    border: 1px solid !important;
+    transition: all 0.2s ease !important;
+}
+
+.fi-badge.fi-color-success {
+    background-color: #E6F7F1 !important;
+    border-color: #20C997 !important;
+    color: #0B6E4F !important;
+}
+
+.fi-badge.fi-color-danger {
+    background-color: #FFF1F1 !important;
+    border-color: #F71735 !important;
+    color: #8B0000 !important;
+}
+
+.fi-badge.fi-color-warning {
+    background-color: #FFF8E6 !important;
+    border-color: #FFA500 !important;
+    color: #9A6700 !important;
+}
+
+.fi-badge.fi-color-gray {
+    background-color: #F5F7F6 !important;
+    border-color: #D1D5D3 !important;
+    color: var(--dd-ink-soft) !important;
+}
+
+/* ===== LINKS & ACTIONS ===== */
+.fi-link {
+    color: var(--dd-forest) !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+}
+
+.fi-link:hover {
+    color: var(--dd-orange) !important;
+    text-decoration: underline !important;
+}
+
+/* ===== BUTTONS ===== */
+.fi-btn {
+    border-radius: var(--dd-radius-md) !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+}
+
+.fi-btn-primary {
+    background-color: var(--dd-forest) !important;
+    color: var(--dd-white) !important;
+}
+
+.fi-btn-primary:hover {
+    background-color: var(--dd-forest-lit) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: var(--dd-shadow-md) !important;
+}
+
+/* ===== SEARCH & FILTERS ===== */
+.fi-input,
+.fi-select {
+    border: 1px solid #D1D5D3 !important;
+    border-radius: var(--dd-radius-md) !important;
+    padding: 0.65rem 1rem !important;
+    font-size: 0.95rem !important;
+    transition: all 0.2s ease !important;
+}
+
+.fi-input:focus,
+.fi-select:focus {
+    border-color: var(--dd-forest) !important;
+    box-shadow: 0 0 0 3px rgba(26, 61, 43, 0.1) !important;
+}
+
+/* ===== FORMS ===== */
+.fi-form-section {
+    border-radius: var(--dd-radius-lg) !important;
+    padding: 2rem !important;
+    background: var(--dd-white) !important;
+    box-shadow: var(--dd-shadow-sm) !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.fi-form-section-header {
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    color: var(--dd-ink) !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* ===== CONTENT AREA ===== */
+.fi-page-content {
+    padding: 2rem !important;
+    background-color: var(--dd-mist) !important;
+}
+
+.fi-topbar {
+    background-color: var(--dd-white) !important;
+    border-bottom: 1px solid #E0E6E3 !important;
+    padding: 1.5rem 2rem !important;
+    box-shadow: var(--dd-shadow-sm) !important;
+}
+
+/* ===== IMAGES & AVATARS ===== */
+.fi-avatar {
+    border: 2px solid var(--dd-forest) !important;
+    border-radius: 50% !important;
+}
+
+/* ===== TEXT STYLING ===== */
+.fi-text-sm {
+    font-size: 0.875rem !important;
+    color: #6B7B76 !important;
+}
+
+.fi-text-muted {
+    color: #8B9B96 !important;
+}
+
+height: 100vh !important;
+position: sticky !important;
+box-shadow: 2px 0 24px rgba(0, 0, 0, 0.12) !important;
 }
 
 .fi-sidebar-nav {
@@ -923,8 +1092,9 @@ textarea:not(:placeholder-shown) {
 .choices__list--dropdown .choices__item.is-highlighted {
     color: #ffffff !important;
 }
+
 /* Geselecteerde waarde in gesloten veld — zwart */
-.fi-fo-select button > span {
+.fi-fo-select button>span {
     color: var(--dd-ink) !important;
 }
 
@@ -938,6 +1108,7 @@ textarea:not(:placeholder-shown) {
 .fi-fo-select li * {
     color: #ffffff !important;
 }
+
 /* Alles in de select wrapper zwart — behalve de listbox */
 .fi-fo-select *:not([role="listbox"]):not([role="option"]):not([role="listbox"] *):not([role="option"] *) {
     color: var(--dd-ink) !important;
@@ -950,6 +1121,7 @@ textarea:not(:placeholder-shown) {
 .fi-fo-select [role="option"] * {
     color: #ffffff !important;
 }
+
 /* ── Dropdown lijst items zichtbaar maken ───────────────────────────────── */
 [role="listbox"] [role="option"],
 [role="listbox"] [role="option"] *,
@@ -969,33 +1141,57 @@ textarea:not(:placeholder-shown) {
 
 /* Placeholder tekst */
 [role="listbox"] input::placeholder {
-    color: rgba(255,255,255,0.45) !important;
+    color: rgba(255, 255, 255, 0.45) !important;
 }
 
 /* Zoekbalk bovenin dropdown */
 [role="listbox"] input {
     background-color: #245C3A !important;
     color: #ffffff !important;
-    border-color: rgba(255,255,255,0.15) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 /* ── Brede fix voor alle dropdowns ─────────────────────────────────────── */
-* [role="option"] { color: #ffffff !important; background-color: #1A3D2B !important; }
-* [role="option"]:hover { background-color: #2E7A4F !important; }
-* [role="listbox"] { background-color: #1A3D2B !important; }
+* [role="option"] {
+    color: #ffffff !important;
+    background-color: #1A3D2B !important;
+}
+
+* [role="option"]:hover {
+    background-color: #2E7A4F !important;
+}
+
+* [role="listbox"] {
+    background-color: #1A3D2B !important;
+}
 
 /* Filament's eigen select zonder role attributen */
-.fi-fo-select ul li { color: #ffffff !important; background-color: #1A3D2B !important; }
-.fi-fo-select ul li:hover { background-color: #2E7A4F !important; }
-.fi-fo-select ul { background-color: #1A3D2B !important; }
+.fi-fo-select ul li {
+    color: #ffffff !important;
+    background-color: #1A3D2B !important;
+}
+
+.fi-fo-select ul li:hover {
+    background-color: #2E7A4F !important;
+}
+
+.fi-fo-select ul {
+    background-color: #1A3D2B !important;
+}
 
 /* Alpine.js/Livewire dropdown */
-[x-transition] li, [x-transition] li * { color: #ffffff !important; }
-[x-transition] ul { background-color: #1A3D2B !important; }
+[x-transition] li,
+[x-transition] li * {
+    color: #ffffff !important;
+}
+
+[x-transition] ul {
+    background-color: #1A3D2B !important;
+}
 
 /* Absolute/fixed positioned popups */
-.fi-fo-select > div > div > ul > li,
-.fi-fo-select > div > div > ul > li * {
+.fi-fo-select>div>div>ul>li,
+.fi-fo-select>div>div>ul>li * {
     color: #ffffff !important;
     background-color: #1A3D2B !important;
 }

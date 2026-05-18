@@ -18,8 +18,9 @@ class UsersTable
     {
         return $table
             ->columns([
-                ImageColumn::make('avatar')
+                ImageColumn::make('profile_photo_path')
                     ->label('')
+                    ->getStateUsing(fn($record) => $record->profile_photo_path ? asset('storage/' . $record->profile_photo_path) : null)
                     ->defaultImageUrl(
                         asset('images/default-avatar.png')
                     )
