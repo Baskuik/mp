@@ -49,162 +49,161 @@ class AdminPanelProvider extends PanelProvider
                 'panels::body.end',
                 fn() => new HtmlString('
                     <style>
-                        /* Sidebar breedte-animatie */
-                        .fi-sidebar {
-                            transition:
-                                width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                                min-width 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                            will-change: width !important;
-                            overflow: visible !important;
-                        }
+/* Sidebar breedte-animatie */
+.fi-sidebar {
+    transition:
+        width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        min-width 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    will-change: width !important;
+    overflow: visible !important;
+}
 
-                        /* Inner content clipped */
-                        .fi-sidebar-content {
-                            overflow-x: hidden !important;
-                            overflow-y: auto !important;
-                        }
+/* BEHEER label centreren bij ingeklapt */
+.fi-sidebar.sidebar-collapsed .fi-sidebar-group-label {
+    text-align: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    font-size: 0.55rem !important;
+    letter-spacing: 0.05em !important;
+    width: 100% !important;
+}
 
-                        /* Merknaam: fade weg bij inklappen */
-                        .fi-sidebar-header {
-                            overflow: hidden !important;
-                            transition: opacity 0.25s ease !important;
-                        }
+/* Inner content clipped */
+.fi-sidebar-content {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
 
-                        .fi-sidebar.sidebar-collapsed .fi-sidebar-header {
-                            opacity: 0 !important;
-                            pointer-events: none !important;
-                        }
+/* Merknaam: fade weg bij inklappen */
+.fi-sidebar-header {
+    overflow: hidden !important;
+    transition: opacity 0.2s ease 0.05s !important;
+}
 
-                        /* Tekst labels fade uit */
-                        .fi-sidebar-nav-item-label,
-                        .fi-sidebar-group-label,
-                        .fi-sidebar-nav span:not([class*="fi-icon"]) {
-                            transition: opacity 0.25s ease !important;
-                            white-space: nowrap !important;
-                        }
+.fi-sidebar.sidebar-collapsed .fi-sidebar-header {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
 
-                        .fi-sidebar.sidebar-collapsed .fi-sidebar-nav-item-label,
-                        .fi-sidebar.sidebar-collapsed .fi-sidebar-group-label,
-                        .fi-sidebar.sidebar-collapsed .fi-sidebar-nav span:not([class*="fi-icon"]) {
-                            opacity: 0 !important;
-                        }
+/* Label fade — eerst verdwijnen bij inklappen, later verschijnen bij uitklappen */
+.fi-sidebar-item-label,
+.fi-sidebar-item-badge-ctn {
+    transition: opacity 0.15s ease !important;
+    white-space: nowrap !important;
+}
 
-                        /* Nav item container */
-                        .fi-sidebar.sidebar-collapsed .fi-sidebar-item-btn {
-                            width: 2.5rem !important;
-                            height: 2.5rem !important;
-                            padding: 0 !important;
-                            margin: 0 auto !important;
-                            display: flex !important;
-                            justify-content: center !important;
-                            align-items: center !important;
-                            gap: 0 !important;
-                            border-radius: 0.375rem !important;
-                        }
+.fi-sidebar.sidebar-collapsed .fi-sidebar-item-label,
+.fi-sidebar.sidebar-collapsed .fi-sidebar-item-badge-ctn {
+    opacity: 0 !important;
+}
 
-                        /* Icoon zichtbaar en gecentreerd */
-                        .fi-sidebar.sidebar-collapsed .fi-sidebar-item-icon {
-                            width: 1.5rem !important;
-                            height: 1.5rem !important;
-                            flex-shrink: 0 !important;
-                            display: block !important;
-                        }
+/* Nav item container */
+.fi-sidebar.sidebar-collapsed .fi-sidebar-item-btn {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 0 !important;
+    border-radius: 0.375rem !important;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
 
-                        /* Label en badge verbergen */
-                        .fi-sidebar.sidebar-collapsed .fi-sidebar-item-label,
-                        .fi-sidebar.sidebar-collapsed .fi-sidebar-item-badge-ctn {
-                            display: none !important;
-                        }
+/* Icoon: subtiele scale bij collapse/expand */
+.fi-sidebar-item-icon {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s ease !important;
+    flex-shrink: 0 !important;
+}
 
-                        .fi-sidebar.sidebar-collapsed .fi-icon {
-                            opacity: 1 !important;
-                            visibility: visible !important;
-                            width: 1.5rem !important;
-                            height: 1.5rem !important;
-                            display: flex !important;
-                            align-items: center !important;
-                            justify-content: center !important;
-                            flex-shrink: 0 !important;
-                        }
+.fi-sidebar.sidebar-collapsed .fi-sidebar-item-icon {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+    display: block !important;
+}
 
-                        .fi-sidebar.sidebar-collapsed .fi-icon svg {
-                            width: 1.5rem !important;
-                            height: 1.5rem !important;
-                            display: block !important;
-                        }
+/* Label en badge verbergen (display:none alleen in collapsed) */
+.fi-sidebar.sidebar-collapsed .fi-sidebar-item-label,
+.fi-sidebar.sidebar-collapsed .fi-sidebar-item-badge-ctn {
+    display: none !important;
+}
 
-                        /* Badges/nummers verbergen */
-                        .fi-sidebar-nav-item-badge,
-                        .fi-badge {
-                            display: none !important;
-                        }
+/* Badges/nummers verbergen */
+.fi-sidebar-nav-item-badge,
+.fi-badge {
+    display: none !important;
+}
 
-                        /* Footer */
-                        .fi-sidebar-footer {
-                            margin-top: auto !important;
-                            border-top: 1px solid rgba(255,255,255,0.2) !important;
-                            display: flex !important;
-                            flex-direction: column !important;
-                            gap: 0.5rem !important;
-                            padding: 1rem 0.5rem !important;
-                        }
+/* Footer */
+.fi-sidebar-footer {
+    margin-top: auto !important;
+    border-top: 1px solid rgba(255,255,255,0.2) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    padding: 1rem 0.5rem !important;
+}
 
-                        .fi-sidebar-footer > *:not(#sidebar-toggle-btn) {
-                            transition: opacity 0.2s ease, max-height 0.3s ease !important;
-                            max-height: 100px !important;
-                            overflow: hidden !important;
-                        }
+.fi-sidebar-footer > *:not(#sidebar-toggle-btn) {
+    transition: opacity 0.2s ease, max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    max-height: 100px !important;
+    overflow: hidden !important;
+}
 
-                        .fi-sidebar.sidebar-collapsed .fi-sidebar-footer > *:not(#sidebar-toggle-btn) {
-                            opacity: 0 !important;
-                            max-height: 0 !important;
-                            pointer-events: none !important;
-                        }
+.fi-sidebar.sidebar-collapsed .fi-sidebar-footer > *:not(#sidebar-toggle-btn) {
+    opacity: 0 !important;
+    max-height: 0 !important;
+    pointer-events: none !important;
+}
 
-                        /* Toggle knop */
-                        #sidebar-toggle-btn {
-                            width: calc(100% - 1rem) !important;
-                            margin: 0.5rem !important;
-                            padding: 0.8rem !important;
-                            border: 2px solid rgba(255,255,255,0.25) !important;
-                            background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%) !important;
-                            color: rgba(255,255,255,0.95) !important;
-                            font-size: 1.25rem !important;
-                            cursor: pointer !important;
-                            display: flex !important;
-                            align-items: center !important;
-                            justify-content: center !important;
-                            transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease !important;
-                            border-radius: 0.55rem !important;
-                            font-weight: 700 !important;
-                            flex-shrink: 0 !important;
-                        }
+/* Toggle knop */
+#sidebar-toggle-btn {
+    width: calc(100% - 1rem) !important;
+    margin: 0.5rem !important;
+    padding: 0.8rem !important;
+    border: 2px solid rgba(255,255,255,0.25) !important;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%) !important;
+    color: rgba(255,255,255,0.95) !important;
+    font-size: 1.25rem !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background 0.25s ease, border-color 0.25s ease, transform 0.2s ease !important;
+    border-radius: 0.55rem !important;
+    font-weight: 700 !important;
+    flex-shrink: 0 !important;
+}
 
-                        #sidebar-toggle-btn:hover {
-                            background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.08) 100%) !important;
-                            border-color: rgba(255,255,255,0.4) !important;
-                        }
+#sidebar-toggle-btn:hover {
+    background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.08) 100%) !important;
+    border-color: rgba(255,255,255,0.4) !important;
+}
 
-                        .fi-sidebar:not(.sidebar-collapsed) #sidebar-toggle-btn:hover {
-                            transform: translateX(-2px) !important;
-                        }
+.fi-sidebar:not(.sidebar-collapsed) #sidebar-toggle-btn:hover {
+    transform: translateX(-2px) !important;
+}
 
-                        .fi-sidebar.sidebar-collapsed #sidebar-toggle-btn:hover {
-                            transform: translateX(2px) !important;
-                        }
+.fi-sidebar.sidebar-collapsed #sidebar-toggle-btn:hover {
+    transform: translateX(2px) !important;
+}
 
-                        #sidebar-toggle-btn:active {
-                            transform: scale(0.98) !important;
-                        }
+#sidebar-toggle-btn:active {
+    transform: scale(0.98) !important;
+}
 
-                        .toggle-icon {
-                            display: inline-block !important;
-                            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                        }
+.toggle-icon {
+    display: inline-block !important;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
 
-                        .fi-sidebar.sidebar-collapsed .toggle-icon {
-                            transform: scaleX(-1) !important;
-                        }
+.fi-sidebar.sidebar-collapsed .toggle-icon {
+    transform: scaleX(-1) !important;
+}
                     </style>
 
                     <script>
@@ -250,6 +249,7 @@ class AdminPanelProvider extends PanelProvider
                             sidebar.style.setProperty("min-width", EXPANDED_W, "important");
                             setAlpineStoreOpen(true);
                         }
+                            
 
                         function initToggleButton() {
                             const sidebar = getSidebar();
