@@ -16,9 +16,8 @@ use Filament\Tables\Table;
 
 class BidResource extends Resource
 {
-    protected static ?string $model = Bid::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-banknotes';
+    protected static \UnitEnum|string|null $navigationGroup = 'BEHEER';
 
     public static function form(Schema $schema): Schema
     {
@@ -28,6 +27,18 @@ class BidResource extends Resource
     public static function table(Table $table): Table
     {
         return BidsTable::configure($table);
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\BidStatsOverview::class,
+        ];
     }
 
     public static function getRelations(): array

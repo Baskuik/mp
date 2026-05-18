@@ -8,10 +8,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('conversations', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('listing_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('buyer_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('seller_id')->constrained('users')->cascadeOnDelete();
+            $table->id('conversation_id');
+            $table->foreignId('listing_id')->references('listing_id')->on('listings')->cascadeOnDelete();
+            $table->foreignId('buyer_id')->references('user_id')->on('users')->cascadeOnDelete();
+            $table->foreignId('seller_id')->references('user_id')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }

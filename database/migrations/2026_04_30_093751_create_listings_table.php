@@ -8,9 +8,9 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('listings', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('category_id')->constrained()->restrictOnDelete();
+            $table->id('listing_id');
+            $table->foreignId('user_id')->references('user_id')->on('users')->cascadeOnDelete();
+            $table->foreignId('category_id')->references('category_id')->on('categories')->restrictOnDelete();
             $table->string('title');
             $table->text('description');
             $table->decimal('price', 10, 2);

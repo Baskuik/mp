@@ -1,0 +1,5 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+:root, [data-theme="light"] {
+    color-scheme: light !important;
+}

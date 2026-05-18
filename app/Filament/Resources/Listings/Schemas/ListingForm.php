@@ -2,6 +2,11 @@
 
 namespace App\Filament\Resources\Listings\Schemas;
 
+use App\Models\Category;
+use App\Models\User;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class ListingForm
@@ -10,7 +15,73 @@ class ListingForm
     {
         return $schema
             ->components([
-                //
+                Select::make('user_id')
+                    ->label('Verkoper')
+                    ->placeholder('Zoek een gebruiker…')
+                    ->prefixIcon('heroicon-o-user')
+                    ->options(fn() => User::all()->pluck('name', 'user_id'))
+                    ->searchable()
+                    ->required()
+                    ->helperText('De gebruiker die deze advertentie heeft geplaatst.'),
+
+                Select::make('category_id')
+                    ->label('Categorie')
+                    ->placeholder('Selecteer een categorie…')
+                    ->prefixIcon('heroicon-o-tag')
+                    ->options(fn() => Category::where('category_active', true)->pluck('name', 'category_id'))
+                    ->searchable()
+                    ->required()
+                    ->helperText('Alleen actieve categorieën worden getoond.'),
+
+                TextInput::make('title')
+                    ->label('Titel')
+                    ->placeholder('bijv. iPhone 14 Pro – 256 GB Spacezwart')
+                    ->prefixIcon('heroicon-o-document-text')
+                    ->required()
+                    ->maxLength(255)
+                    ->helperText('Maximaal 255 tekens.'),
+
+                Textarea::make('description')
+                    ->label('Beschrijving')
+                    ->placeholder('Geef een duidelijke omschrijving van het product of de dienst…')
+                    ->rows(4)
+                    ->nullable()
+                    ->maxLength(5000)
+                    ->columnSpanFull()
+                    ->helperText('Maximaal 5000 tekens.'),
+
+                TextInput::make('price')
+                    ->label('Prijs (€)')
+                    ->placeholder('bijv. 249.99')
+                    ->prefixIcon('heroicon-o-currency-euro')
+                    ->numeric()
+                    ->required()
+                    ->minValue(0)
+                    ->step(0.01)
+                    ->helperText('Voer de prijs in euro\'s in (zonder valutasymbool).'),
+
+               Select::make('status')
+    ->label('Status')
+    ->placeholder('Kies een status…')
+    ->prefixIcon('heroicon-o-signal')
+    ->options([
+        'active'   => 'Actief',
+        'sold'     => 'Verkocht',
+        'archived' => 'Gearchiveerd',
+        'inactive' => 'Inactief',
+    ])
+    ->required()
+    ->default('active')
+    ->searchable() // ← toevoegen
+    ->helperText('Alleen actieve advertenties zijn zichtbaar voor klanten.'),
+
+                TextInput::make('location')
+                    ->label('Locatie')
+                    ->placeholder('bijv. Amsterdam')
+                    ->prefixIcon('heroicon-o-map-pin')
+                    ->required()
+                    ->maxLength(255)
+                    ->helperText('Stad of regio waar het product zich bevindt.'),
             ]);
     }
 }

@@ -16,9 +16,8 @@ use Filament\Tables\Table;
 
 class ListingResource extends Resource
 {
-    protected static ?string $model = Listing::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-shopping-bag';
+    protected static \UnitEnum|string|null $navigationGroup = 'BEHEER';
 
     public static function form(Schema $schema): Schema
     {
@@ -34,6 +33,23 @@ class ListingResource extends Resource
     {
         return [
             //
+        ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'warning';
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\ListingStatsOverview::class,
         ];
     }
 
