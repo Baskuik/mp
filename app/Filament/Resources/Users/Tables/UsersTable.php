@@ -8,7 +8,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\Action;
+use Filament\Actions\BulkAction; // De specifieke BulkAction klasse
+use Filament\Forms\Components\Select;   // Voor de select dropdown
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -124,15 +125,33 @@ class UsersTable
                     }),
             ])
             ->bulkActions([
-                // Aangepaste Bulk Delete actie (Soft)
-                Action::make('delete')
-                    ->label(__('Selectie deactiveren'))
-                    ->modalHeading(__('Geselecteerde gebruikers deactiveren'))
-                    ->action(function (Collection $records) {
-                        $records->each(fn(User $record) => $record->update(['is_active' => false]));
+                BulkAction::make('change_status')
+                    ->label(__('Status wijzigen'))
+                    ->icon('heroicon-m-pencil-square')
+                    ->color('primary')
+                    ->form([
+                        Select::make('status')
+                            ->label(__('Kies nieuwe status'))
+                            ->options([
+                                'active' => 'Actief maken',
+                                'deactivate' => 'Deactiveren (Soft delete)',
+                                'ban' => 'Verbannen',
+                            ])
+                            ->required(),
+                    ])
+                    ->action(function (Collection $records, array $data) {
+                        $records->each(function (User $record) use ($data) {
+                            if ($data['status'] === 'active') {
+                                $record->update(['is_active' => true, 'is_banned' => false]);
+                            } elseif ($data['status'] === 'deactivate') {
+                                $record->update(['is_active' => false]);
+                            } elseif ($data['status'] === 'ban') {
+                                $record->update(['is_banned' => true]);
+                            }
+                        });
 
                         Notification::make()
-                            ->title(__('Gebruikers gedeactiveerd'))
+                            ->title(__('Status succesvol bijgewerkt voor selectie'))
                             ->success()
                             ->send();
                     })
