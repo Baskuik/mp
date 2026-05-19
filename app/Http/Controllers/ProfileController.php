@@ -54,7 +54,7 @@ class ProfileController extends Controller
 
         // Als email is gewijzigd, stuur verificatiecode
         if ($emailChanged) {
-            $this->sendEmailVerificationCode($validated['email'], $user->name);
+            $this->sendEmailVerificationCodeHelper($validated['email'], $user->name);
             return redirect()->route('profile.show')
                 ->with('email_change_status', 'email_verification_sent');
         }

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Reviews\Tables;
 use App\Models\Review;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\Action;
@@ -29,13 +30,15 @@ class ReviewsTable
                     ->label(__('REVIEWER ID'))
                     ->searchable()
                     ->sortable()
-                    ->weight('medium'),
+                    ->weight('medium')
+                    ->toggleable(),
 
                 TextColumn::make(Review::REVIEWEE_ID) // De persoon over wie de review gaat
                     ->label(__('REVIEWEE ID'))
                     ->searchable()
                     ->sortable()
-                    ->color('gray'),
+                    ->color('gray')
+                    ->toggleable(),
 
                 TextColumn::make(Review::LISTING_ID)
                     ->label(__('LISTING ID'))
@@ -51,12 +54,23 @@ class ReviewsTable
                     ->badge()
                     ->color('gray')
                     ->sortable()
-                    ->alignCenter(),
+                    ->alignCenter()
+                    ->toggleable(),
 
                 TextColumn::make(Review::REVIEW_COMMENT)
                     ->label(__('COMMENTAAR'))
                     ->searchable()
                     ->toggleable(),
+
+                IconColumn::make('is_active')
+                    ->label(__('IS ACTIEF'))
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->toggleable()
+                    ->sortable(),
 
                 TextColumn::make(Review::CREATED_AT)
                     ->label(__('DATUM'))

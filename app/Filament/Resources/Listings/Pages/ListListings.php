@@ -26,6 +26,7 @@ class ListListings extends ListRecords
         $tabOptions = [
             'active' => 'Actief',
             'sold' => 'Verkocht',
+            'inactive' => 'Inactief',
             'archived' => 'Gearchiveerd',
         ];
 
