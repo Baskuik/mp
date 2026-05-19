@@ -8,10 +8,13 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkAction; // De specifieke BulkAction klasse
+use Filament\Actions\BulkAction;
 use Filament\Forms\Components\Select;   // Voor de select dropdown
 use Filament\Notifications\Notification;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
 class UsersTable
 {
@@ -46,33 +49,36 @@ class UsersTable
                 TextColumn::make(User::USER_EMAIL_VERIFIED_AT)
                     ->label(__('EMAIL GEVERIFIEERD'))
                     ->badge()
-                    ->getStateUsing(fn(User $record) => !is_null($record->email_verified_at))
-                    ->formatStateUsing(fn($state) => $state ? '✓ Ja' : '✗ Nee')
-                    ->color(fn($state) => $state ? 'success' : 'danger')
+                    ->state(fn(User $record) => !is_null($record->email_verified_at) ? 'verified' : 'not_verified')
+                    ->formatStateUsing(fn($state) => $state === 'verified' ? '✓ Ja' : '✗ Nee')
+                    ->color(fn($state) => $state === 'verified' ? 'success' : 'danger')
                     ->toggleable()
                     ->sortable(),
 
                 TextColumn::make(User::USER_IS_ADMIN)
                     ->label(__('IS ADMIN'))
                     ->badge()
-                    ->formatStateUsing(fn($state) => $state ? '★ Admin' : 'User')
-                    ->color(fn($state) => $state ? 'warning' : 'gray')
+                    ->state(fn(User $record) => $record->is_admin ? 'admin' : 'user')
+                    ->formatStateUsing(fn($state) => $state === 'admin' ? '★ Admin' : 'User')
+                    ->color(fn($state) => $state === 'admin' ? 'warning' : 'gray')
                     ->toggleable()
                     ->sortable(),
 
                 TextColumn::make(User::USER_IS_ACTIVE)
                     ->label(__('IS ACTIEF'))
                     ->badge()
-                    ->formatStateUsing(fn($state) => $state ? 'Actief' : 'Gedeactiveerd')
-                    ->color(fn($state) => $state ? 'success' : 'danger')
+                    ->state(fn(User $record) => $record->is_active ? 'active' : 'inactive')
+                    ->formatStateUsing(fn($state) => $state === 'active' ? 'Actief' : 'Gedeactiveerd')
+                    ->color(fn($state) => $state === 'active' ? 'success' : 'danger')
                     ->toggleable()
                     ->sortable(),
 
                 TextColumn::make(User::USER_IS_BANNED)
                     ->label(__('VERBANNEN'))
                     ->badge()
-                    ->formatStateUsing(fn($state) => $state ? '⛔ Verbannen' : 'Niet verbannen')
-                    ->color(fn($state) => $state ? 'danger' : 'gray')
+                    ->state(fn(User $record) => $record->is_banned ? 'banned' : 'not_banned')
+                    ->formatStateUsing(fn($state) => $state === 'banned' ? '⛔ Verbannen' : 'Niet verbannen')
+                    ->color(fn($state) => $state === 'banned' ? 'danger' : 'gray')
                     ->toggleable()
                     ->sortable(),
 
@@ -101,6 +107,31 @@ class UsersTable
                     ->dateTime('d-m-Y H:i')
                     ->toggleable()
                     ->sortable(),
+            ])
+            ->filters([
+                Filter::make(User::USER_EMAIL_VERIFIED_AT)
+                    ->label(__('EMAIL GEVERIFIEERD'))
+                    ->query(fn(Builder $query) => $query->whereNotNull('email_verified_at')),
+
+                Filter::make('email_not_verified')
+                    ->label(__('EMAIL NIET GEVERIFIEERD'))
+                    ->query(fn(Builder $query) => $query->whereNull('email_verified_at')),
+
+                Filter::make(User::USER_IS_ADMIN)
+                    ->label(__('IS ADMIN'))
+                    ->query(fn(Builder $query) => $query->where('is_admin', true)),
+
+                Filter::make(User::USER_IS_ACTIVE)
+                    ->label(__('IS ACTIEF'))
+                    ->query(fn(Builder $query) => $query->where('is_active', true)),
+
+                Filter::make('is_not_active')
+                    ->label(__('GEDEACTIVEERD'))
+                    ->query(fn(Builder $query) => $query->where('is_active', false)),
+
+                Filter::make(User::USER_IS_BANNED)
+                    ->label(__('VERBANNEN'))
+                    ->query(fn(Builder $query) => $query->where('is_banned', true)),
             ])
             ->actions([
                 EditAction::make()
