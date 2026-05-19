@@ -17,6 +17,10 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
     protected $primaryKey = 'user_id';
 
+    public $incrementing = true;
+
+    protected $keyType = 'int';
+
     /**
      * Boot the model.
      */
@@ -73,18 +77,15 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'remember_token',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'is_admin' => 'boolean',
-            'is_active' => 'boolean',
-            'is_banned' => 'boolean',
-            'phone_verified' => 'boolean',
-            'phone_verification_sent_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'is_admin' => 'boolean',
+        'is_active' => 'boolean',
+        'is_banned' => 'boolean',
+        'phone_verified' => 'boolean',
+        'phone_verification_sent_at' => 'datetime',
+    ];
 
     public function isAdmin(): bool
     {
