@@ -3,12 +3,12 @@
 namespace App\Filament\Resources\Bids\Tables;
 
 use App\Models\Bid;
-use App\Models\Listing;
-use App\Models\User;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
+use Filament\Actions\BulkAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
@@ -105,6 +105,16 @@ class BidsTable
                     ->sortable()
                     ->toggleable(),
 
+                IconColumn::make('is_active')
+                    ->label('ACTIEF')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->sortable()
+                    ->toggleable(),
+
                 TextColumn::make(Bid::CREATED_AT)
                     ->label('DATUM')
                     ->dateTime('d-m-Y H:i')
@@ -121,7 +131,17 @@ class BidsTable
                     ->sortable()
                     ->toggleable(),
             ])
-            
+            ->filters([
+                Filter::make('actief')
+                    ->label('Alleen actieve biedingen')
+                    ->toggle()
+                    ->query(fn(Builder $query) => $query->where('is_active', true)),
+
+                Filter::make('inactief')
+                    ->label('Alleen verwijderde biedingen')
+                    ->toggle()
+                    ->query(fn(Builder $query) => $query->where('is_active', false)),
+            ])
             ->actions([
                 EditAction::make()
                     ->label(false)
@@ -144,12 +164,48 @@ class BidsTable
                             ->success()
                             ->send();
                     }),
+
+                Action::make('deactivate')
+                    ->label(false)
+                    ->icon('heroicon-m-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Bieding verwijderen')
+                    ->modalDescription('Weet je zeker dat je deze bieding wilt verwijderen? De bieding blijft bewaard in de database maar wordt niet meer getoond.')
+                    ->modalSubmitActionLabel('Ja, verwijder bieding')
+                    ->visible(fn(Bid $record): bool => (bool) $record->is_active)
+                    ->action(function (Bid $record) {
+                        $record->update(['is_active' => false]);
+
+                        Notification::make()
+                            ->title('Bieding verwijderd')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
-                Action::make('decline')
+                BulkAction::make('bulk_deactivate')
+                    ->label('Selectie verwijderen')
+                    ->icon('heroicon-m-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Geselecteerde biedingen verwijderen')
+                    ->modalDescription('Weet je zeker dat je de geselecteerde biedingen wilt verwijderen? Ze blijven bewaard in de database maar worden niet meer getoond.')
+                    ->modalSubmitActionLabel('Ja, verwijder selectie')
+                    ->action(function (Collection $records) {
+                        $records->each(fn(Bid $record) => $record->update(['is_active' => false]));
+
+                        Notification::make()
+                            ->title('Biedingen verwijderd')
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
+
+                BulkAction::make('decline')
                     ->label('Selectie afwijzen')
                     ->icon('heroicon-m-x-circle')
-                    ->color('danger')
+                    ->color('warning')
                     ->requiresConfirmation()
                     ->modalHeading('Geselecteerde biedingen afwijzen')
                     ->action(function (Collection $records) {

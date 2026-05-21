@@ -8,7 +8,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -123,6 +123,16 @@ class CategoriesTable
                     ->label('Alleen subcategorieën')
                     ->toggle()
                     ->query(fn(Builder $query) => $query->whereNotNull('parent_id')),
+
+                Filter::make('actief')
+                    ->label('Alleen actieve categorieën')
+                    ->toggle()
+                    ->query(fn(Builder $query) => $query->where('category_active', true)),
+
+                Filter::make('inactief')
+                    ->label('Alleen verwijderde categorieën')
+                    ->toggle()
+                    ->query(fn(Builder $query) => $query->where('category_active', false)),
             ])
             ->actions([
                 EditAction::make()
@@ -132,33 +142,35 @@ class CategoriesTable
 
                 DeleteAction::make()
                     ->label(false)
-                    ->icon('heroicon-m-eye-slash')
-                    ->modalHeading('Categorie deactiveren')
-                    ->modalDescription('Deze categorie wordt onzichtbaar voor klanten.')
-                    ->modalSubmitActionLabel('Ja, deactiveer')
+                    ->icon('heroicon-m-trash')
+                    ->modalHeading('Categorie verwijderen')
+                    ->modalDescription('Weet je zeker dat je deze categorie wilt verwijderen? De categorie blijft bewaard in de database maar wordt niet meer getoond aan klanten.')
+                    ->modalSubmitActionLabel('Ja, verwijder')
                     ->action(function (Category $record) {
                         $record->update([Category::CATEGORY_ACTIVE => false]);
 
                         Notification::make()
-                            ->title('Categorie gedeactiveerd')
+                            ->title('Categorie verwijderd')
                             ->success()
                             ->send();
                     }),
             ])
             ->bulkActions([
-                Action::make('deactivate')
-                    ->label('Selectie deactiveren')
-                    ->icon('heroicon-m-eye-slash')
+                BulkAction::make('bulk_deactivate')
+                    ->label('Selectie verwijderen')
+                    ->icon('heroicon-m-trash')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->modalHeading('Geselecteerde categorieën deactiveren')
+                    ->modalHeading('Geselecteerde categorieën verwijderen')
+                    ->modalDescription('Weet je zeker dat je de geselecteerde categorieën wilt verwijderen? Ze blijven bewaard in de database maar worden niet meer getoond aan klanten.')
+                    ->modalSubmitActionLabel('Ja, verwijder selectie')
                     ->action(function (Collection $records) {
                         $records->each(fn(Category $record) => $record->update([
                             Category::CATEGORY_ACTIVE => false,
                         ]));
 
                         Notification::make()
-                            ->title('Categorieën gedeactiveerd')
+                            ->title('Categorieën verwijderd')
                             ->success()
                             ->send();
                     })

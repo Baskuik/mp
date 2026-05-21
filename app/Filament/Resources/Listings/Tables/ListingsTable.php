@@ -8,7 +8,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
@@ -104,7 +104,7 @@ class ListingsTable
                         'active'   => self::badge('● ACTIEF', 'green'),
                         'sold'     => self::badge('★ VERKOCHT', 'blue'),
                         'archived' => self::badge('○ GEARCHIVEERD', 'gray'),
-                        'inactive' => self::badge('○ INACTIEF', 'red'),
+                        'inactive' => self::badge('✗ VERWIJDERD', 'red'),
                         default    => self::badge(strtoupper($record->status ?? ''), 'gray'),
                     })
                     ->sortable()
@@ -160,7 +160,7 @@ class ListingsTable
                     ->query(fn(Builder $query) => $query->where('status', 'archived')),
 
                 Filter::make('inactive')
-                    ->label('Inactief')
+                    ->label('Verwijderd')
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('status', 'inactive')),
             ])
@@ -172,37 +172,41 @@ class ListingsTable
 
                 DeleteAction::make()
                     ->label(false)
-                    ->icon('heroicon-m-archive-box')
-                    ->modalHeading('Advertentie archiveren')
-                    ->modalDescription('Weet je zeker dat je deze advertentie wilt archiveren? Hij blijft bewaard in het systeem.')
-                    ->modalSubmitActionLabel('Ja, archiveer')
+                    ->icon('heroicon-m-trash')
+                    ->modalHeading('Advertentie verwijderen')
+                    ->modalDescription('Weet je zeker dat je deze advertentie wilt verwijderen? De advertentie blijft bewaard in de database maar wordt op inactief gezet.')
+                    ->modalSubmitActionLabel('Ja, verwijder')
                     ->action(function (Listing $record) {
-                        $record->update([Listing::LISTING_STATUS => 'archived']);
+                        $record->update([Listing::LISTING_STATUS => 'inactive']);
 
                         Notification::make()
-                            ->title('Advertentie gearchiveerd')
+                            ->title('Advertentie verwijderd')
                             ->success()
                             ->send();
                     }),
             ])
             ->bulkActions([
-                Action::make('archive')
-                    ->label('Selectie archiveren')
-                    ->icon('heroicon-m-archive-box')
+                BulkAction::make('bulk_delete')
+                    ->label('Selectie verwijderen')
+                    ->icon('heroicon-m-trash')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->modalHeading('Geselecteerde advertenties archiveren')
+                    ->modalHeading('Geselecteerde advertenties verwijderen')
+                    ->modalDescription('Weet je zeker dat je de geselecteerde advertenties wilt verwijderen? Ze blijven bewaard in de database maar worden op inactief gezet.')
+                    ->modalSubmitActionLabel('Ja, verwijder selectie')
                     ->action(function (Collection $records) {
                         $records->each(fn(Listing $record) => $record->update([
-                            Listing::LISTING_STATUS => 'archived',
+                            Listing::LISTING_STATUS => 'inactive',
                         ]));
 
                         Notification::make()
-                            ->title('Advertenties gearchiveerd')
+                            ->title('Advertenties verwijderd')
                             ->success()
                             ->send();
                     })
                     ->deselectRecordsAfterCompletion(),
+
+
             ]);
     }
 }

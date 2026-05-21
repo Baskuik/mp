@@ -7,7 +7,6 @@ use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Actions\EditAction;
-use Filament\Tables\Filters\TernaryFilter;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkAction;
 use Filament\Forms\Components\Select;
@@ -93,7 +92,7 @@ class UsersTable
                     ->html()
                     ->getStateUsing(fn(User $record): string => $record->is_active
                         ? self::badge('● ACTIEF', 'green')
-                        : self::badge('○ GEDEACTIVEERD', 'red'))
+                        : self::badge('✗ GEDEACTIVEERD', 'red'))
                     ->toggleable()
                     ->sortable(),
 
@@ -101,8 +100,8 @@ class UsersTable
                     ->label('BAN')
                     ->html()
                     ->getStateUsing(fn(User $record): string => $record->is_banned
-                        ? self::badge('⛔ VERBANNEN', 'darkred')
-                        : self::badge('✓ VRIJ', 'green'))
+                        ? self::badge('JA ', 'green')
+                        : self::badge('NEE ', 'darkred'))
                     ->toggleable()
                     ->sortable(),
 
@@ -144,35 +143,36 @@ class UsersTable
                     ->sortable(),
             ])
             ->filters([
-Filter::make('email_verified')
-    ->label('Email geverifieerd')
-    ->toggle()
-    ->query(fn(Builder $query) => $query->whereNotNull('email_verified_at')),
+                Filter::make('email_verified')
+                    ->label('Email geverifieerd')
+                    ->toggle()
+                    ->query(fn(Builder $query) => $query->whereNotNull('email_verified_at')),
 
-Filter::make('email_not_verified')
-    ->label('Email niet geverifieerd')
-    ->toggle()
-    ->query(fn(Builder $query) => $query->whereNull('email_verified_at')),
-    Filter::make('is_admin')
-        ->label('Admins')
-        ->toggle()
-        ->query(fn(Builder $query) => $query->where('is_admin', true)),
+                Filter::make('email_not_verified')
+                    ->label('Email niet geverifieerd')
+                    ->toggle()
+                    ->query(fn(Builder $query) => $query->whereNull('email_verified_at')),
 
-    Filter::make('is_active')
-        ->label('Actief')
-        ->toggle()
-        ->query(fn(Builder $query) => $query->where('is_active', true)),
+                Filter::make('is_admin')
+                    ->label('Admins')
+                    ->toggle()
+                    ->query(fn(Builder $query) => $query->where('is_admin', true)),
 
-    Filter::make('is_not_active')
-        ->label('Gedeactiveerd')
-        ->toggle()
-        ->query(fn(Builder $query) => $query->where('is_active', false)),
+                Filter::make('is_active')
+                    ->label('Actief')
+                    ->toggle()
+                    ->query(fn(Builder $query) => $query->where('is_active', true)),
 
-    Filter::make('is_banned')
-        ->label('Verbannen')
-        ->toggle()
-        ->query(fn(Builder $query) => $query->where('is_banned', true)),
-])
+                Filter::make('is_not_active')
+                    ->label('Verwijderd')
+                    ->toggle()
+                    ->query(fn(Builder $query) => $query->where('is_active', false)),
+
+                Filter::make('is_banned')
+                    ->label('Verbannen')
+                    ->toggle()
+                    ->query(fn(Builder $query) => $query->where('is_banned', true)),
+            ])
             ->actions([
                 EditAction::make()
                     ->label(false)
@@ -181,19 +181,37 @@ Filter::make('email_not_verified')
 
                 DeleteAction::make()
                     ->label(false)
-                    ->icon('heroicon-m-no-symbol')
-                    ->modalHeading('Gebruiker deactiveren')
-                    ->modalDescription('Weet je zeker dat je deze gebruiker op inactief wilt zetten?')
-                    ->modalSubmitActionLabel('Ja, deactiveer')
+                    ->icon('heroicon-m-trash')
+                    ->modalHeading('Gebruiker verwijderen')
+                    ->modalDescription('Weet je zeker dat je deze gebruiker wilt verwijderen? De gebruiker blijft bewaard in de database maar kan niet meer inloggen.')
+                    ->modalSubmitActionLabel('Ja, verwijder')
                     ->action(function (User $record) {
                         $record->update(['is_active' => false]);
                         Notification::make()
-                            ->title('Gebruiker gedeactiveerd')
+                            ->title('Gebruiker verwijderd')
                             ->success()
                             ->send();
                     }),
             ])
             ->bulkActions([
+                BulkAction::make('bulk_delete')
+                    ->label('Selectie verwijderen')
+                    ->icon('heroicon-m-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Geselecteerde gebruikers verwijderen')
+                    ->modalDescription('Weet je zeker dat je de geselecteerde gebruikers wilt verwijderen? Ze blijven bewaard in de database maar kunnen niet meer inloggen.')
+                    ->modalSubmitActionLabel('Ja, verwijder selectie')
+                    ->action(function (Collection $records) {
+                        $records->each(fn(User $record) => $record->update(['is_active' => false]));
+
+                        Notification::make()
+                            ->title('Gebruikers verwijderd')
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
+
                 BulkAction::make('change_status')
                     ->label('Status wijzigen')
                     ->icon('heroicon-m-pencil-square')
