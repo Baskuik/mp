@@ -71,7 +71,7 @@ class UsersTable
                     ->color('gray'),
 
                 TextColumn::make('name')
-                    ->label('NAAM')
+                    ->label(__('NAAM'))
                     ->description(fn(User $record): string => $record->email)
                     ->searchable()
                     ->toggleable()
@@ -79,7 +79,7 @@ class UsersTable
                     ->weight('medium'),
 
                 TextColumn::make('is_admin')
-                    ->label('ROL')
+                    ->label(__('ROL'))
                     ->html()
                     ->getStateUsing(fn(User $record): string => $record->is_admin
                         ? self::badge('★ ADMIN', 'amber')
@@ -88,7 +88,7 @@ class UsersTable
                     ->sortable(),
 
                 TextColumn::make('is_active')
-                    ->label('STATUS')
+                    ->label(__('STATUS'))
                     ->html()
                     ->getStateUsing(fn(User $record): string => $record->is_active
                         ? self::badge('● ACTIEF', 'green')
@@ -97,7 +97,7 @@ class UsersTable
                     ->sortable(),
 
                 TextColumn::make('is_banned')
-                    ->label('BAN')
+                    ->label(__('BAN'))
                     ->html()
                     ->getStateUsing(fn(User $record): string => $record->is_banned
                         ? self::badge('JA ', 'green')
@@ -106,7 +106,7 @@ class UsersTable
                     ->sortable(),
 
                 TextColumn::make('email_verified_at')
-                    ->label('EMAIL')
+                    ->label(__('EMAIL'))
                     ->html()
                     ->getStateUsing(fn(User $record): string => $record->email_verified_at
                         ? self::badge('✓ GEVERIFIEERD', 'blue')
@@ -115,7 +115,7 @@ class UsersTable
                     ->sortable(),
 
                 TextColumn::make('username')
-                    ->label('USERNAME')
+                    ->label(__('USERNAME'))
                     ->color('gray')
                     ->sortable()
                     ->toggleable()
@@ -123,7 +123,7 @@ class UsersTable
                     ->placeholder('—'),
 
                 TextColumn::make('bio')
-                    ->label('BIO')
+                    ->label(__('BIO'))
                     ->color('gray')
                     ->limit(40)
                     ->toggleable()
@@ -131,45 +131,45 @@ class UsersTable
                     ->placeholder('—'),
 
                 TextColumn::make('created_at')
-                    ->label('AANGEMAAKT')
+                    ->label(__('AANGEMAAKT'))
                     ->dateTime('d-m-Y H:i')
                     ->toggleable()
                     ->sortable(),
 
                 TextColumn::make('updated_at')
-                    ->label('BIJGEWERKT')
+                    ->label(__('BIJGEWERKT'))
                     ->dateTime('d-m-Y H:i')
                     ->toggleable()
                     ->sortable(),
             ])
             ->filters([
                 Filter::make('email_verified')
-                    ->label('Email geverifieerd')
+                    ->label(__('Email geverifieerd'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->whereNotNull('email_verified_at')),
 
                 Filter::make('email_not_verified')
-                    ->label('Email niet geverifieerd')
+                    ->label(__('Email niet geverifieerd'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->whereNull('email_verified_at')),
 
                 Filter::make('is_admin')
-                    ->label('Admins')
+                    ->label(__('Admins'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('is_admin', true)),
 
                 Filter::make('is_active')
-                    ->label('Actief')
+                    ->label(__('Actief'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('is_active', true)),
 
                 Filter::make('is_not_active')
-                    ->label('Verwijderd')
+                    ->label(__('Verwijderd'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('is_active', false)),
 
                 Filter::make('is_banned')
-                    ->label('Verbannen')
+                    ->label(__('Verbannen'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('is_banned', true)),
             ])
