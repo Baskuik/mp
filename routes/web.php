@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\ProfileController;
 
 // View routes
 Route::get('/', function () {
@@ -59,9 +61,21 @@ Route::middleware(['throttle:5,1'])->group(function () {
 });
 
 // Language switcher
-Route::post('/set-language/{lang}', function ($lang) {
-    if (in_array($lang, ['nl', 'de', 'en', 'be'])) {
+Route::get('/set-language/{lang}', function ($lang) {
+    if (in_array($lang, ['nl', 'de', 'en'])) {
         session(['locale' => $lang]);
     }
     return back();
 })->name('set-language');
+
+Route::middleware(['auth'])->group(function () {
+    // Profile routes
+    Route::get('/profiel', [ProfileController::class, 'show'])->name('profile.show');
+    Route::post('/profiel', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profiel/password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
+    Route::post('/profiel/email/send', [ProfileController::class, 'sendEmailVerificationCode'])->name('profile.email.send');
+    Route::post('/profiel/email/verify', [ProfileController::class, 'verifyEmailCode'])->name('profile.email.verify');
+    // Phone verification
+    Route::post('/profile/phone/send', [PhoneVerificationController::class, 'send'])->name('phone.send');
+    Route::post('/profile/phone/verify', [PhoneVerificationController::class, 'verify'])->name('phone.verify');
+});

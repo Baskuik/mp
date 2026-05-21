@@ -217,8 +217,6 @@ body {
 
 .fi-text-muted {
     color: #8B9B96 !important;
-}
-
 height: 100vh !important;
 position: sticky !important;
 box-shadow: 2px 0 24px rgba(0, 0, 0, 0.12) !important;
@@ -1196,4 +1194,95 @@ textarea:not(:placeholder-shown) {
 .fi-fo-select>div>div>ul>li * {
     color: #ffffff !important;
     background-color: #1A3D2B !important;
+}
+/* ── Toggle bolletje centreren ──────────────────────────────────────────── */
+button[role="switch"] > span:last-child {
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    margin-top: 0 !important;
+}
+
+button[role="switch"] > span {
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    margin-top: 0 !important;
+}
+
+button[role="switch"] {
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* ── Filter & Kolommen checkboxes ───────────────────────────────────────── */
+.fi-ta-filters-form input[type="checkbox"],
+.fi-dropdown-list input[type="checkbox"],
+.fi-ta-col-toggle input[type="checkbox"] {
+    border-radius: 5px !important;
+    border-color: rgba(0, 0, 0, 0.18) !important;
+    transition: all 0.12s !important;
+}
+
+.fi-ta-filters-form input[type="checkbox"]:checked,
+.fi-dropdown-list input[type="checkbox"]:checked,
+.fi-ta-col-toggle input[type="checkbox"]:checked {
+    background-color: var(--dd-forest-mid) !important;
+    border-color: var(--dd-forest-mid) !important;
+    box-shadow: 0 0 0 2px rgba(36, 92, 58, 0.15) !important;
+}
+/* ── Filter checkboxes als toggle-stijl ─────────────────────────────────── */
+.fi-filters input[type="checkbox"],
+.fi-ta-filters input[type="checkbox"],
+[data-fi-table-filters] input[type="checkbox"] {
+    width: 1rem !important;
+    height: 1rem !important;
+    border-radius: 4px !important;
+    border: 2px solid var(--dd-forest-mid) !important;
+    accent-color: var(--dd-forest-mid) !important;
+    cursor: pointer !important;
+}
+/* ── TernaryFilter dropdown ─────────────────────────────────────────────── */
+.fi-ta-filters select,
+.fi-ta-filters [role="listbox"],
+.fi-ta-filters [role="option"] {
+    background-color: var(--dd-forest) !important;
+    color: #ffffff !important;
+    border-color: var(--dd-forest-mid) !important;
+}
+
+.fi-ta-filters [role="option"]:hover,
+.fi-ta-filters [role="option"][data-headlessui-state~="active"] {
+    background-color: var(--dd-forest-lit) !important;
+}
+
+/* Geselecteerde waarde in het gesloten veld */
+.fi-ta-filters button > span,
+.fi-ta-filters [role="combobox"] {
+    color: var(--dd-ink) !important;
+}
+/* ── Kolommen & Filters dropdown scrollbaar ─────────────────────────────── */
+.fi-dropdown-panel .fi-dropdown-list,
+.fi-ta-col-toggle .fi-dropdown-list,
+.fi-ta-filters-form {
+    max-height: 400px !important;
+    overflow-y: auto !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: var(--dd-forest-mid) transparent !important;
+}
+
+/* ── Kolommen dropdown scrollbaar (exacte fix) ──────────────────────────── */
+.fi-dropdown-panel.fi-width-xs,
+.fi-dropdown-panel {
+    max-height: 320px !important;
+    overflow-y: auto !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: var(--dd-forest-mid) transparent !important;
+}
+
+.fi-dropdown-panel::-webkit-scrollbar {
+    width: 4px !important;
+}
+
+.fi-dropdown-panel::-webkit-scrollbar-thumb {
+    background-color: var(--dd-forest-mid) !important;
+    border-radius: 4px !important;
 }
