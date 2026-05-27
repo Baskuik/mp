@@ -3,15 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-<<<<<<< HEAD
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-=======
->>>>>>> mainpage
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
-<<<<<<< HEAD
     protected $primaryKey = 'category_id';
 
     const CATEGORY_ID = 'category_id';
@@ -49,17 +45,9 @@ class Category extends Model
     {
         return $this->hasMany(Category::class, 'parent_id');
     }
-}
-=======
-    protected $fillable = [
-        'name',
-        'slug',
-        'parent_id',
-    ];
 
     public function listings(): HasMany
     {
-        return $this->hasMany(Listing::class);
+        return $this->hasMany(Listing::class, 'category_id');
     }
 }
->>>>>>> mainpage

@@ -64,6 +64,33 @@
                                 @enderror
                             </div>
 
+                            <div>
+                                <label class="text-xs font-semibold text-[#2D6A4F]">Type verkoop</label>
+                                <div class="mt-2 flex flex-wrap gap-3 text-sm text-gray-700">
+                                    <label class="flex items-center gap-2">
+                                        <input
+                                            type="radio"
+                                            name="listing_type"
+                                            value="fixed"
+                                            class="text-[#2D6A4F]"
+                                            @checked(old('listing_type', 'fixed') === 'fixed')>
+                                        Vaste prijs
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input
+                                            type="radio"
+                                            name="listing_type"
+                                            value="bidding"
+                                            class="text-[#2D6A4F]"
+                                            @checked(old('listing_type') === 'bidding')>
+                                        Bieden
+                                    </label>
+                                </div>
+                                @error('listing_type')
+                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="text-xs font-semibold text-[#2D6A4F]">Label</label>
@@ -82,15 +109,16 @@
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="text-xs font-semibold text-[#2D6A4F]">Prijs (EUR)</label>
+                                    <label class="text-xs font-semibold text-[#2D6A4F]" data-price-label>Prijs (EUR)</label>
                                     <input
                                         name="price"
                                         value="{{ old('price') }}"
                                         type="number"
                                         step="0.01"
                                         min="0"
-                                        required
+                                        data-price-input
                                         class="mt-1 w-full rounded-xl border border-[#2D6A4F]/15 bg-white px-4 py-2 text-sm text-gray-800">
+                                    <p class="mt-1 text-xs text-gray-400">Bij bieden kan dit leeg blijven.</p>
                                     @error('price')
                                         <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                     @enderror
@@ -194,9 +222,18 @@
                                         <span class="text-gray-400">{{ $listing->created_at->diffForHumans() }}</span>
                                     </div>
                                     <h3 class="mt-3 text-sm font-semibold text-gray-800">{{ $listing->title }}</h3>
-                                    <p class="mt-1 text-[#2D6A4F] font-semibold">
-                                        EUR {{ number_format($listing->price, 2, ',', '.') }}
-                                    </p>
+                                    @if (($listing->listing_type ?? 'fixed') === 'bidding')
+                                        <p class="mt-1 text-[#2D6A4F] font-semibold">
+                                            Bieden
+                                            @if ($listing->price !== null)
+                                                vanaf EUR {{ number_format($listing->price, 2, ',', '.') }}
+                                            @endif
+                                        </p>
+                                    @else
+                                        <p class="mt-1 text-[#2D6A4F] font-semibold">
+                                            EUR {{ number_format($listing->price, 2, ',', '.') }}
+                                        </p>
+                                    @endif
                                     <div class="mt-4 flex items-center justify-between text-xs text-gray-400">
                                         <a
                                             class="text-[#2D6A4F] font-semibold"
@@ -242,5 +279,27 @@
                 }
             });
         });
+
+        const listingTypeInputs = document.querySelectorAll('input[name="listing_type"]');
+        const priceInput = document.querySelector('[data-price-input]');
+        const priceLabel = document.querySelector('[data-price-label]');
+
+        const updatePriceState = () => {
+            if (!priceInput || !priceLabel) {
+                return;
+            }
+
+            const selectedType = document.querySelector('input[name="listing_type"]:checked')?.value || 'fixed';
+            const isBidding = selectedType === 'bidding';
+
+            priceInput.required = !isBidding;
+            priceLabel.textContent = isBidding ? 'Startprijs (EUR)' : 'Prijs (EUR)';
+        };
+
+        listingTypeInputs.forEach((input) => {
+            input.addEventListener('change', updatePriceState);
+        });
+
+        updatePriceState();
     </script>
 @endsection

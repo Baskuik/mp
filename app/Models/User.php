@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
@@ -81,7 +80,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         ];
     }
 
-<<<<<<< HEAD
     public function isAdmin(): bool
     {
         return $this->is_admin === true;
@@ -124,10 +122,5 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     public function forceDelete()
     {
         return parent::delete();
-=======
-    public function listings(): HasMany
-    {
-        return $this->hasMany(Listing::class, 'user_id', 'user_id');
->>>>>>> mainpage
     }
 }

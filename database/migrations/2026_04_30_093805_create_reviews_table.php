@@ -8,17 +8,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('reviews', function (Blueprint $table) {
-<<<<<<< HEAD
             $table->id('review_id');
             $table->foreignId('reviewer_id')->references('user_id')->on('users')->cascadeOnDelete();
             $table->foreignId('reviewee_id')->references('user_id')->on('users')->cascadeOnDelete();
             $table->foreignId('listing_id')->references('listing_id')->on('listings')->cascadeOnDelete();
-=======
-            $table->id();
-            $table->foreignId('reviewer_id')->constrained('users', 'user_id')->cascadeOnDelete();
-            $table->foreignId('reviewee_id')->constrained('users', 'user_id')->cascadeOnDelete();
-            $table->foreignId('listing_id')->constrained()->cascadeOnDelete();
->>>>>>> mainpage
             $table->tinyInteger('rating')->unsigned();
             $table->text('comment')->nullable();
             $table->timestamps();

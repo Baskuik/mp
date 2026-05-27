@@ -5,31 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-<<<<<<< HEAD
-
-class Listing extends Model
-{
-    protected $primaryKey = 'listing_id';
-
-    const LISTING_ID = 'listing_id';
-    const USER_ID = 'user_id';
-    const CATEGORY_ID = 'category_id';
-    const LISTING_TITLE = 'title';
-    const LISTING_DESCRIPTION = 'description';
-    const LISTING_PRICE = 'price';
-    const LISTING_STATUS = 'status';
-    const LISTING_LOCATION = 'location';
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
-
-=======
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Listing extends Model
 {
     use HasFactory;
->>>>>>> mainpage
 
     protected $fillable = [
         'user_id',
@@ -39,16 +20,8 @@ class Listing extends Model
         'price',
         'status',
         'location',
-<<<<<<< HEAD
-    ];
-
-    public function seller(): BelongsTo
-    {
-        return $this->belongsTo(User::class, User::USER_ID);
-    }
-}
-=======
         'label',
+        'listing_type',
     ];
 
     public function user(): BelongsTo
@@ -66,9 +39,13 @@ class Listing extends Model
         return $this->hasMany(ListingImage::class);
     }
 
+    public function bids(): HasMany
+    {
+        return $this->hasMany(Bid::class, 'listing_id', 'listing_id');
+    }
+
     public function primaryImage(): HasOne
     {
         return $this->hasOne(ListingImage::class)->where('is_primary', true);
     }
 }
->>>>>>> mainpage

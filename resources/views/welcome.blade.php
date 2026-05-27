@@ -168,7 +168,16 @@
                                 <span class="text-gray-400">{{ $listing->created_at->diffForHumans() }}</span>
                             </div>
                             <h3 class="mt-3 text-sm font-semibold text-gray-800">{{ $listing->title }}</h3>
-                            <p class="mt-1 text-[#2D6A4F] font-semibold">EUR {{ number_format($listing->price, 2, ',', '.') }}</p>
+                            @if (($listing->listing_type ?? 'fixed') === 'bidding')
+                                <p class="mt-1 text-[#2D6A4F] font-semibold">
+                                    Bieden
+                                    @if ($listing->price !== null)
+                                        vanaf EUR {{ number_format($listing->price, 2, ',', '.') }}
+                                    @endif
+                                </p>
+                            @else
+                                <p class="mt-1 text-[#2D6A4F] font-semibold">EUR {{ number_format($listing->price, 2, ',', '.') }}</p>
+                            @endif
                             <div class="mt-3 flex items-center justify-between text-xs text-gray-400">
                                 <span>{{ $listing->user?->name ?? 'Verkoper' }}</span>
                                 <span>Nieuw</span>

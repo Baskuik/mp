@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bid;
 use App\Models\Category;
 use App\Models\Listing;
 use App\Models\ListingImage;
@@ -81,7 +82,13 @@ class ListingController extends Controller
                 },
             ],
             'label' => ['nullable', 'string', Rule::in($labels)],
-            'price' => 'required|numeric|min:0',
+            'listing_type' => ['required', 'string', Rule::in(['fixed', 'bidding'])],
+            'price' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                Rule::requiredIf(fn () => $request->input('listing_type', 'fixed') === 'fixed'),
+            ],
             'category_id' => 'nullable|exists:categories,id',
             'images' => 'nullable|array|max:8',
             'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
@@ -96,7 +103,8 @@ class ListingController extends Controller
                 'title' => $validated['title'],
                 'description' => $validated['description'],
                 'label' => $validated['label'] ?? null,
-                'price' => $validated['price'],
+                'listing_type' => $validated['listing_type'],
+                'price' => $validated['price'] ?? null,
                 'status' => 'active',
             ]);
 
@@ -139,7 +147,13 @@ class ListingController extends Controller
                 },
             ],
             'label' => ['nullable', 'string', Rule::in($labels)],
-            'price' => 'required|numeric|min:0',
+            'listing_type' => ['required', 'string', Rule::in(['fixed', 'bidding'])],
+            'price' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                Rule::requiredIf(fn () => $request->input('listing_type', 'fixed') === 'fixed'),
+            ],
             'category_id' => 'nullable|exists:categories,id',
             'images' => 'nullable|array|max:8',
             'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
@@ -163,7 +177,8 @@ class ListingController extends Controller
                 'title' => $validated['title'],
                 'description' => $validated['description'],
                 'label' => $validated['label'] ?? null,
-                'price' => $validated['price'],
+                'listing_type' => $validated['listing_type'],
+                'price' => $validated['price'] ?? null,
             ]);
 
             $this->storeImages($listing, $newImages);
@@ -193,11 +208,21 @@ class ListingController extends Controller
     public function show(Listing $listing)
     {
         $listing->load(['images', 'primaryImage', 'user', 'category']);
+        $highestBid = Bid::where('listing_id', $listing->listing_id)->max('amount');
+        $bidsCount = Bid::where('listing_id', $listing->listing_id)->count();
+        $recentBids = Bid::where('listing_id', $listing->listing_id)
+            ->with('buyer')
+            ->latest()
+            ->take(5)
+            ->get();
         $sortedImages = $listing->images->sortBy('sort_order')->values();
 
         return view('listings.show', [
             'listing' => $listing,
             'images' => $sortedImages,
+            'highestBid' => $highestBid,
+            'bidsCount' => $bidsCount,
+            'recentBids' => $recentBids,
         ]);
     }
 
