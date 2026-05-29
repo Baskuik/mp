@@ -65,6 +65,12 @@ Route::get('/set-language/{lang}', function ($lang) {
     if (in_array($lang, ['nl', 'de', 'en'])) {
         session(['locale' => $lang]);
     }
+    
+    $redirect = request('redirect');
+    if ($redirect && str_starts_with($redirect, config('app.url'))) {
+        return redirect($redirect);
+    }
+    
     return back();
 })->name('set-language');
 
@@ -79,3 +85,4 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/phone/send', [PhoneVerificationController::class, 'send'])->name('phone.send');
     Route::post('/profile/phone/verify', [PhoneVerificationController::class, 'verify'])->name('phone.verify');
 });
+

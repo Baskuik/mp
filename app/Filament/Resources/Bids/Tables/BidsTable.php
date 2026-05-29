@@ -63,7 +63,7 @@ class BidsTable
                     ->toggleable(),
 
                 TextColumn::make('listing.title')
-                    ->label('ADVERTENTIE')
+                    ->label(__('bids.col_listing'))
                     ->searchable()
                     ->sortable()
                     ->weight('medium')
@@ -74,7 +74,7 @@ class BidsTable
                     ->toggleable(),
 
                 TextColumn::make('buyer.name')
-                    ->label('BIEDER')
+                    ->label(__('bids.col_buyer'))
                     ->searchable()
                     ->sortable()
                     ->icon('heroicon-m-user')
@@ -83,7 +83,7 @@ class BidsTable
                     ->toggleable(),
 
                 TextColumn::make(Bid::AMOUNT)
-                    ->label('BEDRAG')
+                    ->label(__('bids.col_amount'))
                     ->money('EUR')
                     ->sortable()
                     ->weight('bold')
@@ -92,21 +92,21 @@ class BidsTable
                     ->toggleable(),
 
                 TextColumn::make(Bid::STATUS)
-                    ->label('STATUS')
+                    ->label(__('bids.col_status'))
                     ->html()
                     ->getStateUsing(fn(Bid $record): string => match ($record->status) {
-                        'pending'   => self::badge('⏳ IN BEHANDELING', 'amber'),
-                        'accepted'  => self::badge('✓ GEACCEPTEERD', 'green'),
+                        'pending'   => self::badge(__('bids.badge_pending'), 'amber'),
+                        'accepted'  => self::badge(__('bids.badge_accepted'), 'green'),
                         'declined',
-                        'rejected'  => self::badge('✗ AFGEWEZEN', 'red'),
-                        'cancelled' => self::badge('○ GEANNULEERD', 'gray'),
+                        'rejected'  => self::badge(__('bids.badge_rejected'), 'red'),
+                        'cancelled' => self::badge(__('bids.badge_cancelled'), 'gray'),
                         default     => self::badge(strtoupper($record->status), 'gray'),
                     })
                     ->sortable()
                     ->toggleable(),
 
                 IconColumn::make('is_active')
-                    ->label('ACTIEF')
+                    ->label(__('bids.col_active'))
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
@@ -116,7 +116,7 @@ class BidsTable
                     ->toggleable(),
 
                 TextColumn::make(Bid::CREATED_AT)
-                    ->label('DATUM')
+                    ->label(__('bids.col_date'))
                     ->dateTime('d-m-Y H:i')
                     ->icon('heroicon-m-calendar')
                     ->iconColor('gray')
@@ -125,7 +125,7 @@ class BidsTable
                     ->toggleable(),
 
                 TextColumn::make(Bid::UPDATED_AT)
-                    ->label('LAATSTE UPDATE')
+                    ->label(__('bids.col_updated_at'))
                     ->dateTime('d-m-Y H:i')
                     ->color('gray')
                     ->sortable()
@@ -133,12 +133,12 @@ class BidsTable
             ])
             ->filters([
                 Filter::make('actief')
-                    ->label('Alleen actieve biedingen')
+                    ->label(__('bids.filter_active'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('is_active', true)),
 
                 Filter::make('inactief')
-                    ->label('Alleen verwijderde biedingen')
+                    ->label(__('bids.filter_inactive'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('is_active', false)),
             ])
@@ -153,14 +153,14 @@ class BidsTable
                     ->icon('heroicon-m-x-circle')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->modalHeading('Bieding afwijzen')
-                    ->modalDescription('Weet je zeker dat je deze bieding wilt afwijzen? De status wordt aangepast naar "Afgewezen".')
-                    ->modalSubmitActionLabel('Ja, wijs bieding af')
+                    ->modalHeading(__('bids.decline_heading'))
+                    ->modalDescription(__('bids.decline_desc'))
+                    ->modalSubmitActionLabel(__('bids.decline_confirm'))
                     ->action(function (Bid $record) {
                         $record->update([Bid::STATUS => 'rejected']);
 
                         Notification::make()
-                            ->title('Bieding afgewezen')
+                            ->title(__('bids.notify_declined'))
                             ->success()
                             ->send();
                     }),
@@ -170,51 +170,51 @@ class BidsTable
                     ->icon('heroicon-m-trash')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->modalHeading('Bieding verwijderen')
-                    ->modalDescription('Weet je zeker dat je deze bieding wilt verwijderen? De bieding blijft bewaard in de database maar wordt niet meer getoond.')
-                    ->modalSubmitActionLabel('Ja, verwijder bieding')
+                    ->modalHeading(__('bids.delete_heading'))
+                    ->modalDescription(__('bids.delete_desc'))
+                    ->modalSubmitActionLabel(__('bids.delete_confirm'))
                     ->visible(fn(Bid $record): bool => (bool) $record->is_active)
                     ->action(function (Bid $record) {
                         $record->update(['is_active' => false]);
 
                         Notification::make()
-                            ->title('Bieding verwijderd')
+                            ->title(__('bids.notify_deleted'))
                             ->success()
                             ->send();
                     }),
             ])
             ->bulkActions([
                 BulkAction::make('bulk_deactivate')
-                    ->label('Selectie verwijderen')
+                    ->label(__('bids.bulk_delete_label'))
                     ->icon('heroicon-m-trash')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->modalHeading('Geselecteerde biedingen verwijderen')
-                    ->modalDescription('Weet je zeker dat je de geselecteerde biedingen wilt verwijderen? Ze blijven bewaard in de database maar worden niet meer getoond.')
-                    ->modalSubmitActionLabel('Ja, verwijder selectie')
+                    ->modalHeading(__('bids.bulk_delete_heading'))
+                    ->modalDescription(__('bids.bulk_delete_desc'))
+                    ->modalSubmitActionLabel(__('bids.bulk_delete_confirm'))
                     ->action(function (Collection $records) {
                         $records->each(fn(Bid $record) => $record->update(['is_active' => false]));
 
                         Notification::make()
-                            ->title('Biedingen verwijderd')
+                            ->title(__('bids.notify_bulk_deleted'))
                             ->success()
                             ->send();
                     })
                     ->deselectRecordsAfterCompletion(),
 
                 BulkAction::make('decline')
-                    ->label('Selectie afwijzen')
+                    ->label(__('bids.bulk_decline_label'))
                     ->icon('heroicon-m-x-circle')
                     ->color('warning')
                     ->requiresConfirmation()
-                    ->modalHeading('Geselecteerde biedingen afwijzen')
+                    ->modalHeading(__('bids.bulk_decline_heading'))
                     ->action(function (Collection $records) {
                         $records->each(fn(Bid $record) => $record->update([
                             Bid::STATUS => 'rejected',
                         ]));
 
                         Notification::make()
-                            ->title('Biedingen afgewezen')
+                            ->title(__('bids.notify_bulk_declined'))
                             ->success()
                             ->send();
                     })

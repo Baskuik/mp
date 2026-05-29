@@ -111,4 +111,5 @@ return [
     'register_step3_button' => 'Verifieer Email',
     'register_step3_resend' => 'Verificatiecode niet ontvangen?',
     'register_step3_resend_button' => 'Opnieuw versturen',
-];
+
+    ];

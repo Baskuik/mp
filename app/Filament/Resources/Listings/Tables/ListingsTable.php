@@ -63,7 +63,7 @@ class ListingsTable
                     ->toggleable(),
 
                 TextColumn::make('seller.name')
-                    ->label('VERKOPER')
+                    ->label(__('listings.col_seller'))
                     ->searchable()
                     ->sortable()
                     ->weight('medium')
@@ -73,7 +73,7 @@ class ListingsTable
                     ->toggleable(),
 
                 TextColumn::make('category.name')
-                    ->label('CATEGORIE')
+                    ->label(__('listings.col_category'))
                     ->searchable()
                     ->sortable()
                     ->icon('heroicon-m-tag')
@@ -82,7 +82,7 @@ class ListingsTable
                     ->toggleable(),
 
                 TextColumn::make(Listing::LISTING_TITLE)
-                    ->label('TITEL')
+                    ->label(__('listings.col_title'))
                     ->limit(35)
                     ->searchable()
                     ->sortable()
@@ -90,7 +90,7 @@ class ListingsTable
                     ->toggleable(),
 
                 TextColumn::make(Listing::LISTING_PRICE)
-                    ->label('PRIJS')
+                    ->label(__('listings.col_price'))
                     ->money('EUR')
                     ->sortable()
                     ->icon('heroicon-m-banknotes')
@@ -98,20 +98,20 @@ class ListingsTable
                     ->toggleable(),
 
                 TextColumn::make(Listing::LISTING_STATUS)
-                    ->label('STATUS')
+                    ->label(__('listings.col_status'))
                     ->html()
                     ->getStateUsing(fn(Listing $record): string => match ($record->listing_status ?? $record->status) {
-                        'active'   => self::badge('● ACTIEF', 'green'),
-                        'sold'     => self::badge('★ VERKOCHT', 'blue'),
-                        'archived' => self::badge('○ GEARCHIVEERD', 'gray'),
-                        'inactive' => self::badge('✗ VERWIJDERD', 'red'),
+                        'active'   => self::badge(__('listings.badge_active'), 'green'),
+                        'sold'     => self::badge(__('listings.badge_sold'), 'blue'),
+                        'archived' => self::badge(__('listings.badge_archived'), 'gray'),
+                        'inactive' => self::badge(__('listings.badge_inactive'), 'red'),
                         default    => self::badge(strtoupper($record->status ?? ''), 'gray'),
                     })
                     ->sortable()
                     ->toggleable(),
 
                 TextColumn::make(Listing::LISTING_LOCATION)
-                    ->label('LOCATIE')
+                    ->label(__('listings.col_location'))
                     ->icon('heroicon-m-map-pin')
                     ->iconColor('gray')
                     ->sortable()
@@ -120,7 +120,7 @@ class ListingsTable
                     ->toggleable(),
 
                 TextColumn::make(Listing::LISTING_DESCRIPTION)
-                    ->label('BESCHRIJVING')
+                    ->label(__('listings.col_description'))
                     ->limit(40)
                     ->searchable()
                     ->color('gray')
@@ -128,7 +128,7 @@ class ListingsTable
                     ->toggleable(),
 
                 TextColumn::make(Listing::CREATED_AT)
-                    ->label('AANGEMAAKT')
+                    ->label(__('listings.col_created_at'))
                     ->dateTime('d-m-Y H:i')
                     ->icon('heroicon-m-calendar')
                     ->iconColor('gray')
@@ -137,7 +137,7 @@ class ListingsTable
                     ->toggleable(),
 
                 TextColumn::make(Listing::UPDATED_AT)
-                    ->label('LAATSTE UPDATE')
+                    ->label(__('listings.col_updated_at'))
                     ->dateTime('d-m-Y H:i')
                     ->color('gray')
                     ->sortable()
@@ -145,22 +145,22 @@ class ListingsTable
             ])
             ->filters([
                 Filter::make('active')
-                    ->label('Actief')
+                    ->label(__('listings.filter_active'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('status', 'active')),
 
                 Filter::make('sold')
-                    ->label('Verkocht')
+                    ->label(__('listings.filter_sold'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('status', 'sold')),
 
                 Filter::make('archived')
-                    ->label('Gearchiveerd')
+                    ->label(__('listings.filter_archived'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('status', 'archived')),
 
                 Filter::make('inactive')
-                    ->label('Verwijderd')
+                    ->label(__('listings.filter_inactive'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('status', 'inactive')),
             ])
@@ -173,40 +173,38 @@ class ListingsTable
                 DeleteAction::make()
                     ->label(false)
                     ->icon('heroicon-m-trash')
-                    ->modalHeading('Advertentie verwijderen')
-                    ->modalDescription('Weet je zeker dat je deze advertentie wilt verwijderen? De advertentie blijft bewaard in de database maar wordt op inactief gezet.')
-                    ->modalSubmitActionLabel('Ja, verwijder')
+                    ->modalHeading(__('listings.delete_heading'))
+                    ->modalDescription(__('listings.delete_desc'))
+                    ->modalSubmitActionLabel(__('listings.delete_confirm'))
                     ->action(function (Listing $record) {
                         $record->update([Listing::LISTING_STATUS => 'inactive']);
 
                         Notification::make()
-                            ->title('Advertentie verwijderd')
+                            ->title(__('listings.notify_deleted'))
                             ->success()
                             ->send();
                     }),
             ])
             ->bulkActions([
                 BulkAction::make('bulk_delete')
-                    ->label('Selectie verwijderen')
+                    ->label(__('listings.bulk_delete_label'))
                     ->icon('heroicon-m-trash')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->modalHeading('Geselecteerde advertenties verwijderen')
-                    ->modalDescription('Weet je zeker dat je de geselecteerde advertenties wilt verwijderen? Ze blijven bewaard in de database maar worden op inactief gezet.')
-                    ->modalSubmitActionLabel('Ja, verwijder selectie')
+                    ->modalHeading(__('listings.bulk_delete_heading'))
+                    ->modalDescription(__('listings.bulk_delete_desc'))
+                    ->modalSubmitActionLabel(__('listings.bulk_delete_confirm'))
                     ->action(function (Collection $records) {
                         $records->each(fn(Listing $record) => $record->update([
                             Listing::LISTING_STATUS => 'inactive',
                         ]));
 
                         Notification::make()
-                            ->title('Advertenties verwijderd')
+                            ->title(__('listings.notify_bulk_deleted'))
                             ->success()
                             ->send();
                     })
                     ->deselectRecordsAfterCompletion(),
-
-
             ]);
     }
 }
