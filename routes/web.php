@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SettingsController;
 
 // View routes
 Route::get('/', function () {
@@ -64,13 +65,18 @@ Route::middleware(['throttle:5,1'])->group(function () {
 Route::get('/set-language/{lang}', function ($lang) {
     if (in_array($lang, ['nl', 'de', 'en'])) {
         session(['locale' => $lang]);
+
+        // If user is logged in, also update their database preference
+        if (auth()->check()) {
+            auth()->user()->update(['language' => $lang]);
+        }
     }
-    
+
     $redirect = request('redirect');
     if ($redirect && str_starts_with($redirect, config('app.url'))) {
         return redirect($redirect);
     }
-    
+
     return back();
 })->name('set-language');
 
@@ -84,5 +90,12 @@ Route::middleware(['auth'])->group(function () {
     // Phone verification
     Route::post('/profile/phone/send', [PhoneVerificationController::class, 'send'])->name('phone.send');
     Route::post('/profile/phone/verify', [PhoneVerificationController::class, 'verify'])->name('phone.verify');
+
+    // Settings routes (Story 399, 400, 402, 403)
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings/language', [SettingsController::class, 'updateLanguage'])->name('settings.language');
+    Route::post('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password');
+    Route::post('/settings/phone', [SettingsController::class, 'updatePhone'])->name('settings.phone');
+    Route::post('/settings/email', [SettingsController::class, 'updateEmail'])->name('settings.email');
 });
 

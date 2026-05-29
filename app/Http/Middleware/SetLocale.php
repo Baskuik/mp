@@ -18,8 +18,18 @@ class SetLocale
         // Whitelist of supported locales
         $supportedLocales = ['nl', 'de', 'en'];
 
-        // Check if locale is set in session
-        if (session()->has('locale')) {
+        // If user is authenticated, use their language preference from database
+        if (auth()->check()) {
+            $locale = auth()->user()->language ?? 'nl';
+            if (in_array($locale, $supportedLocales)) {
+                app()->setLocale($locale);
+                session(['locale' => $locale]);
+            } else {
+                app()->setLocale(config('app.locale'));
+            }
+        }
+        // Otherwise check if locale is set in session
+        elseif (session()->has('locale')) {
             $locale = session('locale');
             // Validate locale against whitelist
             if (in_array($locale, $supportedLocales)) {
