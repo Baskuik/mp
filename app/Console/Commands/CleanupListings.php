@@ -29,5 +29,5 @@ class CleanupListings extends Command
         $premiumQuery->delete();
 
         $this->info("✔ {$regularCount} reguliere en {$premiumCount} premium advertentie(s) verwijderd.");
-    }
+    } 
 }
