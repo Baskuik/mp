@@ -22,6 +22,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Illuminate\Support\HtmlString;
+use App\Http\Middleware\SetLocale;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -32,6 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->darkMode(true, true)
             ->brandName('DirectDeal')
 
             ->colors([
@@ -49,7 +51,9 @@ class AdminPanelProvider extends PanelProvider
                 'panels::body.end',
                 fn() => new HtmlString('
                     <style>
-/* Sidebar breedte-animatie */
+/* ============================================================
+   SIDEBAR ANIMATIES
+   ============================================================ */
 .fi-sidebar {
     transition:
         width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
@@ -58,7 +62,6 @@ class AdminPanelProvider extends PanelProvider
     overflow: visible !important;
 }
 
-/* BEHEER label centreren bij ingeklapt */
 .fi-sidebar.sidebar-collapsed .fi-sidebar-group-label {
     text-align: center !important;
     padding-left: 0 !important;
@@ -68,13 +71,11 @@ class AdminPanelProvider extends PanelProvider
     width: 100% !important;
 }
 
-/* Inner content clipped */
 .fi-sidebar-content {
     overflow-x: hidden !important;
     overflow-y: auto !important;
 }
 
-/* Merknaam: fade weg bij inklappen */
 .fi-sidebar-header {
     overflow: hidden !important;
     transition: opacity 0.2s ease 0.05s !important;
@@ -85,7 +86,6 @@ class AdminPanelProvider extends PanelProvider
     pointer-events: none !important;
 }
 
-/* Label fade — eerst verdwijnen bij inklappen, later verschijnen bij uitklappen */
 .fi-sidebar-item-label,
 .fi-sidebar-item-badge-ctn {
     transition: opacity 0.15s ease !important;
@@ -97,7 +97,6 @@ class AdminPanelProvider extends PanelProvider
     opacity: 0 !important;
 }
 
-/* Nav item container */
 .fi-sidebar.sidebar-collapsed .fi-sidebar-item-btn {
     width: 2.5rem !important;
     height: 2.5rem !important;
@@ -113,7 +112,6 @@ class AdminPanelProvider extends PanelProvider
                 padding 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Icoon: subtiele scale bij collapse/expand */
 .fi-sidebar-item-icon {
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                 opacity 0.3s ease !important;
@@ -126,19 +124,16 @@ class AdminPanelProvider extends PanelProvider
     display: block !important;
 }
 
-/* Label en badge verbergen (display:none alleen in collapsed) */
 .fi-sidebar.sidebar-collapsed .fi-sidebar-item-label,
 .fi-sidebar.sidebar-collapsed .fi-sidebar-item-badge-ctn {
     display: none !important;
 }
 
-/* Badges/nummers verbergen */
 .fi-sidebar-nav-item-badge,
 .fi-badge {
     display: none !important;
 }
 
-/* Footer */
 .fi-sidebar-footer {
     margin-top: auto !important;
     border-top: 1px solid rgba(255,255,255,0.2) !important;
@@ -160,7 +155,6 @@ class AdminPanelProvider extends PanelProvider
     pointer-events: none !important;
 }
 
-/* Toggle knop */
 #sidebar-toggle-btn {
     width: calc(100% - 1rem) !important;
     margin: 0.5rem !important;
@@ -204,6 +198,126 @@ class AdminPanelProvider extends PanelProvider
 .fi-sidebar.sidebar-collapsed .toggle-icon {
     transform: scaleX(-1) !important;
 }
+
+/* ============================================================
+   FILTER & KOLOMMEN DROPDOWN - GROEN THEMA
+   ============================================================ */
+
+/* Dropdown achtergrond */
+.fi-dropdown-panel,
+.fi-ta-filters-dropdown-panel,
+.fi-ta-col-toggle-dropdown-panel {
+    background: #ffffff !important;
+    border: 1px solid #d1fae5 !important;
+    box-shadow: 0 8px 24px rgba(26, 61, 43, 0.15) !important;
+    border-radius: 0.75rem !important;
+    overflow: hidden !important;
+}
+
+/* Alle tekst in dropdowns */
+.fi-dropdown-panel *,
+.fi-ta-filters-dropdown-panel *,
+.fi-ta-col-toggle-dropdown-panel * {
+    color: #1a3d2b !important;
+}
+
+/* Header "Filters" / "Kolommen" */
+.fi-dropdown-panel header,
+.fi-ta-filters-dropdown-panel header,
+.fi-ta-col-toggle-dropdown-panel header {
+    border-bottom: 1px solid #d1fae5 !important;
+    background: #f0fdf4 !important;
+    padding: 0.75rem 1rem !important;
+    font-weight: 700 !important;
+    font-size: 0.9rem !important;
+    letter-spacing: 0.05em !important;
+}
+
+/* "Resetten" knop */
+.fi-dropdown-panel header button,
+.fi-ta-filters-dropdown-panel header button,
+.fi-ta-col-toggle-dropdown-panel header button {
+    color: #16a34a !important;
+    font-weight: 600 !important;
+    background: none !important;
+    border: none !important;
+}
+
+.fi-dropdown-panel header button:hover,
+.fi-ta-filters-dropdown-panel header button:hover,
+.fi-ta-col-toggle-dropdown-panel header button:hover {
+    color: #15803d !important;
+    text-decoration: underline !important;
+}
+
+/* Checkbox items */
+.fi-fo-checkbox,
+.fi-fo-toggle {
+    padding: 0.4rem 0 !important;
+}
+
+.fi-fo-checkbox label,
+.fi-fo-toggle label {
+    color: #1a3d2b !important;
+    font-weight: 500 !important;
+}
+
+/* Checkboxes zelf */
+.fi-fo-checkbox input[type="checkbox"],
+.fi-fo-toggle input[type="checkbox"] {
+    accent-color: #1a3d2b !important;
+    border-color: #1a3d2b !important;
+}
+
+/* Filter veld labels */
+.fi-ta-filters-dropdown-panel .fi-fo-field-wrp label {
+    color: #1a3d2b !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
+    letter-spacing: 0.03em !important;
+}
+
+/* Dropdown footer "Filters toepassen" */
+.fi-ta-filters-dropdown-panel footer {
+    border-top: 1px solid #d1fae5 !important;
+    background: #f0fdf4 !important;
+    padding: 0.75rem 1rem !important;
+}
+
+.fi-ta-filters-dropdown-panel footer button {
+    background: linear-gradient(135deg, #1a3d2b, #2d6a4f) !important;
+    color: white !important;
+    border-radius: 0.5rem !important;
+    border: none !important;
+    font-weight: 600 !important;
+    padding: 0.5rem 1.25rem !important;
+    width: 100% !important;
+    cursor: pointer !important;
+    transition: opacity 0.2s ease !important;
+}
+
+.fi-ta-filters-dropdown-panel footer button:hover {
+    opacity: 0.9 !important;
+}
+
+/* Dividers */
+.fi-dropdown-panel hr,
+.fi-ta-filters-dropdown-panel hr,
+.fi-ta-col-toggle-dropdown-panel hr {
+    border-color: #d1fae5 !important;
+}
+
+/* Scrollbar in dropdown */
+.fi-dropdown-panel ::-webkit-scrollbar,
+.fi-ta-filters-dropdown-panel ::-webkit-scrollbar {
+    width: 4px !important;
+}
+
+.fi-dropdown-panel ::-webkit-scrollbar-thumb,
+.fi-ta-filters-dropdown-panel ::-webkit-scrollbar-thumb {
+    background: #86efac !important;
+    border-radius: 4px !important;
+}
                     </style>
 
                     <script>
@@ -216,13 +330,6 @@ class AdminPanelProvider extends PanelProvider
                         function getSidebar() { return document.querySelector(".fi-sidebar"); }
                         function getFooter()  { return document.querySelector(".fi-sidebar-footer"); }
 
-                        /*
-                         * DE ECHTE FIX:
-                         * Filament gebruikt Alpine x-show="$store.sidebar.isOpen" op de labels.
-                         * Als isOpen=false zet Alpine display:none op labels EN iconen.
-                         * We moeten $store.sidebar.isOpen altijd op TRUE houden,
-                         * en de breedte zelf regelen via CSS/JS.
-                         */
                         function setAlpineStoreOpen(open) {
                             try {
                                 if (window.Alpine && Alpine.store("sidebar")) {
@@ -235,11 +342,6 @@ class AdminPanelProvider extends PanelProvider
                             sidebar.classList.add("sidebar-collapsed");
                             sidebar.style.setProperty("width",     COLLAPSED_W, "important");
                             sidebar.style.setProperty("min-width", COLLAPSED_W, "important");
-                            /*
-                             * Store blijft op TRUE zodat Alpine de labels/iconen
-                             * NIET verbergt met display:none.
-                             * Wij regelen de visuele staat via CSS opacity/classes.
-                             */
                             setAlpineStoreOpen(true);
                         }
 
@@ -249,7 +351,6 @@ class AdminPanelProvider extends PanelProvider
                             sidebar.style.setProperty("min-width", EXPANDED_W, "important");
                             setAlpineStoreOpen(true);
                         }
-                            
 
                         function initToggleButton() {
                             const sidebar = getSidebar();
@@ -259,10 +360,8 @@ class AdminPanelProvider extends PanelProvider
                             const old = document.getElementById("sidebar-toggle-btn");
                             if (old) old.remove();
 
-                            // Zet Alpine store altijd open zodat iconen zichtbaar zijn
                             setAlpineStoreOpen(true);
 
-                            // Herstel staat zonder animatie
                             const wasCollapsed = localStorage.getItem(STORAGE_KEY) === "true";
                             sidebar.style.transition = "none";
                             wasCollapsed ? collapse(sidebar) : expand(sidebar);
@@ -292,17 +391,11 @@ class AdminPanelProvider extends PanelProvider
                             footer.appendChild(btn);
                             initialized = true;
 
-                            /*
-                             * Bewaker: als Alpine de store toch op false zet
-                             * (bijv. via Filament\'s eigen collapse-knop of resize),
-                             * zetten we hem direct terug op true.
-                             */
                             setInterval(function() {
                                 try {
                                     if (window.Alpine && Alpine.store("sidebar")) {
                                         if (Alpine.store("sidebar").isOpen === false) {
                                             Alpine.store("sidebar").isOpen = true;
-                                            // Sync onze breedte ook mee
                                             const sb = getSidebar();
                                             if (sb) {
                                                 const w = sb.style.width;
@@ -316,13 +409,12 @@ class AdminPanelProvider extends PanelProvider
                             }, 200);
                         }
 
-                        // Wacht tot Alpine klaar is voor we beginnen
                         function waitForAlpine(cb) {
                             if (window.Alpine && Alpine.store) {
                                 cb();
                             } else {
                                 document.addEventListener("alpine:init", cb);
-                                setTimeout(cb, 500); // fallback
+                                setTimeout(cb, 500);
                             }
                         }
 
@@ -360,6 +452,7 @@ class AdminPanelProvider extends PanelProvider
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
+                SetLocale::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
                 VerifyCsrfToken::class,

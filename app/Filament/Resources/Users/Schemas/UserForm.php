@@ -3,12 +3,11 @@
 namespace App\Filament\Resources\Users\Schemas;
 
 use App\Models\User;
-use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 
 class UserForm
@@ -49,12 +48,12 @@ class UserForm
                     ->disk('public')
                     ->directory('profile-photos')
                     ->image()
-                    ->maxSize(5 * 1024) // 5MB
+                    ->maxSize(5 * 1024)
                     ->nullable(),
 
                 Textarea::make('bio')
                     ->label('Bio')
-                    ->placeholder('Vertel iets over deze gebruiker…')
+                    ->placeholder('Vertel iets over deze gebruiker...')
                     ->rows(3)
                     ->nullable()
                     ->maxLength(1000)
@@ -80,33 +79,28 @@ class UserForm
                     ->required(fn(string $operation) => $operation === 'create')
                     ->dehydrated(false)
                     ->same('password'),
+Toggle::make('is_admin')
+    ->label('Admin')
+    ->default(false)
+    ->helperText('Geeft beheerderrechten op het platform.'),
 
-                Toggle::make('is_admin')
-                    ->label('★ Admin')
-                    ->default(false)
-                    ->inline(false)
-                    ->helperText('Geeft beheerderrechten op het platform.'),
+Toggle::make('is_active')
+    ->label('Actief')
+    ->default(true)
+    ->disabled(fn($get) => $get('is_banned') === true)
+    ->helperText(fn($get) => $get('is_banned')
+        ? 'Verbannen gebruikers kunnen niet actief zijn.'
+        : 'Inactieve gebruikers kunnen niet inloggen.'),
 
-                Toggle::make('is_active')
-                    ->label('✓ Actief')
-                    ->default(true)
-                    ->inline(false)
-                    ->disabled(fn($get) => $get('is_banned') === true)
-                    ->helperText(fn($get) => $get('is_banned')
-                        ? 'Verbannen gebruikers kunnen niet actief zijn.'
-                        : 'Inactieve gebruikers kunnen niet inloggen.'),
-
-                Toggle::make('is_banned')
-                    ->label('⛔ Verbannen')
-                    ->default(false)
-                    ->inline(false)
-                    ->afterStateUpdated(function ($set, $state) {
-                        // Als verbannen wordt geactiveerd, zet is_active op false
-                        if ($state === true) {
-                            $set('is_active', false);
-                        }
-                    })
-                    ->helperText('Verbannen gebruikers kunnen niet meer inloggen en hun account zien.'),
+Toggle::make('is_banned')
+    ->label('Verbannen')
+    ->default(false)
+    ->afterStateUpdated(function ($set, $state) {
+        if ($state === true) {
+            $set('is_active', false);
+        }
+    })
+    ->helperText('Verbannen gebruikers kunnen niet meer inloggen en hun account zien.'),
             ]);
-    }
+}
 }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\EmailVerificationCode;
+use App\Models\Listing;
+use App\Models\Review;
 use App\Mail\VerificationCodeMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -17,7 +19,22 @@ class AuthController extends Controller
      */
     public function showLogin()
     {
-        return view('auth.login');
+        // Get active listings count
+        $listingsCount = Listing::where('status', 'active')->count();
+
+        // Get active users count
+        $usersCount = User::where('is_active', true)->count();
+
+        // Calculate customer satisfaction (average rating from reviews)
+        $averageRating = Review::avg('rating') ?? 0;
+        // Convert to percentage (assuming 5-star system: rating/5 * 100)
+        $satisfactionPercentage = round(($averageRating / 5) * 100);
+
+        return view('auth.login', [
+            'listingsCount' => $listingsCount,
+            'usersCount' => $usersCount,
+            'satisfactionPercentage' => $satisfactionPercentage,
+        ]);
     }
 
     /**
@@ -26,14 +43,14 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email'    => 'required|string|email',
+            'email' => 'required|string|email',
             'password' => 'required|string',
         ], [
-            'email.required'    => __('E-mailadres is verplicht.'),
-            'email.string'      => __('E-mailadres moet geldig zijn.'),
-            'email.email'       => __('Voer een geldig e-mailadres in.'),
+            'email.required' => __('E-mailadres is verplicht.'),
+            'email.string' => __('E-mailadres moet geldig zijn.'),
+            'email.email' => __('Voer een geldig e-mailadres in.'),
             'password.required' => __('Wachtwoord is verplicht.'),
-            'password.string'   => __('Wachtwoord moet uit tekens bestaan.'),
+            'password.string' => __('Wachtwoord moet uit tekens bestaan.'),
         ]);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
@@ -60,30 +77,30 @@ class AuthController extends Controller
     public function registerStep1(Request $request)
     {
         $validated = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|string|email|max:255|unique:users',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'terms'    => 'accepted',
+            'terms' => 'accepted',
         ], [
-            'name.required'      => __('Volledige naam is verplicht.'),
-            'name.string'        => __('Volledige naam moet uit letters bestaan.'),
-            'name.max'           => __('Volledige naam mag niet langer zijn dan 255 tekens.'),
-            'email.required'     => __('E-mailadres is verplicht.'),
-            'email.string'       => __('E-mailadres moet geldig zijn.'),
-            'email.email'        => __('Voer een geldig e-mailadres in.'),
-            'email.max'          => __('E-mailadres mag niet langer zijn dan 255 tekens.'),
-            'email.unique'       => __('Dit e-mailadres is al in gebruik.'),
-            'password.required'  => __('Wachtwoord is verplicht.'),
-            'password.string'    => __('Wachtwoord moet uit tekens bestaan.'),
-            'password.min'       => __('Wachtwoord moet minimaal 8 tekens bevatten.'),
+            'name.required' => __('Volledige naam is verplicht.'),
+            'name.string' => __('Volledige naam moet uit letters bestaan.'),
+            'name.max' => __('Volledige naam mag niet langer zijn dan 255 tekens.'),
+            'email.required' => __('E-mailadres is verplicht.'),
+            'email.string' => __('E-mailadres moet geldig zijn.'),
+            'email.email' => __('Voer een geldig e-mailadres in.'),
+            'email.max' => __('E-mailadres mag niet langer zijn dan 255 tekens.'),
+            'email.unique' => __('Dit e-mailadres is al in gebruik.'),
+            'password.required' => __('Wachtwoord is verplicht.'),
+            'password.string' => __('Wachtwoord moet uit tekens bestaan.'),
+            'password.min' => __('Wachtwoord moet minimaal 8 tekens bevatten.'),
             'password.confirmed' => __('De wachtwoorden komen niet overeen.'),
-            'terms.accepted'     => __('U moet de algemene voorwaarden accepteren.'),
+            'terms.accepted' => __('U moet de algemene voorwaarden accepteren.'),
         ]);
 
         session([
             'registration_step1' => [
-                'name'     => $validated['name'],
-                'email'    => $validated['email'],
+                'name' => $validated['name'],
+                'email' => $validated['email'],
                 'password' => $validated['password'],
             ]
         ]);
@@ -113,19 +130,19 @@ class AuthController extends Controller
         }
 
         $validated = $request->validate([
-            'username'      => 'required|string|max:255|unique:users,username',
-            'bio'           => 'nullable|string|max:500',
+            'username' => 'required|string|max:255|unique:users,username',
+            'bio' => 'nullable|string|max:500',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
-            'username.required'   => __('Gebruikersnaam is verplicht.'),
-            'username.string'     => __('Gebruikersnaam moet uit tekens bestaan.'),
-            'username.max'        => __('Gebruikersnaam mag niet langer zijn dan 255 tekens.'),
-            'username.unique'     => __('Deze gebruikersnaam is al in gebruik.'),
-            'bio.string'          => __('Bio moet uit tekens bestaan.'),
-            'bio.max'             => __('Bio mag niet langer zijn dan 500 tekens.'),
+            'username.required' => __('Gebruikersnaam is verplicht.'),
+            'username.string' => __('Gebruikersnaam moet uit tekens bestaan.'),
+            'username.max' => __('Gebruikersnaam mag niet langer zijn dan 255 tekens.'),
+            'username.unique' => __('Deze gebruikersnaam is al in gebruik.'),
+            'bio.string' => __('Bio moet uit tekens bestaan.'),
+            'bio.max' => __('Bio mag niet langer zijn dan 500 tekens.'),
             'profile_photo.image' => __('Het bestand moet een afbeelding zijn.'),
             'profile_photo.mimes' => __('De afbeelding moet in PNG, JPG, GIF of JPEG formaat zijn.'),
-            'profile_photo.max'   => __('De afbeelding mag niet groter zijn dan 2MB.'),
+            'profile_photo.max' => __('De afbeelding mag niet groter zijn dan 2MB.'),
         ]);
 
         if ($request->hasFile('profile_photo')) {
@@ -168,8 +185,8 @@ class AuthController extends Controller
             'code' => 'required|string|size:6',
         ], [
             'code.required' => __('Verificatiecode is verplicht.'),
-            'code.string'   => __('Verificatiecode moet uit cijfers bestaan.'),
-            'code.size'     => __('Verificatiecode moet 6 cijfers zijn.'),
+            'code.string' => __('Verificatiecode moet uit cijfers bestaan.'),
+            'code.size' => __('Verificatiecode moet 6 cijfers zijn.'),
         ]);
 
         if (!ctype_digit($validated['code'])) {
@@ -212,7 +229,7 @@ class AuthController extends Controller
 
             Log::info('User created during registration', [
                 'user_id' => $user->user_id,
-                'email'   => $user->email,
+                'email' => $user->email,
             ]);
 
             $verificationCode->update(['user_id' => $user->user_id]);
@@ -248,7 +265,7 @@ class AuthController extends Controller
     public function resendVerificationEmail(Request $request)
     {
         $email = session('registration_step1.email');
-        $name  = session('registration_step1.name');
+        $name = session('registration_step1.name');
 
         if (!$email) {
             if (!Auth::check()) {
@@ -257,7 +274,7 @@ class AuthController extends Controller
                 ]);
             }
             $email = Auth::user()->email;
-            $name  = Auth::user()->name;
+            $name = Auth::user()->name;
         }
 
         $this->sendVerificationCode($email, $name);
@@ -292,11 +309,11 @@ class AuthController extends Controller
         $code = $this->generateVerificationCode();
 
         EmailVerificationCode::create([
-            'user_id'     => Auth::check() ? Auth::id() : null,
-            'email'       => $email,
-            'code'        => $code,
+            'user_id' => Auth::check() ? Auth::id() : null,
+            'email' => $email,
+            'code' => $code,
             'is_verified' => false,
-            'expires_at'  => now()->addMinutes(15),
+            'expires_at' => now()->addMinutes(15),
         ]);
 
         try {

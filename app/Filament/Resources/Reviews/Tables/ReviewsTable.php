@@ -5,11 +5,14 @@ namespace App\Filament\Resources\Reviews\Tables;
 use App\Models\Review;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\Filter;
 use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class ReviewsTable
@@ -19,54 +22,69 @@ class ReviewsTable
         return $table
             ->columns([
                 TextColumn::make(Review::REVIEW_ID)
-                    ->label(__('ID'))
+                    ->label('ID')
                     ->prefix('#')
                     ->sortable()
                     ->color('gray')
                     ->toggleable(),
 
-                TextColumn::make(Review::REVIEWER_ID) // De persoon die de review schreef
-                    ->label(__('REVIEWER ID'))
+                TextColumn::make(Review::REVIEWER_ID)
+                    ->label(__('reviews.col_reviewer_id'))
                     ->searchable()
                     ->sortable()
-                    ->weight('medium'),
+                    ->weight('medium')
+                    ->toggleable(),
 
-                TextColumn::make(Review::REVIEWEE_ID) // De persoon over wie de review gaat
-                    ->label(__('REVIEWEE ID'))
+                TextColumn::make(Review::REVIEWEE_ID)
+                    ->label(__('reviews.col_reviewee_id'))
                     ->searchable()
                     ->sortable()
-                    ->color('gray'),
+                    ->color('gray')
+                    ->toggleable(),
 
                 TextColumn::make(Review::LISTING_ID)
-                    ->label(__('LISTING ID'))
-                    ->placeholder('Geen advertentie ID beschikbaar')
+                    ->label(__('reviews.col_listing_id'))
+                    ->placeholder(__('reviews.col_listing_placeholder'))
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
 
-                TextColumn::make(Review::REVIEW_RATING) // De listing waar de review betrekking op heeft
-                    ->label(__('RATING'))
+                TextColumn::make(Review::REVIEW_RATING)
+                    ->label(__('reviews.col_rating'))
                     ->icon('heroicon-m-star')
                     ->iconColor('warning')
                     ->badge()
                     ->color('gray')
                     ->sortable()
-                    ->alignCenter(),
-
-                TextColumn::make(Review::REVIEW_COMMENT)
-                    ->label(__('COMMENTAAR'))
-                    ->searchable()
+                    ->alignCenter()
                     ->toggleable(),
 
+                TextColumn::make(Review::REVIEW_COMMENT)
+                    ->label(__('reviews.col_comment'))
+                    ->searchable()
+                    ->limit(50)
+                    ->placeholder('—')
+                    ->toggleable(),
+
+                IconColumn::make('reviews_active')
+                    ->label(__('reviews.col_active'))
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->toggleable()
+                    ->sortable(),
+
                 TextColumn::make(Review::CREATED_AT)
-                    ->label(__('DATUM'))
+                    ->label(__('reviews.col_date'))
                     ->dateTime('d-m-Y H:i')
                     ->color('gray')
                     ->sortable()
                     ->toggleable(),
 
                 TextColumn::make(Review::UPDATED_AT)
-                    ->label(__('LAATSTE UPDATE'))
+                    ->label(__('reviews.col_updated_at'))
                     ->dateTime('d-m-Y H:i')
                     ->color('gray')
                     ->sortable()
@@ -74,16 +92,27 @@ class ReviewsTable
             ])
             ->filters([
                 SelectFilter::make(Review::REVIEW_RATING)
-                    ->label(__('RATING'))
-                    ->native(false)      // ✅ Gebruik de Filament-stijl dropdown
-                    ->searchable()       // ✅ Voegt de zoekbalk toe bovenaan
+                    ->label(__('reviews.col_rating'))
+                    ->native(false)
+                    ->searchable()
                     ->options([
-                        1 => '⭐ 1 ster',
-                        2 => '⭐⭐ 2 sterren',
-                        3 => '⭐⭐⭐ 3 sterren',
-                        4 => '⭐⭐⭐⭐ 4 sterren',
-                        5 => '⭐⭐⭐⭐⭐ 5 sterren',
+                        1 => __('reviews.rating_1'),
+                        2 => __('reviews.rating_2'),
+                        3 => __('reviews.rating_3'),
+                        4 => __('reviews.rating_4'),
+                        5 => __('reviews.rating_5'),
                     ]),
+
+                Filter::make('actief')
+                    ->label(__('reviews.filter_active'))
+                    ->toggle()
+                    
+                    ->query(fn(Builder $query) => $query->where('reviews_active', true)),
+
+                Filter::make('verwijderd')
+                    ->label(__('reviews.filter_inactive'))
+                    ->toggle()
+                    ->query(fn(Builder $query) => $query->where('reviews_active', false)),
             ])
             ->actions([
                 EditAction::make()
@@ -91,33 +120,35 @@ class ReviewsTable
                     ->icon('heroicon-m-pencil-square')
                     ->color('blue'),
 
-                // Deactiveer actie voor een enkele review
                 DeleteAction::make()
                     ->label(false)
                     ->icon('heroicon-m-trash')
-                    ->modalHeading(__('Review verbergen'))
-                    ->modalDescription(__('Weet je zeker dat je deze review wilt deactiveren? De tekst blijft in de database, maar wordt niet meer getoond.'))
-                    ->modalSubmitActionLabel(__('Ja, verberg review'))
+                    ->modalHeading(__('reviews.delete_heading'))
+                    ->modalDescription(__('reviews.delete_desc'))
+                    ->modalSubmitActionLabel(__('reviews.delete_confirm'))
                     ->action(function (Review $record) {
-                        // We gaan er even vanuit dat je een 'is_active' of 'status' kolom hebt
-                        // Als je die niet hebt, kun je deze kolom toevoegen aan je reviews tabel
-                        $record->update(['is_active' => false]);
+                        $record->update(['reviews_active' => false]);
 
                         Notification::make()
-                            ->title(__('Review gedeactiveerd'))
+                            ->title(__('reviews.notify_deleted'))
                             ->success()
                             ->send();
                     }),
             ])
             ->bulkActions([
-                Action::make('delete')
-                    ->label(__('Selectie verbergen'))
-                    ->modalHeading(__('Geselecteerde reviews verbergen'))
+                BulkAction::make('bulk_delete')
+                    ->label(__('reviews.bulk_delete_label'))
+                    ->icon('heroicon-m-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading(__('reviews.bulk_delete_heading'))
+                    ->modalDescription(__('reviews.bulk_delete_desc'))
+                    ->modalSubmitActionLabel(__('reviews.bulk_delete_confirm'))
                     ->action(function (Collection $records) {
-                        $records->each(fn(Review $record) => $record->update(['is_active' => false]));
+                        $records->each(fn(Review $record) => $record->update(['reviews_active' => false]));
 
                         Notification::make()
-                            ->title(__('Reviews succesvol verborgen'))
+                            ->title(__('reviews.notify_bulk_deleted'))
                             ->success()
                             ->send();
                     })
