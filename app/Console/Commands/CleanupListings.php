@@ -12,7 +12,7 @@ class CleanupListings extends Command
 
     public function handle(): void
     {
-        // Niet-premium: na 1 week
+        // Niet premium: na 1 week
         $regularQuery = Listing::where('status', 'active')
             ->where('created_at', '<', now()->subWeek())
             ->whereHas('seller', fn($q) => $q->where('premium', false));
