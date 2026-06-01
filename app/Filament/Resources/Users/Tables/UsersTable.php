@@ -71,7 +71,7 @@ class UsersTable
                     ->color('gray'),
 
                 TextColumn::make('name')
-                    ->label('NAAM')
+                    ->label(__('admin.col_name'))
                     ->description(fn(User $record): string => $record->email)
                     ->searchable()
                     ->toggleable()
@@ -79,43 +79,43 @@ class UsersTable
                     ->weight('medium'),
 
                 TextColumn::make('is_admin')
-                    ->label('ROL')
+                    ->label(__('admin.col_rol'))
                     ->html()
                     ->getStateUsing(fn(User $record): string => $record->is_admin
-                        ? self::badge('★ ADMIN', 'amber')
-                        : self::badge('👤 GEBRUIKER', 'indigo'))
+                        ? self::badge(__('admin.badge_admin'), 'amber')
+                        : self::badge(__('admin.badge_user'), 'indigo'))
                     ->toggleable()
                     ->sortable(),
 
                 TextColumn::make('is_active')
-                    ->label('STATUS')
+                    ->label(__('admin.col_status'))
                     ->html()
                     ->getStateUsing(fn(User $record): string => $record->is_active
-                        ? self::badge('● ACTIEF', 'green')
-                        : self::badge('✗ GEDEACTIVEERD', 'red'))
+                        ? self::badge(__('admin.badge_active'), 'green')
+                        : self::badge(__('admin.badge_deactivated'), 'red'))
                     ->toggleable()
                     ->sortable(),
 
                 TextColumn::make('is_banned')
-                    ->label('BAN')
+                    ->label(__('admin.col_ban'))
                     ->html()
                     ->getStateUsing(fn(User $record): string => $record->is_banned
-                        ? self::badge('JA ', 'green')
-                        : self::badge('NEE ', 'darkred'))
+                        ? self::badge(__('admin.badge_ban_yes'), 'green')
+                        : self::badge(__('admin.badge_ban_no'), 'darkred'))
                     ->toggleable()
                     ->sortable(),
 
                 TextColumn::make('email_verified_at')
-                    ->label('EMAIL')
+                    ->label(__('admin.col_email'))
                     ->html()
                     ->getStateUsing(fn(User $record): string => $record->email_verified_at
-                        ? self::badge('✓ GEVERIFIEERD', 'blue')
-                        : self::badge('✗ NIET GEVERIFIEERD', 'orange'))
+                        ? self::badge(__('admin.badge_verified'), 'blue')
+                        : self::badge(__('admin.badge_not_verified'), 'orange'))
                     ->toggleable()
                     ->sortable(),
 
                 TextColumn::make('username')
-                    ->label('USERNAME')
+                    ->label(__('admin.col_username'))
                     ->color('gray')
                     ->sortable()
                     ->toggleable()
@@ -123,7 +123,7 @@ class UsersTable
                     ->placeholder('—'),
 
                 TextColumn::make('bio')
-                    ->label('BIO')
+                    ->label(__('admin.col_bio'))
                     ->color('gray')
                     ->limit(40)
                     ->toggleable()
@@ -131,45 +131,45 @@ class UsersTable
                     ->placeholder('—'),
 
                 TextColumn::make('created_at')
-                    ->label('AANGEMAAKT')
+                    ->label(__('admin.col_created_at'))
                     ->dateTime('d-m-Y H:i')
                     ->toggleable()
                     ->sortable(),
 
                 TextColumn::make('updated_at')
-                    ->label('BIJGEWERKT')
+                    ->label(__('admin.col_updated_at'))
                     ->dateTime('d-m-Y H:i')
                     ->toggleable()
                     ->sortable(),
             ])
             ->filters([
                 Filter::make('email_verified')
-                    ->label('Email geverifieerd')
+                    ->label(__('admin.col_email_verified'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->whereNotNull('email_verified_at')),
 
                 Filter::make('email_not_verified')
-                    ->label('Email niet geverifieerd')
+                    ->label(__('admin.col_email_not_verified'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->whereNull('email_verified_at')),
 
                 Filter::make('is_admin')
-                    ->label('Admins')
+                    ->label(__('admin.col_admin'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('is_admin', true)),
 
                 Filter::make('is_active')
-                    ->label('Actief')
+                    ->label(__('admin.col_active'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('is_active', true)),
 
                 Filter::make('is_not_active')
-                    ->label('Verwijderd')
+                    ->label(__('admin.col_not_active'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('is_active', false)),
 
                 Filter::make('is_banned')
-                    ->label('Verbannen')
+                    ->label(__('admin.col_banned'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('is_banned', true)),
             ])
@@ -182,47 +182,47 @@ class UsersTable
                 DeleteAction::make()
                     ->label(false)
                     ->icon('heroicon-m-trash')
-                    ->modalHeading('Gebruiker verwijderen')
-                    ->modalDescription('Weet je zeker dat je deze gebruiker wilt verwijderen? De gebruiker blijft bewaard in de database maar kan niet meer inloggen.')
-                    ->modalSubmitActionLabel('Ja, verwijder')
+                    ->modalHeading(__('admin.col_modalheaddelete'))
+                    ->modalDescription(__('admin.col_modalheadasure'))
+                    ->modalSubmitActionLabel(__('admin.col_modalheadsure'))
                     ->action(function (User $record) {
                         $record->update(['is_active' => false]);
                         Notification::make()
-                            ->title('Gebruiker verwijderd')
+                            ->title(__('admin.notify_deleted'))
                             ->success()
                             ->send();
                     }),
             ])
             ->bulkActions([
                 BulkAction::make('bulk_delete')
-                    ->label('Selectie verwijderen')
+                    ->label(__('admin.bulk_delete_label'))
                     ->icon('heroicon-m-trash')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->modalHeading('Geselecteerde gebruikers verwijderen')
-                    ->modalDescription('Weet je zeker dat je de geselecteerde gebruikers wilt verwijderen? Ze blijven bewaard in de database maar kunnen niet meer inloggen.')
-                    ->modalSubmitActionLabel('Ja, verwijder selectie')
+                    ->modalHeading(__('admin.col_modalheadmultiple'))
+                    ->modalDescription(__('admin.col_modalheadmultiple_desc'))
+                    ->modalSubmitActionLabel(__('admin.bulk_delete_confirm'))
                     ->action(function (Collection $records) {
                         $records->each(fn(User $record) => $record->update(['is_active' => false]));
 
                         Notification::make()
-                            ->title('Gebruikers verwijderd')
+                            ->title(__('admin.notify_bulk_deleted'))
                             ->success()
                             ->send();
                     })
                     ->deselectRecordsAfterCompletion(),
 
                 BulkAction::make('change_status')
-                    ->label('Status wijzigen')
+                    ->label(__('admin.col_bulkactionstatus'))
                     ->icon('heroicon-m-pencil-square')
                     ->color('primary')
                     ->form([
                         Select::make('status')
-                            ->label('Kies nieuwe status')
+                            ->label(__('admin.col_bulkstatuschoosen'))
                             ->options([
-                                'active'     => 'Actief maken',
-                                'deactivate' => 'Deactiveren',
-                                'ban'        => 'Verbannen',
+                                'active'     => __('admin.col_bulkstatusactive_desc'),
+                                'deactivate' => __('admin.col_bulkstatusinactive_desc'),
+                                'ban'        => __('admin.col_bulkstatusban_desc'),
                             ])
                             ->required(),
                     ])
@@ -236,7 +236,7 @@ class UsersTable
                         });
 
                         Notification::make()
-                            ->title('Status bijgewerkt voor selectie')
+                            ->title(__('admin.col_statussucess'))
                             ->success()
                             ->send();
                     })

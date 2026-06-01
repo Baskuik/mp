@@ -62,7 +62,7 @@ class CategoriesTable
                     ->color('gray'),
 
                 TextColumn::make(Category::CATEGORY_NAME)
-                    ->label('CATEGORIE NAAM')
+                    ->label(__('categories.col_name'))
                     ->searchable()
                     ->toggleable()
                     ->sortable()
@@ -71,7 +71,7 @@ class CategoriesTable
                     ->iconColor('gray'),
 
                 TextColumn::make(Category::CATEGORY_SLUG)
-                    ->label('SLUG')
+                    ->label(__('categories.col_slug'))
                     ->searchable()
                     ->toggleable()
                     ->sortable()
@@ -80,8 +80,8 @@ class CategoriesTable
                     ->color('gray'),
 
                 TextColumn::make('parent.name')
-                    ->label('BOVENLIGGENDE CATEGORIE')
-                    ->placeholder('— Hoofdcategorie')
+                    ->label(__('categories.col_parent'))
+                    ->placeholder(__('categories.col_parent_placeholder'))
                     ->toggleable()
                     ->sortable()
                     ->icon('heroicon-m-folder')
@@ -89,16 +89,16 @@ class CategoriesTable
                     ->color('gray'),
 
                 TextColumn::make(Category::CATEGORY_ACTIVE)
-                    ->label('STATUS')
+                    ->label(__('categories.col_status'))
                     ->html()
                     ->getStateUsing(fn(Category $record): string => $record->category_active
-                        ? self::badge('✓ ACTIEF', 'green')
-                        : self::badge('○ INACTIEF', 'red'))
+                        ? self::badge(__('categories.badge_active'), 'green')
+                        : self::badge(__('categories.badge_inactive'), 'red'))
                     ->toggleable()
                     ->sortable(),
 
                 TextColumn::make(Category::CREATED_AT)
-                    ->label('AANGEMAAKT OP')
+                    ->label(__('categories.col_created_at'))
                     ->dateTime('d-m-Y H:i')
                     ->icon('heroicon-m-calendar')
                     ->iconColor('gray')
@@ -107,7 +107,7 @@ class CategoriesTable
                     ->color('gray'),
 
                 TextColumn::make(Category::UPDATED_AT)
-                    ->label('LAATSTE UPDATE')
+                    ->label(__('categories.col_updated_at'))
                     ->dateTime('d-m-Y H:i')
                     ->toggleable()
                     ->sortable()
@@ -115,22 +115,22 @@ class CategoriesTable
             ])
             ->filters([
                 Filter::make('hoofdcategorie')
-                    ->label('Alleen hoofdcategorieën')
+                    ->label(__('categories.filter_main'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->whereNull('parent_id')),
 
                 Filter::make('subcategorie')
-                    ->label('Alleen subcategorieën')
+                    ->label(__('categories.filter_sub'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->whereNotNull('parent_id')),
 
                 Filter::make('actief')
-                    ->label('Alleen actieve categorieën')
+                    ->label(__('categories.filter_active'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('category_active', true)),
 
                 Filter::make('inactief')
-                    ->label('Alleen verwijderde categorieën')
+                    ->label(__('categories.filter_inactive'))
                     ->toggle()
                     ->query(fn(Builder $query) => $query->where('category_active', false)),
             ])
@@ -143,34 +143,34 @@ class CategoriesTable
                 DeleteAction::make()
                     ->label(false)
                     ->icon('heroicon-m-trash')
-                    ->modalHeading('Categorie verwijderen')
-                    ->modalDescription('Weet je zeker dat je deze categorie wilt verwijderen? De categorie blijft bewaard in de database maar wordt niet meer getoond aan klanten.')
-                    ->modalSubmitActionLabel('Ja, verwijder')
+                    ->modalHeading(__('categories.delete_heading'))
+                    ->modalDescription(__('categories.delete_desc'))
+                    ->modalSubmitActionLabel(__('categories.delete_confirm'))
                     ->action(function (Category $record) {
                         $record->update([Category::CATEGORY_ACTIVE => false]);
 
                         Notification::make()
-                            ->title('Categorie verwijderd')
+                            ->title(__('categories.notify_deleted'))
                             ->success()
                             ->send();
                     }),
             ])
             ->bulkActions([
                 BulkAction::make('bulk_deactivate')
-                    ->label('Selectie verwijderen')
+                    ->label(__('categories.bulk_delete_label'))
                     ->icon('heroicon-m-trash')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->modalHeading('Geselecteerde categorieën verwijderen')
-                    ->modalDescription('Weet je zeker dat je de geselecteerde categorieën wilt verwijderen? Ze blijven bewaard in de database maar worden niet meer getoond aan klanten.')
-                    ->modalSubmitActionLabel('Ja, verwijder selectie')
+                    ->modalHeading(__('categories.bulk_delete_heading'))
+                    ->modalDescription(__('categories.bulk_delete_desc'))
+                    ->modalSubmitActionLabel(__('categories.bulk_delete_confirm'))
                     ->action(function (Collection $records) {
                         $records->each(fn(Category $record) => $record->update([
                             Category::CATEGORY_ACTIVE => false,
                         ]));
 
                         Notification::make()
-                            ->title('Categorieën verwijderd')
+                            ->title(__('categories.notify_bulk_deleted'))
                             ->success()
                             ->send();
                     })

@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Listings\Schemas;
 
 use App\Models\Category;
 use App\Models\User;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -60,20 +61,20 @@ class ListingForm
                     ->step(0.01)
                     ->helperText('Voer de prijs in euro\'s in (zonder valutasymbool).'),
 
-               Select::make('status')
-    ->label('Status')
-    ->placeholder('Kies een status…')
-    ->prefixIcon('heroicon-o-signal')
-    ->options([
-        'active'   => 'Actief',
-        'sold'     => 'Verkocht',
-        'archived' => 'Gearchiveerd',
-        'inactive' => 'Inactief',
-    ])
-    ->required()
-    ->default('active')
-    ->searchable() // ← toevoegen
-    ->helperText('Alleen actieve advertenties zijn zichtbaar voor klanten.'),
+                Select::make('status')
+                    ->label('Status')
+                    ->placeholder('Kies een status…')
+                    ->prefixIcon('heroicon-o-signal')
+                    ->options([
+                        'active' => 'Actief',
+                        'sold' => 'Verkocht',
+                        'archived' => 'Gearchiveerd',
+                        'inactive' => 'Inactief',
+                    ])
+                    ->required()
+                    ->default('active')
+                    ->searchable() // ← toevoegen
+                    ->helperText('Alleen actieve advertenties zijn zichtbaar voor klanten.'),
 
                 TextInput::make('location')
                     ->label('Locatie')
@@ -82,6 +83,17 @@ class ListingForm
                     ->required()
                     ->maxLength(255)
                     ->helperText('Stad of regio waar het product zich bevindt.'),
+
+                FileUpload::make('images')
+                    ->label('Afbeeldingen')
+                    ->multiple()
+                    ->disk('public')
+                    ->directory('listings')
+                    ->maxSize(5120)
+                    ->maxFiles(10)
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->columnSpanFull()
+                    ->helperText('Upload tot 10 afbeeldingen (max 5MB per afbeelding). Ondersteunde formaten: JPG, PNG, WebP'),
             ]);
     }
 }

@@ -149,10 +149,14 @@
 
                         {{-- Wachtwoordsterkte indicator --}}
                         <div class="mt-2 flex gap-1.5" id="strength-bars">
-                            <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors duration-300" id="bar-1"></div>
-                            <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors duration-300" id="bar-2"></div>
-                            <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors duration-300" id="bar-3"></div>
-                            <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors duration-300" id="bar-4"></div>
+                            <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors duration-300" id="bar-1">
+                            </div>
+                            <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors duration-300" id="bar-2">
+                            </div>
+                            <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors duration-300" id="bar-3">
+                            </div>
+                            <div class="h-1 flex-1 rounded-full bg-gray-200 transition-colors duration-300" id="bar-4">
+                            </div>
                         </div>
                         <p class="text-xs text-gray-400 mt-1" id="strength-label"></p>
                     </div>
@@ -185,13 +189,17 @@
 
                     {{-- Voorwaarden --}}
                     <div class="flex items-start gap-2.5 pt-1">
-                        <input id="terms" type="checkbox" name="terms" required
-                            class="w-4 h-4 mt-0.5 rounded border-gray-300 text-[#2D6A4F] focus:ring-[#2D6A4F]/20 cursor-pointer">
+                        <input id="terms" type="checkbox" name="terms" required readonly
+                            class="w-5 h-5 mt-0.5 rounded border-2 border-black bg-white cursor-pointer appearance-none checked:bg-black checked:border-black relative"
+                            style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22 fill=%22white%22><path d=%22M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z%22/></svg>'); background-size: 100%; background-position: center; background-repeat: no-repeat;"
+                            onclick="openTermsModal();">
                         <label for="terms" class="text-sm text-gray-600 cursor-pointer leading-snug">
                             {{ __('messages.register_terms_1') }}
-                            <a href="#" class="text-[#2D6A4F] hover:underline">{{ __('messages.register_terms_2') }}</a>
+                            <a href="#" onclick="event.preventDefault(); openTermsModal();"
+                                class="text-[#2D6A4F] hover:underline">{{ __('messages.register_terms_2') }}</a>
                             {{ __('messages.register_terms_and') }}
-                            <a href="#" class="text-[#2D6A4F] hover:underline">{{ __('messages.register_terms_3') }}</a>
+                            <a href="#" onclick="event.preventDefault(); openTermsModal();"
+                                class="text-[#2D6A4F] hover:underline">{{ __('messages.register_terms_3') }}</a>
                         </label>
                     </div>
 
@@ -215,12 +223,13 @@
                 `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>`;
         }
 
-const strengthLabels = {{ Js::from([
-    __('messages.password_weak'),
-    __('messages.password_fair'),
-    __('messages.password_good'),
-    __('messages.password_strong'),
-]) }};
+        const strengthLabels =
+            {{ Js::from([
+                __('messages.password_weak'),
+                __('messages.password_fair'),
+                __('messages.password_good'),
+                __('messages.password_strong'),
+            ]) }};
         document.getElementById('password').addEventListener('input', function() {
             const val = this.value;
             let strength = 0;
@@ -236,7 +245,33 @@ const strengthLabels = {{ Js::from([
                 bar.className = 'h-1 flex-1 rounded-full transition-colors duration-300 ' +
                     (i <= strength ? colors[strength - 1] : 'bg-gray-200');
             }
-            document.getElementById('strength-label').textContent = val.length > 0 ? strengthLabels[strength - 1] ?? '' : '';
+            document.getElementById('strength-label').textContent = val.length > 0 ? strengthLabels[strength - 1] ??
+                '' : '';
+        });
+
+        function handleTermsCheckbox(event, checkbox) {
+            // If unchecked, opening it will open the terms modal
+            if (!checkbox.checked) {
+                event.preventDefault();
+                openTermsModal();
+            }
+            // If checked, opening it will uncheck it (allow default)
+        }
+
+        // Setup checkbox event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            const termsCheckbox = document.getElementById('terms');
+            termsCheckbox.addEventListener('click', function(event) {
+                // If unchecked, prevent default checkbox toggle and open modal instead
+                if (!this.checked) {
+                    event.preventDefault();
+                    openTermsModal();
+                    // Don't change the checked state
+                }
+                // If checked, allow normal unchecking
+            });
         });
     </script>
+
+    @include('components.terms-modal')
 @endsection

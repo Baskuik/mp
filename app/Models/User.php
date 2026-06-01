@@ -67,6 +67,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'bio',
         'profile_photo_path',
         'phone_number',
+        'language',
     ];
 
     protected $hidden = [

@@ -92,7 +92,7 @@
                                 </a>
 
                                 {{-- Instellingen --}}
-                                <a href="{{ url('/instellingen') }}"
+                                <a href="{{ url('/settings') }}"
                                     class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-600 hover:text-[#2D6A4F] hover:bg-[#2D6A4F]/8 transition-all duration-150 group">
                                     <div class="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-[#2D6A4F]/10 flex items-center justify-center transition-colors">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
