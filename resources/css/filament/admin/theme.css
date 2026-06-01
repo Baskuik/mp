@@ -1,5 +1,124 @@
 @import '/vendor/filament/filament/resources/css/theme.css';
 
-:root, [data-theme="light"] {
-    color-scheme: light !important;
+:root,
+[data-theme="dark"] {
+    color-scheme: dark !important;
+}
+
+.fi-pagination {
+    align-items: center;
+    column-gap: 0.75rem;
+}
+
+.fi-pagination .fi-pagination-records-per-page-select-ctn {
+    display: flex;
+    justify-content: center;
+    min-width: 10rem;
+}
+
+.fi-pagination .fi-pagination-records-per-page-select {
+    width: 100%;
+}
+
+.fi-pagination .fi-pagination-records-per-page-select .fi-input-wrapper,
+.fi-pagination .fi-pagination-records-per-page-select .fi-select-input-btn {
+    border-radius: 0.9rem !important;
+    border-color: rgba(209, 250, 229, 0.55) !important;
+    background: rgba(13, 31, 22, 0.72) !important;
+    color: #f8fafc !important;
+    box-shadow: 0 10px 25px rgba(26, 61, 43, 0.18) !important;
+}
+
+.fi-pagination .fi-pagination-records-per-page-select .fi-select-input-btn:hover,
+.fi-pagination .fi-pagination-records-per-page-select .fi-select-input-btn:focus-visible {
+    border-color: rgba(134, 239, 172, 0.9) !important;
+}
+
+.fi-fo-select .fi-select-input-ctn {
+    border-radius: 0.95rem;
+}
+
+.fi-fo-select .fi-select-input-btn {
+    min-height: 3rem;
+    border-radius: 0.95rem;
+    border: 1px solid rgba(82, 130, 102, 0.35);
+    background: #e7f3ec;
+    color: #163826;
+    box-shadow: 0 14px 30px rgba(26, 61, 43, 0.16);
+}
+
+.fi-fo-select .fi-select-input-btn:hover,
+.fi-fo-select .fi-select-input-btn:focus-visible {
+    border-color: rgba(134, 239, 172, 0.9);
+}
+
+.fi-fo-select .fi-select-input-value-ctn,
+.fi-fo-select .fi-select-input-placeholder {
+    color: #244936;
+}
+
+.fi-fo-select .fi-dropdown-panel.fi-scrollable {
+    max-height: 18rem;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #86efac rgba(10, 30, 20, 0.35);
+}
+
+.fi-fo-select .fi-dropdown-panel.fi-scrollable::-webkit-scrollbar {
+    width: 6px;
+}
+
+.fi-fo-select .fi-dropdown-panel.fi-scrollable::-webkit-scrollbar-thumb {
+    background: #86efac;
+    border-radius: 9999px;
+}
+
+.fi-fo-select .fi-dropdown-panel {
+    border: 1px solid rgba(209, 250, 229, 0.85) !important;
+    background: #0f2419 !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28) !important;
+}
+
+.fi-fo-select .fi-select-input-search-ctn {
+    padding: 0.65rem;
+    border-bottom: 1px solid rgba(82, 130, 102, 0.35);
+    background: #d7eadf !important;
+}
+
+.fi-fo-select .fi-select-input-search-ctn .fi-input {
+    border-radius: 0.75rem;
+    border: 1px solid rgba(82, 130, 102, 0.45);
+    background: #edf7f1 !important;
+    color: #163826 !important;
+}
+
+.fi-fo-select .fi-select-input-search-ctn .fi-input:focus {
+    border-color: rgba(134, 239, 172, 0.95);
+}
+
+.fi-fo-select .fi-select-input-search-ctn .fi-input::placeholder {
+    color: #5f7f6d;
+}
+
+.fi-fo-select .fi-dropdown-list,
+.fi-fo-select .fi-select-input-options-ctn {
+    padding: 0.35rem;
+}
+
+.fi-fo-select .fi-select-input-option,
+.fi-fo-select .fi-dropdown-list-item {
+    border-radius: 0.7rem;
+    margin: 0.2rem 0;
+    color: #f8fafc;
+}
+
+.fi-fo-select .fi-select-input-option[aria-selected="true"],
+.fi-fo-select .fi-select-input-option.fi-selected {
+    background: #d8ecdf;
+    color: #163826;
+}
+
+.fi-fo-select .fi-select-input-option:hover,
+.fi-fo-select .fi-dropdown-list-item:hover {
+    background: rgba(134, 239, 172, 0.12);
 }
