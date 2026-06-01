@@ -28,15 +28,15 @@
             {{-- Stats --}}
             <div class="flex gap-10 relative z-10">
                 <div>
-                    <strong class="block font-display text-2xl text-white">{{ __('messages.welcome_stats_ads_login') }}</strong>
+                    <strong class="block font-display text-2xl text-white">{{ number_format($listingsCount) }}</strong>
                     <span class="text-white/50 text-sm">{{ __('messages.welcome_stats_ads_desc_login') }}</span>
                 </div>
                 <div>
-                    <strong class="block font-display text-2xl text-white">{{ __('messages.welcome_stats_users_login') }}</strong>
+                    <strong class="block font-display text-2xl text-white">{{ number_format($usersCount) }}</strong>
                     <span class="text-white/50 text-sm">{{ __('messages.welcome_stats_users_desc_login') }}</span>
                 </div>
                 <div>
-                    <strong class="block font-display text-2xl text-white">{{ __('messages.welcome_stats_satisfaction') }}</strong>
+                    <strong class="block font-display text-2xl text-white">{{ $satisfactionPercentage }}%</strong>
                     <span class="text-white/50 text-sm">{{ __('messages.welcome_stats_satisfaction_desc') }}</span>
                 </div>
             </div>
@@ -109,8 +109,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                     d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                             </svg>
-                            <input id="password" type="password" name="password" required
-                                autocomplete="current-password" placeholder="••••••••"
+                            <input id="password" type="password" name="password" required autocomplete="current-password"
+                                placeholder="••••••••"
                                 class="w-full pl-10 pr-11 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-[#2D6A4F] focus:ring-4 focus:ring-[#2D6A4F]/10 transition-all @error('password') border-red-400 @enderror">
                             <button type="button" onclick="togglePassword('password', this)"
                                 class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors">

@@ -35,4 +35,14 @@ class Listing extends Model
     {
         return $this->belongsTo(User::class, User::USER_ID);
     }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'category_id');
+    }
+
+    public function images()
+    {
+        return $this->hasMany(ListingImage::class, 'listing_id', 'listing_id');
+    }
 }

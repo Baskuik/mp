@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Listing;
+use App\Models\User;
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 class LoginController extends Controller
@@ -12,7 +15,22 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
-        return view('auth.login');
+        // Get active listings count
+        $listingsCount = Listing::where('status', 'active')->count();
+
+        // Get active users count
+        $usersCount = User::where('is_active', true)->count();
+
+        // Calculate customer satisfaction (average rating from reviews)
+        $averageRating = Review::avg('rating') ?? 0;
+        // Convert to percentage (assuming 5-star system: rating/5 * 100)
+        $satisfactionPercentage = round(($averageRating / 5) * 100);
+
+        return view('auth.login', [
+            'listingsCount' => $listingsCount,
+            'usersCount' => $usersCount,
+            'satisfactionPercentage' => $satisfactionPercentage,
+        ]);
     }
 
     /**

@@ -13,9 +13,11 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ListingResource extends Resource
 {
+    protected static ?string $model = Listing::class;
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-shopping-bag';
     protected static \UnitEnum|string|null $navigationGroup = 'BEHEER';
 
@@ -27,6 +29,11 @@ class ListingResource extends Resource
     public static function table(Table $table): Table
     {
         return ListingsTable::configure($table);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with(['seller', 'category']);
     }
 
     public static function getRelations(): array

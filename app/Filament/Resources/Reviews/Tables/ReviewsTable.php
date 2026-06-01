@@ -106,6 +106,7 @@ class ReviewsTable
                 Filter::make('actief')
                     ->label(__('reviews.filter_active'))
                     ->toggle()
+                    
                     ->query(fn(Builder $query) => $query->where('reviews_active', true)),
 
                 Filter::make('verwijderd')
