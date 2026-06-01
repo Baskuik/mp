@@ -20,8 +20,11 @@ class ListingForm
                     ->label('Verkoper')
                     ->placeholder('Zoek een gebruiker…')
                     ->prefixIcon('heroicon-o-user')
-                    ->options(fn() => User::all()->pluck('name', 'user_id'))
+                    ->options(fn() => ['' => 'Geen selectie'] + User::query()->orderBy('name')->pluck('name', 'user_id')->toArray())
                     ->searchable()
+                    ->native(false)
+                    ->selectablePlaceholder()
+                    ->optionsLimit(50)
                     ->required()
                     ->helperText('De gebruiker die deze advertentie heeft geplaatst.'),
 
@@ -29,8 +32,10 @@ class ListingForm
                     ->label('Categorie')
                     ->placeholder('Selecteer een categorie…')
                     ->prefixIcon('heroicon-o-tag')
-                    ->options(fn() => Category::where('category_active', true)->pluck('name', 'category_id'))
+                    ->options(fn() => ['' => 'Geen selectie'] + Category::where('category_active', true)->orderBy('name')->pluck('name', 'category_id')->toArray())
                     ->searchable()
+                    ->native(false)
+                    ->selectablePlaceholder()
                     ->required()
                     ->helperText('Alleen actieve categorieën worden getoond.'),
 
@@ -66,6 +71,7 @@ class ListingForm
                     ->placeholder('Kies een status…')
                     ->prefixIcon('heroicon-o-signal')
                     ->options([
+                        '' => 'Geen selectie',
                         'active' => 'Actief',
                         'sold' => 'Verkocht',
                         'archived' => 'Gearchiveerd',
@@ -73,7 +79,8 @@ class ListingForm
                     ])
                     ->required()
                     ->default('active')
-                    ->searchable() // ← toevoegen
+                    ->native(false)
+                    ->selectablePlaceholder()
                     ->helperText('Alleen actieve advertenties zijn zichtbaar voor klanten.'),
 
                 TextInput::make('location')

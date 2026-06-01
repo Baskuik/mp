@@ -19,41 +19,46 @@ class ListingsTable
     private static function badge(string $label, string $color, string $textColor = 'white'): string
     {
         $colors = [
-            'green'   => 'linear-gradient(135deg,#22c55e,#16a34a)',
-            'red'     => 'linear-gradient(135deg,#ef4444,#dc2626)',
+            'green' => 'linear-gradient(135deg,#22c55e,#16a34a)',
+            'red' => 'linear-gradient(135deg,#ef4444,#dc2626)',
             'darkred' => 'linear-gradient(135deg,#dc2626,#991b1b)',
-            'amber'   => 'linear-gradient(135deg,#f59e0b,#d97706)',
-            'blue'    => 'linear-gradient(135deg,#0ea5e9,#0284c7)',
-            'orange'  => 'linear-gradient(135deg,#f97316,#ea580c)',
-            'indigo'  => 'linear-gradient(135deg,#6366f1,#4f46e5)',
-            'gray'    => 'linear-gradient(135deg,#6b7280,#4b5563)',
-            'teal'    => 'linear-gradient(135deg,#14b8a6,#0d9488)',
+            'amber' => 'linear-gradient(135deg,#f59e0b,#d97706)',
+            'blue' => 'linear-gradient(135deg,#0ea5e9,#0284c7)',
+            'orange' => 'linear-gradient(135deg,#f97316,#ea580c)',
+            'indigo' => 'linear-gradient(135deg,#6366f1,#4f46e5)',
+            'gray' => 'linear-gradient(135deg,#6b7280,#4b5563)',
+            'teal' => 'linear-gradient(135deg,#14b8a6,#0d9488)',
         ];
 
         $shadows = [
-            'green'   => 'rgba(34,197,94,0.4)',
-            'red'     => 'rgba(239,68,68,0.4)',
+            'green' => 'rgba(34,197,94,0.4)',
+            'red' => 'rgba(239,68,68,0.4)',
             'darkred' => 'rgba(220,38,38,0.5)',
-            'amber'   => 'rgba(245,158,11,0.4)',
-            'blue'    => 'rgba(14,165,233,0.4)',
-            'orange'  => 'rgba(249,115,22,0.4)',
-            'indigo'  => 'rgba(99,102,241,0.3)',
-            'gray'    => 'rgba(107,114,128,0.3)',
-            'teal'    => 'rgba(20,184,166,0.3)',
+            'amber' => 'rgba(245,158,11,0.4)',
+            'blue' => 'rgba(14,165,233,0.4)',
+            'orange' => 'rgba(249,115,22,0.4)',
+            'indigo' => 'rgba(99,102,241,0.3)',
+            'gray' => 'rgba(107,114,128,0.3)',
+            'teal' => 'rgba(20,184,166,0.3)',
         ];
 
-        $bg     = $colors[$color]  ?? $colors['gray'];
+        $bg = $colors[$color] ?? $colors['gray'];
         $shadow = $shadows[$color] ?? $shadows['gray'];
 
         return sprintf(
             '<span style="background:%s;color:%s;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.5px;box-shadow:0 2px 4px %s;white-space:nowrap;">%s</span>',
-            $bg, $textColor, $shadow, $label
+            $bg,
+            $textColor,
+            $shadow,
+            $label
         );
     }
 
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultPaginationPageOption(25)
+            ->paginationPageOptions([10, 25, 50, 100])
             ->columns([
                 TextColumn::make(Listing::LISTING_ID)
                     ->label('ID')
@@ -101,11 +106,11 @@ class ListingsTable
                     ->label(__('listings.col_status'))
                     ->html()
                     ->getStateUsing(fn(Listing $record): string => match ($record->listing_status ?? $record->status) {
-                        'active'   => self::badge(__('listings.badge_active'), 'green'),
-                        'sold'     => self::badge(__('listings.badge_sold'), 'blue'),
+                        'active' => self::badge(__('listings.badge_active'), 'green'),
+                        'sold' => self::badge(__('listings.badge_sold'), 'blue'),
                         'archived' => self::badge(__('listings.badge_archived'), 'gray'),
                         'inactive' => self::badge(__('listings.badge_inactive'), 'red'),
-                        default    => self::badge(strtoupper($record->status ?? ''), 'gray'),
+                        default => self::badge(strtoupper($record->status ?? ''), 'gray'),
                     })
                     ->sortable()
                     ->toggleable(),
