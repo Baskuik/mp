@@ -8,6 +8,7 @@
 .fi-pagination {
     align-items: center;
     column-gap: 0.75rem;
+    padding-bottom: 3.5rem;
 }
 
 .fi-pagination .fi-pagination-records-per-page-select-ctn {
@@ -20,18 +21,27 @@
     width: 100%;
 }
 
-.fi-pagination .fi-pagination-records-per-page-select .fi-input-wrapper,
-.fi-pagination .fi-pagination-records-per-page-select .fi-select-input-btn {
+.fi-pagination .fi-pagination-records-per-page-select .fi-input-wrp {
     border-radius: 0.9rem !important;
-    border-color: rgba(209, 250, 229, 0.55) !important;
-    background: rgba(13, 31, 22, 0.72) !important;
-    color: #f8fafc !important;
-    box-shadow: 0 10px 25px rgba(26, 61, 43, 0.18) !important;
+    border: 1px solid rgba(45, 106, 79, 0.45) !important;
+    background: linear-gradient(180deg, #e8f3ed, #dbeee2) !important;
+    box-shadow: 0 8px 20px rgba(26, 61, 43, 0.12) !important;
 }
 
-.fi-pagination .fi-pagination-records-per-page-select .fi-select-input-btn:hover,
-.fi-pagination .fi-pagination-records-per-page-select .fi-select-input-btn:focus-visible {
-    border-color: rgba(134, 239, 172, 0.9) !important;
+.fi-pagination .fi-pagination-records-per-page-select .fi-input-wrp:focus-within {
+    border-color: rgba(45, 106, 79, 0.75) !important;
+    box-shadow: 0 0 0 2px rgba(45, 106, 79, 0.16), 0 8px 20px rgba(26, 61, 43, 0.12) !important;
+}
+
+.fi-pagination .fi-pagination-records-per-page-select .fi-select-input {
+    color: #163826 !important;
+    font-weight: 600;
+    color-scheme: light;
+}
+
+.fi-pagination .fi-pagination-records-per-page-select .fi-select-input option {
+    background: #eef7f1;
+    color: #163826;
 }
 
 .fi-fo-select .fi-select-input-ctn {
