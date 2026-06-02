@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 
 class CleanupListings extends Command
 {
-    protected $signature   = 'listings:cleanup';
+    protected $signature = 'listings:cleanup';
     protected $description = 'Soft-delete advertenties na 1 week (regulier) of 1 maand (premium)';
 
     public function handle(): void
@@ -18,7 +18,9 @@ class CleanupListings extends Command
             ->whereHas('seller', fn($q) => $q->where('premium', false));
 
         $regularCount = $regularQuery->count();
-        $regularQuery->delete();
+        $regularQuery->chunkById(200, function ($listings) {
+            $listings->each->delete();
+        }, 'listing_id');
 
         // Premium: na 1 maand
         $premiumQuery = Listing::where('status', 'active')
@@ -26,7 +28,9 @@ class CleanupListings extends Command
             ->whereHas('seller', fn($q) => $q->where('premium', true));
 
         $premiumCount = $premiumQuery->count();
-        $premiumQuery->delete();
+        $premiumQuery->chunkById(200, function ($listings) {
+            $listings->each->delete();
+        }, 'listing_id');
 
         $this->info("✔ {$regularCount} reguliere en {$premiumCount} premium advertentie(s) verwijderd.");
     }
