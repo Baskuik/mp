@@ -6,6 +6,7 @@ use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\PremiumController;
 
 // View routes
 Route::get('/', function () {
@@ -99,3 +100,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/settings/email', [SettingsController::class, 'updateEmail'])->name('settings.email');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/premium', [PremiumController::class, 'index'])->name('premium.index');
+    Route::get('/premium/checkout', [PremiumController::class, 'checkout'])->name('premium.checkout');
+    Route::post('/premium/process', [PremiumController::class, 'process'])->name('premium.process');
+});
