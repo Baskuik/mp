@@ -462,22 +462,22 @@
                         <form @submit="submit($event)">
                             @csrf
 
-                            {{-- Email (readonly) --}}
+                            {{-- Email (readonly)
                             <div class="field-block">
                                 <label class="field-label">E-mailadres</label>
                                 <input type="email" value="{{ Auth::user()->email }}" readonly class="field-input">
-                            </div>
+                            </div> --}}
 
-                            <div class="divider"><span>Kaartgegevens</span></div>
+                            {{-- <div class="divider"><span>Kaartgegevens</span></div> --}}
 
                             {{-- Name on card --}}
-                            <div class="field-block">
+                            {{-- <div class="field-block">
                                 <label class="field-label">Naam op kaart</label>
                                 <input type="text" name="card_name"
                                        placeholder="Jan Jansen"
                                        required autocomplete="cc-name"
                                        class="field-input">
-                            </div>
+                            </div> --}}
 
                             {{-- Stripe Payment Element (iDEAL, kaart, PayPal etc.) --}}
                             <div class="field-block">
