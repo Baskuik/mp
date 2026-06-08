@@ -4,68 +4,62 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Stripe\Stripe;
+use Stripe\PaymentIntent;
 
 class PremiumController extends Controller
 {
-    /**
-     * Toon de premium marketing pagina.
-     */
     public function index()
     {
-        // Als gebruiker al premium is, redirect naar dashboard
-        if (Auth::user()->premium) {
-            return redirect()->route('profile.show')->with('info', 'Je hebt al een premium account!');
+        if (Auth::user()->is_premium) {
+            return redirect()->url('/')->with('info', 'Je hebt al Premium.');
         }
-
         return view('premium.index');
     }
 
-    /**
-     * Toon de checkout pagina.
-     */
     public function checkout()
     {
-        if (Auth::user()->premium) {
-            return redirect()->route('profile.show')->with('info', 'Je hebt al een premium account!');
+        if (Auth::user()->is_premium) {
+            return redirect(url('/'));
         }
-
         return view('premium.checkout');
     }
 
-    /**
-     * Verwerk de betaling (Stripe).
-     * Installeer Stripe via: composer require stripe/stripe-php
-     * Voeg toe aan .env: STRIPE_KEY, STRIPE_SECRET, STRIPE_WEBHOOK_SECRET
-     */
-    public function process(Request $request)
+    public function intent(Request $request)
     {
-        $request->validate([
-            'stripeToken' => 'required|string',
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $intent = PaymentIntent::create([
+            'amount'   => 999,
+            'currency' => 'eur',
+            'automatic_payment_methods' => ['enabled' => true],
+            'receipt_email' => Auth::user()->email,
+            'metadata' => [
+                'user_id' => Auth::id(), // handig voor Stripe dashboard
+            ],
         ]);
 
-        \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+        return response()->json(['clientSecret' => $intent->client_secret]);
+    }
 
-        try {
-            $charge = \Stripe\Charge::create([
-                'amount'      => 999, // €9,99 in centen
-                'currency'    => 'eur',
-                'description' => 'Premium lidmaatschap',
-                'source'      => $request->stripeToken,
-                'metadata'    => [
-                    'user_id' => Auth::id(),
-                    'email'   => Auth::user()->email,
-                ],
-            ]);
+    public function success(Request $request)
+    {
+        Stripe::setApiKey(config('services.stripe.secret'));
 
-            // Betaling geslaagd — zet premium op true
-            Auth::user()->update(['premium' => true]);
-
-            return redirect()->route('profile.show')
-                ->with('success', '🎉 Welkom bij Premium! Geniet van alle voordelen.');
-        } catch (\Stripe\Exception\CardException $e) {
-            return back()->with('error', 'Betaling mislukt: ' . $e->getMessage());
-        } catch (\Exception $e) {
-            return back()->with('error', 'Er is iets misgegaan. Probeer het opnieuw.');
+        // payment_intent komt via URL parameter van Stripe
+        if (!$request->payment_intent) {
+            return redirect(url('/'));
         }
+
+        $intent = PaymentIntent::retrieve($request->payment_intent);
+
+        if ($intent->status === 'succeeded') {
+            // Controleer of het écht voor deze user is
+            if ($intent->metadata->user_id == Auth::id()) {
+                Auth::user()->update(['is_premium' => true]);
+            }
+        }
+
+        return view('premium.success');
     }
 }

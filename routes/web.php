@@ -101,7 +101,8 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/premium', [PremiumController::class, 'index'])->name('premium.index');
+    Route::get('/premium',          [PremiumController::class, 'index'])->name('premium.index');
     Route::get('/premium/checkout', [PremiumController::class, 'checkout'])->name('premium.checkout');
-    Route::post('/premium/process', [PremiumController::class, 'process'])->name('premium.process');
+    Route::post('/premium/intent',  [PremiumController::class, 'intent'])->name('premium.intent');
+    Route::get('/premium/success',  [PremiumController::class, 'success'])->name('premium.success');
 });

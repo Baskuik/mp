@@ -4,363 +4,491 @@
 @section('title', 'Afrekenen · Premium')
 
 @push('styles')
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
     :root {
-        --dd-forest:     #1A3D2B;
-        --dd-forest-mid: #245C3A;
-        --dd-forest-lit: #2E7A4F;
-        --dd-sage:       #7BA98A;
-        --dd-mist:       #EEF3F0;
-        --dd-orange:     #E07B2A;
-        --dd-orange-drk: #C46A1E;
-        --dd-ink:        #162218;
-        --dd-ink-soft:   #3D5444;
-        --dd-white:      #FFFFFF;
-        --dd-border:     #E0E4E2;
-        --dd-bg:         #F4F6F5;
-        --dd-shadow-sm:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-        --dd-shadow-md:  0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+        --dd-forest:      #1A3D2B;
+        --dd-forest-mid:  #245C3A;
+        --dd-forest-lit:  #2E7A4F;
+        --dd-sage:        #7BA98A;
+        --dd-mist:        #EEF3F0;
+        --dd-orange:      #E07B2A;
+        --dd-orange-drk:  #C46A1E;
+        --dd-ink:         #162218;
+        --dd-ink-soft:    #3D5444;
+        --dd-white:       #FFFFFF;
+        --dd-border:      #DDE4DF;
+        --dd-bg:          #F2F5F3;
+        --dd-error:       #DC2626;
+        --dd-error-bg:    #FEF2F2;
+        --dd-error-border:rgba(220,38,38,0.2);
     }
 
-    body { background-color: var(--dd-bg) !important; font-family: 'DM Sans', sans-serif; }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { background: var(--dd-bg) !important; font-family: 'DM Sans', sans-serif; }
 
-    /* ── Card ── */
-    .dd-card {
+    /* ─── Page fade-in ─── */
+    @keyframes pageFade {
+        from { opacity: 0; transform: translateY(18px); }
+        to   { opacity: 1; transform: none; }
+    }
+    .checkout-page { animation: pageFade 0.55s cubic-bezier(.22,1,.36,1) both; }
+
+    /* ─── Cards ─── */
+    .co-card {
         background: var(--dd-white);
         border: 1px solid var(--dd-border);
-        border-radius: 14px;
-        box-shadow: var(--dd-shadow-sm);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.04);
     }
 
-    /* ── Field label ── */
+    .co-card-head {
+        padding: 18px 24px;
+        border-bottom: 1px solid var(--dd-border);
+        display: flex; align-items: center; gap: 10px;
+        background: #FAFCFB;
+    }
+    .co-card-head h2 {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--dd-ink);
+        margin: 0;
+        letter-spacing: -0.01em;
+    }
+    .step-num {
+        width: 24px; height: 24px;
+        background: linear-gradient(135deg, var(--dd-forest-mid), var(--dd-forest-lit));
+        color: #fff;
+        border-radius: 50%;
+        font-size: 0.68rem;
+        font-weight: 700;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 2px 6px rgba(26,61,43,0.3);
+    }
+
+    .co-card-body { padding: 22px 24px; }
+
+    /* ─── Product row ─── */
+    .product-row {
+        display: flex; align-items: center; gap: 14px;
+        padding-bottom: 18px;
+        margin-bottom: 18px;
+        border-bottom: 1px solid var(--dd-border);
+    }
+    .product-icon {
+        width: 48px; height: 48px;
+        background: linear-gradient(135deg, var(--dd-forest-mid), var(--dd-forest-lit));
+        border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(26,61,43,0.2);
+    }
+    .product-name {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--dd-ink);
+        margin: 0 0 3px;
+    }
+    .product-sub {
+        font-size: 0.75rem;
+        color: var(--dd-sage);
+        margin: 0;
+    }
+
+    /* ─── Summary lines ─── */
+    .sum-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 9px 0;
+        border-bottom: 1px solid #EEF2EF;
+        font-size: 0.87rem;
+    }
+    .sum-line:last-child { border-bottom: none; }
+    .sum-line .l { color: var(--dd-sage); }
+    .sum-line .v { color: var(--dd-ink-soft); font-weight: 500; }
+    .sum-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 0 0;
+        margin-top: 4px;
+        border-top: 2px solid var(--dd-border);
+    }
+    .sum-total .l { color: var(--dd-ink); font-weight: 700; font-size: 0.93rem; }
+    .sum-total .v {
+        font-family: 'Instrument Serif', Georgia, serif;
+        color: var(--dd-forest);
+        font-size: 1.6rem;
+        font-weight: 400;
+        letter-spacing: -0.02em;
+    }
+
+    /* ─── Includes list ─── */
+    .inc-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+    }
+    .inc-item {
+        display: flex; align-items: flex-start; gap: 9px;
+        font-size: 0.8rem;
+        color: var(--dd-ink-soft);
+        padding: 5px 0;
+    }
+    .inc-check {
+        width: 16px; height: 16px; border-radius: 50%;
+        background: var(--dd-mist);
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0; margin-top: 1px;
+        border: 1px solid rgba(46,122,79,0.15);
+    }
+    .inc-check svg { width: 8px !important; height: 8px !important; color: var(--dd-forest-lit); display: inline !important; flex-shrink: 0; }
+    .co-card svg, .co-back svg, .pay-btn svg, .trust-badge svg, .field-error svg, .alert-error svg, .guarantee-badge svg { display: inline !important; flex-shrink: 0; }
+    .checkout-page svg { max-width: none; }
+
+    /* ─── Form fields ─── */
+    .field-block { margin-bottom: 16px; }
     .field-label {
         display: block;
-        font-size: 0.82rem;
+        font-size: 0.79rem;
         font-weight: 600;
         color: var(--dd-ink-soft);
         margin-bottom: 7px;
         letter-spacing: 0.01em;
     }
-
-    /* ── Field input ── */
     .field-input {
         width: 100%;
         background: var(--dd-white);
-        border: 1px solid var(--dd-border);
+        border: 1.5px solid var(--dd-border);
         border-radius: 10px;
         padding: 11px 14px;
         color: var(--dd-ink);
         font-family: 'DM Sans', sans-serif;
-        font-size: 0.93rem;
+        font-size: 0.9rem;
         outline: none;
         transition: border-color 0.15s, box-shadow 0.15s;
     }
     .field-input:focus {
         border-color: var(--dd-forest-lit);
-        box-shadow: 0 0 0 3px rgba(46,122,79,0.12);
+        box-shadow: 0 0 0 3px rgba(46,122,79,0.1);
     }
-    .field-input:read-only {
-        background: #F8FAF9;
+    .field-input[readonly] {
+        background: #F7FAF8;
         color: var(--dd-sage);
         cursor: not-allowed;
     }
-    .field-input::placeholder { color: #B0BDB6; }
+    .field-input::placeholder { color: #B8C5BC; }
 
-    /* ── Stripe wrapper ── */
-    .stripe-wrap {
+    /* ─── Stripe element wrapper ─── */
+    .stripe-field {
         background: var(--dd-white);
-        border: 1px solid var(--dd-border);
+        border: 1.5px solid var(--dd-border);
         border-radius: 10px;
         padding: 12px 14px;
         transition: border-color 0.15s, box-shadow 0.15s;
+        cursor: text;
     }
-    .stripe-wrap.is-focused {
+    .stripe-field.focused {
         border-color: var(--dd-forest-lit);
-        box-shadow: 0 0 0 3px rgba(46,122,79,0.12);
+        box-shadow: 0 0 0 3px rgba(46,122,79,0.1);
     }
-    .stripe-wrap.is-error {
-        border-color: #DC2626;
+    .stripe-field.errored {
+        border-color: var(--dd-error);
         box-shadow: 0 0 0 3px rgba(220,38,38,0.08);
     }
 
-    /* ── Pay button ── */
+    .field-error {
+        font-size: 0.78rem;
+        color: var(--dd-error);
+        margin-top: 5px;
+        display: flex; align-items: center; gap: 5px;
+        min-height: 20px;
+    }
+
+    /* ─── Divider ─── */
+    .divider {
+        display: flex; align-items: center; gap: 12px;
+        margin: 18px 0;
+    }
+    .divider::before, .divider::after {
+        content: ''; flex: 1; height: 1px; background: var(--dd-border);
+    }
+    .divider span {
+        font-size: 0.73rem; color: var(--dd-sage); font-weight: 600;
+        white-space: nowrap; letter-spacing: 0.02em;
+    }
+
+    /* ─── Pay button ─── */
     .pay-btn {
-        background: linear-gradient(135deg, var(--dd-forest-mid), var(--dd-forest-lit));
+        width: 100%;
+        background: linear-gradient(135deg, var(--dd-forest-mid), var(--dd-forest-lit), #3D9660);
         color: #fff;
         border: none;
         border-radius: 12px;
-        padding: 14px;
-        width: 100%;
+        padding: 15px;
         font-family: 'DM Sans', sans-serif;
         font-size: 0.95rem;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
-        display: flex; align-items: center; justify-content: center; gap: 8px;
-        transition: all 0.2s ease;
-        box-shadow: 0 4px 14px rgba(26,61,43,0.25);
+        display: flex; align-items: center; justify-content: center; gap: 9px;
+        transition: transform 0.2s cubic-bezier(.22,1,.36,1), box-shadow 0.2s, opacity 0.18s;
+        box-shadow: 0 5px 20px rgba(26,61,43,0.28), 0 1px 0 rgba(255,255,255,0.08) inset;
+        position: relative;
+        overflow: hidden;
+        letter-spacing: -0.01em;
+    }
+    .pay-btn::before {
+        content: '';
+        position: absolute; inset: 0;
+        background: linear-gradient(180deg, rgba(255,255,255,0.09) 0%, transparent 50%);
+        pointer-events: none;
     }
     .pay-btn:hover:not(:disabled) {
         transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(26,61,43,0.3);
+        box-shadow: 0 10px 32px rgba(26,61,43,0.35);
     }
-    .pay-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .pay-btn:active:not(:disabled) { transform: none; }
+    .pay-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
     @keyframes spin { to { transform: rotate(360deg); } }
     .spinner {
-        width: 17px; height: 17px;
-        border: 2px solid rgba(255,255,255,0.3);
+        width: 18px; height: 18px;
+        border: 2px solid rgba(255,255,255,0.25);
         border-top-color: #fff;
         border-radius: 50%;
-        animation: spin 0.7s linear infinite;
-    }
-
-    /* ── Divider with label ── */
-    .field-divider {
-        display: flex; align-items: center; gap: 12px;
-        margin: 20px 0;
-    }
-    .field-divider::before, .field-divider::after {
-        content: ''; flex: 1; height: 1px; background: var(--dd-border);
-    }
-    .field-divider span {
-        font-size: 0.78rem; color: var(--dd-sage); font-weight: 500; white-space: nowrap;
-    }
-
-    /* ── Summary line ── */
-    .summary-line {
-        display: flex; justify-content: space-between; align-items: center;
-        font-size: 0.9rem; padding: 8px 0;
-        border-bottom: 1px solid #F0F3F2;
-    }
-    .summary-line:last-child { border-bottom: none; }
-    .summary-line .label { color: var(--dd-sage); }
-    .summary-line .value { color: var(--dd-ink-soft); font-weight: 500; }
-    .summary-line.total  { padding-top: 12px; margin-top: 4px; border-top: 1px solid var(--dd-border); border-bottom: none; }
-    .summary-line.total .label { color: var(--dd-ink); font-weight: 600; }
-    .summary-line.total .value { color: var(--dd-forest); font-size: 1.1rem; font-weight: 700; }
-
-    /* ── Trust badges ── */
-    .trust-badge {
-        display: flex; align-items: center; gap: 6px;
-        font-size: 0.78rem; color: var(--dd-sage); font-weight: 500;
-    }
-    .trust-badge svg { color: var(--dd-forest-lit); }
-
-    /* ── Alert ── */
-    .dd-alert-error {
-        background: #FEF2F2;
-        border: 1px solid rgba(220,38,38,0.2);
-        border-radius: 10px;
-        padding: 12px 16px;
-        color: #B91C1C;
-        font-size: 0.88rem;
-        display: flex; align-items: flex-start; gap: 10px;
-        margin-bottom: 20px;
-    }
-
-    /* ── Section header ── */
-    .checkout-section-head {
-        padding: 20px 24px 16px;
-        border-bottom: 1px solid var(--dd-border);
-    }
-    .checkout-section-head h2 {
-        font-size: 1rem; font-weight: 700; color: var(--dd-ink); margin: 0;
-        display: flex; align-items: center; gap: 8px;
-    }
-    .checkout-section-head h2 .step {
-        width: 22px; height: 22px;
-        background: var(--dd-forest);
-        color: #fff;
-        border-radius: 50%;
-        font-size: 0.72rem; font-weight: 700;
-        display: flex; align-items: center; justify-content: center;
+        animation: spin 0.65s linear infinite;
         flex-shrink: 0;
     }
+
+    /* ─── Trust badges ─── */
+    .trust-row {
+        display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+        gap: 14px;
+        padding-top: 16px;
+        border-top: 1px solid var(--dd-border);
+        margin-top: 18px;
+    }
+    .trust-badge {
+        display: flex; align-items: center; gap: 5px;
+        font-size: 0.74rem;
+        color: var(--dd-sage);
+        font-weight: 500;
+    }
+    .trust-badge svg { color: var(--dd-forest-lit); flex-shrink: 0; }
+
+    /* ─── Alert ─── */
+    .alert-error {
+        background: var(--dd-error-bg);
+        border: 1px solid var(--dd-error-border);
+        border-radius: 12px;
+        padding: 12px 16px;
+        color: #B91C1C;
+        font-size: 0.86rem;
+        display: flex; align-items: flex-start; gap: 10px;
+        margin-bottom: 20px;
+        animation: pageFade 0.3s both;
+    }
+
+    /* ─── Layout ─── */
+    .co-layout {
+        display: grid;
+        grid-template-columns: 2fr 3fr;
+        gap: 20px;
+        align-items: start;
+    }
+    @media (max-width: 720px) {
+        .co-layout { grid-template-columns: 1fr; }
+        .inc-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── Breadcrumb ─── */
+    .co-back {
+        display: inline-flex; align-items: center; gap: 5px;
+        font-size: 0.82rem; color: var(--dd-sage); font-weight: 500;
+        text-decoration: none;
+        transition: color 0.15s;
+        margin-bottom: 22px;
+    }
+    .co-back:hover { color: var(--dd-ink-soft); text-decoration: none; }
+    .co-back svg { width: 15px; height: 15px; }
+
+    .co-title {
+        font-family: 'Instrument Serif', Georgia, serif;
+        font-size: 1.9rem;
+        font-weight: 400;
+        color: var(--dd-ink);
+        letter-spacing: -0.025em;
+        margin: 0 0 4px;
+    }
+    .co-subtitle {
+        color: var(--dd-sage);
+        font-size: 0.86rem;
+        margin: 0 0 32px;
+        display: flex; align-items: center; gap: 7px;
+    }
+    .co-subtitle-dot {
+        width: 5px; height: 5px; border-radius: 50%;
+        background: var(--dd-forest-lit);
+        flex-shrink: 0;
+    }
+
+    /* ─── Guarantee badge ─── */
+    .guarantee-badge {
+        display: flex; align-items: center; gap: 12px;
+        background: linear-gradient(135deg, rgba(26,61,43,0.04), rgba(46,122,79,0.06));
+        border: 1px solid rgba(46,122,79,0.15);
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin-top: 16px;
+    }
+    .guarantee-badge svg { color: var(--dd-forest-lit); flex-shrink: 0; }
+    .guarantee-badge-text {
+        font-size: 0.8rem;
+        color: var(--dd-ink-soft);
+        font-weight: 500;
+        line-height: 1.4;
+    }
+    .guarantee-badge-text strong { color: var(--dd-forest); display: block; }
 </style>
 @endpush
 
 @section('content')
-<div style="font-family:'DM Sans',sans-serif; background:var(--dd-bg); min-height:100vh; padding: 32px 16px 60px;">
-    <div style="max-width:860px; margin:0 auto;">
+<div class="checkout-page" style="min-height:100vh; background:var(--dd-bg); padding: 36px 20px 80px;">
+    <div style="max-width:900px; margin:0 auto;">
 
-        {{-- Back + title --}}
-        <div class="mb-6">
-            <a href="{{ route('premium.index') }}"
-               class="inline-flex items-center gap-1.5 text-sm mb-4 hover:opacity-80 transition-opacity no-underline"
-               style="color:var(--dd-sage);">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                </svg>
-                Terug naar Premium
-            </a>
-            <h1 style="font-size:1.5rem; font-weight:700; color:var(--dd-ink); letter-spacing:-0.02em; margin:0;">Afrekenen</h1>
-            <p style="color:var(--dd-sage); font-size:0.9rem; margin-top:4px;">Veilige betaling via Stripe</p>
-        </div>
+        <a href="{{ route('premium.index') }}" class="co-back">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:15px;height:15px;display:inline-block;flex-shrink:0;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Terug naar Premium
+        </a>
 
-        {{-- Error --}}
+        <h1 class="co-title">Afrekenen</h1>
+        <p class="co-subtitle">
+            <span class="co-subtitle-dot"></span>
+            Veilige betaling via Stripe · SSL versleuteld
+        </p>
+
         @if(session('error'))
-        <div x-data="{ show: true }" x-show="show" class="dd-alert-error">
-            <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="alert-error">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:16px;height:16px;display:inline-block;flex-shrink:0;margin-top:1px;">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
             </svg>
-            <span class="flex-1">{{ session('error') }}</span>
-            <button @click="show=false" class="opacity-40 hover:opacity-70 transition-opacity text-lg leading-none">×</button>
+            <span>{{ session('error') }}</span>
         </div>
         @endif
 
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-5">
+        <div class="co-layout">
 
-            {{-- ── Order Summary (2 cols) ── --}}
-            <div class="md:col-span-2">
-
-                {{-- Product card --}}
-                <div class="dd-card mb-4">
-                    <div class="checkout-section-head">
-                        <h2>
-                            <span class="step">1</span>
-                            Bestelling
-                        </h2>
+            {{-- ── LEFT: Order summary ── --}}
+            <div>
+                {{-- Product & Price --}}
+                <div class="co-card" style="margin-bottom:14px;">
+                    <div class="co-card-head">
+                        <div class="step-num">1</div>
+                        <h2>Bestelling</h2>
                     </div>
-                    <div style="padding:20px 24px;">
-                        {{-- Product row --}}
-                        <div class="flex items-center gap-3 pb-4 mb-4" style="border-bottom:1px solid var(--dd-border);">
-                            <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--dd-forest-mid),var(--dd-forest-lit));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">👑</div>
+                    <div class="co-card-body">
+                        <div class="product-row">
+                            <div class="product-icon">👑</div>
                             <div>
-                                <p style="font-size:0.92rem;font-weight:600;color:var(--dd-ink);margin:0 0 2px;">Premium Lidmaatschap</p>
-                                <p style="font-size:0.78rem;color:var(--dd-sage);margin:0;">Levenslange toegang</p>
+                                <p class="product-name">Premium Lidmaatschap</p>
+                                <p class="product-sub">Levenslange toegang · eenmalig</p>
                             </div>
                         </div>
 
-                        {{-- Price breakdown --}}
-                        <div class="summary-line">
-                            <span class="label">Subtotaal</span>
-                            <span class="value">€9,99</span>
-                        </div>
-                        <div class="summary-line">
-                            <span class="label">BTW (0%)</span>
-                            <span class="value">€0,00</span>
-                        </div>
-                        <div class="summary-line total">
-                            <span class="label">Totaal</span>
-                            <span class="value">€9,99</span>
+                        <div class="sum-line"><span class="l">Subtotaal</span><span class="v">€9,99</span></div>
+                        <div class="sum-line"><span class="l">BTW (0%)</span><span class="v">€0,00</span></div>
+                        <div class="sum-total">
+                            <span class="l">Totaal</span>
+                            <span class="v">€9,99</span>
                         </div>
                     </div>
                 </div>
 
-                {{-- Included --}}
-                <div class="dd-card">
-                    <div style="padding:16px 20px;">
-                        <p style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--dd-forest-lit);margin:0 0 12px;">Inbegrepen</p>
-                        <div class="space-y-2.5">
-                            @foreach([
-                                'Onbeperkte toegang tot alle functies',
-                                'Exclusieve advertenties & content',
-                                'Geen advertenties',
-                                'Prioriteit klantenservice',
-                                '30 dagen geld-terug garantie'
-                            ] as $b)
-                            <div class="flex items-center gap-2.5" style="font-size:0.83rem; color:var(--dd-ink-soft);">
-                                <svg class="w-3.5 h-3.5 shrink-0" style="color:var(--dd-forest-lit);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                {{-- Includes --}}
+                <div class="co-card">
+                    <div class="co-card-body" style="padding-top:18px;padding-bottom:18px;">
+                        <p style="font-size:0.67rem;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:var(--dd-forest-lit);margin:0 0 14px;">Inbegrepen</p>
+                        <div class="inc-grid">
+                        @foreach([
+                            'Auto-bieden',
+                            'Inbox prioriteit',
+                            'Statistieken',
+                            'Push notificaties',
+                            'Premium border',
+                            'Max. 10 advertenties',
+                            'Geen advertenties',
+                            'Premium badge',
+                            '30 dagen garantie',
+                        ] as $b)
+                        <div class="inc-item">
+                            <div class="inc-check">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:8px;height:8px;display:inline-block;flex-shrink:0;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
                                 </svg>
-                                {{ $b }}
                             </div>
-                            @endforeach
+                            {{ $b }}
                         </div>
+                        @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Guarantee --}}
+                <div class="guarantee-badge" style="margin-top:14px;">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:28px;height:28px;display:inline-block;flex-shrink:0;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                    <div class="guarantee-badge-text">
+                        <strong>30 dagen geld-terug garantie</strong>
+                        Niet tevreden? Volledig terugbetaald, geen vragen.
                     </div>
                 </div>
             </div>
 
-            {{-- ── Checkout Form (3 cols) ── --}}
-            <div class="md:col-span-3"
-                 x-data="{
-                    loading: false,
-                    cardFocused: false,
-                    cardError: '',
-                    init() {
-                        const stripe = Stripe('{{ config('services.stripe.key') }}');
-                        const elements = stripe.elements({
-                            fonts: [{ cssSrc: 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap' }]
-                        });
-                        const card = elements.create('card', {
-                            style: {
-                                base: {
-                                    iconColor: '#245C3A',
-                                    color: '#162218',
-                                    fontFamily: 'DM Sans, sans-serif',
-                                    fontSize: '14px',
-                                    fontWeight: '500',
-                                    '::placeholder': { color: '#B0BDB6' }
-                                },
-                                invalid: { color: '#DC2626', iconColor: '#DC2626' }
-                            }
-                        });
-                        card.mount('#card-element');
-                        card.on('focus',  () => this.cardFocused = true);
-                        card.on('blur',   () => this.cardFocused = false);
-                        card.on('change', (e) => { this.cardError = e.error ? e.error.message : ''; });
-
-                        this.\$el.querySelector('#checkout-form').addEventListener('submit', async (e) => {
-                            e.preventDefault();
-                            if (this.loading) return;
-                            this.loading = true;
-                            const { token, error } = await stripe.createToken(card, {
-                                name: this.\$el.querySelector('[name=card_name]').value
-                            });
-                            if (error) {
-                                this.cardError = error.message;
-                                this.loading = false;
-                            } else {
-                                const inp = document.createElement('input');
-                                inp.type = 'hidden'; inp.name = 'stripeToken'; inp.value = token.id;
-                                e.target.appendChild(inp);
-                                e.target.submit();
-                            }
-                        });
-                    }
-                 }">
-
-                <div class="dd-card">
-                    <div class="checkout-section-head">
-                        <h2>
-                            <span class="step">2</span>
-                            Betaalgegevens
-                        </h2>
+            {{-- ── RIGHT: Payment form ── --}}
+            <div x-data="stripePayment">
+                <div class="co-card">
+                    <div class="co-card-head">
+                        <div class="step-num">2</div>
+                        <h2>Betaalgegevens</h2>
                     </div>
-
-                    <div style="padding:24px;">
-                        <form id="checkout-form" action="{{ route('premium.process') }}" method="POST">
+                    <div class="co-card-body">
+                        <form @submit="submit($event)">
                             @csrf
 
-                            {{-- Email --}}
-                            <div style="margin-bottom:16px;">
+                            {{-- Email (readonly) --}}
+                            <div class="field-block">
                                 <label class="field-label">E-mailadres</label>
                                 <input type="email" value="{{ Auth::user()->email }}" readonly class="field-input">
                             </div>
 
-                            <div class="field-divider"><span>Kaartgegevens</span></div>
+                            <div class="divider"><span>Kaartgegevens</span></div>
 
-                            {{-- Cardholder --}}
-                            <div style="margin-bottom:16px;">
+                            {{-- Name on card --}}
+                            <div class="field-block">
                                 <label class="field-label">Naam op kaart</label>
-                                <input type="text" name="card_name" placeholder="Jan Jansen"
-                                       required autocomplete="cc-name" class="field-input">
+                                <input type="text" name="card_name"
+                                       placeholder="Jan Jansen"
+                                       required autocomplete="cc-name"
+                                       class="field-input">
                             </div>
 
-                            {{-- Card number (Stripe) --}}
-                            <div style="margin-bottom:4px;">
-                                <label class="field-label">Kaart</label>
-                                <div class="stripe-wrap"
-                                     :class="{ 'is-focused': cardFocused, 'is-error': cardError }">
-                                    <div id="card-element"></div>
+                            {{-- Stripe Payment Element (iDEAL, kaart, PayPal etc.) --}}
+                            <div class="field-block">
+                                <label class="field-label">Betaalmethode</label>
+                                <div id="payment-element"></div>
+                                <div class="field-error" x-show="paymentError">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:12px;height:12px;display:inline-block;flex-shrink:0;">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01"/>
+                                    </svg>
+                                    <span x-text="paymentError"></span>
                                 </div>
-                            </div>
-
-                            {{-- Card error --}}
-                            <div style="min-height:20px; margin-bottom:20px;">
-                                <p x-show="cardError" x-text="cardError"
-                                   style="font-size:0.8rem; color:#DC2626; margin:6px 0 0;"></p>
                             </div>
 
                             {{-- Submit --}}
@@ -369,38 +497,41 @@
                                     <div class="spinner"></div>
                                 </template>
                                 <template x-if="!loading">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:17px;height:17px;display:inline-block;flex-shrink:0;">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                                     </svg>
                                 </template>
                                 <span x-text="loading ? 'Verwerken...' : 'Betaal €9,99'"></span>
                             </button>
+
                         </form>
 
-                        {{-- Trust badges --}}
-                        <div class="flex flex-wrap items-center justify-center gap-5 mt-5 pt-4" style="border-top:1px solid var(--dd-border);">
+                        {{-- Trust row --}}
+                        <div class="trust-row">
                             <div class="trust-badge">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:13px;height:13px;display:inline-block;flex-shrink:0;">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                                 </svg>
                                 SSL Beveiligd
                             </div>
                             <div class="trust-badge">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:13px;height:13px;display:inline-block;flex-shrink:0;">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
                                 </svg>
                                 Stripe Payments
                             </div>
                             <div class="trust-badge">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:13px;height:13px;display:inline-block;flex-shrink:0;">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                                 </svg>
-                                30d garantie
+                                30 dagen garantie
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -408,4 +539,69 @@
 
 @push('scripts')
 <script src="https://js.stripe.com/v3/"></script>
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('stripePayment', () => ({
+        loading: false,
+        paymentError: '',
+        stripe: null,
+        elements: null,
+        paymentElement: null,
+
+        init() {
+            this.stripe = Stripe('{{ config('services.stripe.key') }}');
+
+            fetch('/premium/intent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                }
+            })
+            .then(r => r.json())
+            .then(data => {
+                this.elements = this.stripe.elements({
+                    clientSecret: data.clientSecret,
+                    appearance: {
+                        theme: 'stripe',
+                        variables: {
+                            colorPrimary: '#2E7A4F',
+                            colorText: '#162218',
+                            borderRadius: '10px',
+                            fontFamily: 'DM Sans, sans-serif',
+                        }
+                    }
+                });
+                this.paymentElement = this.elements.create('payment');
+                this.paymentElement.mount('#payment-element');
+            });
+        },
+
+        async submit(e) {
+            e.preventDefault();
+            if (this.loading) return;
+            this.loading = true;
+            this.paymentError = '';
+
+            const { error } = await this.stripe.confirmPayment({
+                elements: this.elements,
+                confirmParams: {
+                    return_url: '{{ route('premium.success') }}',
+                    payment_method_data: {
+                        billing_details: {
+                            name: document.querySelector('[name=card_name]').value,
+                            email: '{{ Auth::user()->email }}'
+                        }
+                    }
+                }
+            });
+
+            if (error) {
+                this.paymentError = error.message;
+                this.loading = false;
+            }
+        }
+    }));
+});
+</script>
 @endpush
