@@ -50,7 +50,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     const USER_USERNAME = 'username';
     const USER_BIO = 'bio';
     const USER_PROFILE_PHOTO_PATH = 'profile_photo_path';
-    const USER_PREMIUM = 'premium';
+    const USER_IS_PREMIUM = 'is_premium';
 
     protected $fillable = [
         'user_id',
@@ -69,7 +69,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'profile_photo_path',
         'phone_number',
         'language',
-        'premium',
+        'is_premium',
     ];
 
     protected $hidden = [
@@ -83,7 +83,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'is_admin' => 'boolean',
         'is_active' => 'boolean',
         'is_banned' => 'boolean',
-        'premium' => 'boolean',
+        'is_premium' => 'boolean',
         'phone_verified' => 'boolean',
         'phone_verification_sent_at' => 'datetime',
     ];

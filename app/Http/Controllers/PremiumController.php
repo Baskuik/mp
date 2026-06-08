@@ -12,7 +12,7 @@ class PremiumController extends Controller
     public function index()
     {
         if (Auth::user()->is_premium) {
-            return redirect()->url('/')->with('info', 'Je hebt al Premium.');
+            return redirect('/')->with('info', 'Je hebt al Premium.');  // fix #1
         }
         return view('premium.index');
     }
@@ -20,7 +20,7 @@ class PremiumController extends Controller
     public function checkout()
     {
         if (Auth::user()->is_premium) {
-            return redirect(url('/'));
+            return redirect('/');
         }
         return view('premium.checkout');
     }
@@ -34,8 +34,8 @@ class PremiumController extends Controller
             'currency' => 'eur',
             'automatic_payment_methods' => ['enabled' => true],
             'receipt_email' => Auth::user()->email,
-            'metadata' => [
-                'user_id' => Auth::id(), // handig voor Stripe dashboard
+            'metadata'  => [
+                'user_id' => Auth::id(),
             ],
         ]);
 
@@ -46,18 +46,24 @@ class PremiumController extends Controller
     {
         Stripe::setApiKey(config('services.stripe.secret'));
 
-        // payment_intent komt via URL parameter van Stripe
         if (!$request->payment_intent) {
-            return redirect(url('/'));
+            return redirect('/');
         }
 
         $intent = PaymentIntent::retrieve($request->payment_intent);
 
-        if ($intent->status === 'succeeded') {
-            // Controleer of het écht voor deze user is
-            if ($intent->metadata->user_id == Auth::id()) {
-                Auth::user()->update(['is_premium' => true]);
-            }
+        // fix #2: redirect bij mislukking, toon success alleen als alles klopt
+        if ($intent->status !== 'succeeded') {
+            return redirect('/checkout')->with('error', 'Betaling niet geslaagd.');
+        }
+
+        if ($intent->metadata->user_id != Auth::id()) {
+            abort(403);
+        }
+
+        // fix #3: alleen updaten als nog niet premium
+        if (!Auth::user()->is_premium) {
+            Auth::user()->update(['is_premium' => true]);
         }
 
         return view('premium.success');

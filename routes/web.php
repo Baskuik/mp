@@ -7,6 +7,7 @@ use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\PremiumController;
+use App\Http\Controllers\StripeWebhookController;
 
 // View routes
 Route::get('/', function () {
@@ -106,3 +107,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/premium/intent',  [PremiumController::class, 'intent'])->name('premium.intent');
     Route::get('/premium/success',  [PremiumController::class, 'success'])->name('premium.success');
 });
+
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])
+    ->name('stripe.webhook');

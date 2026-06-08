@@ -462,24 +462,7 @@
                         <form @submit="submit($event)">
                             @csrf
 
-                            {{-- Email (readonly)
-                            <div class="field-block">
-                                <label class="field-label">E-mailadres</label>
-                                <input type="email" value="{{ Auth::user()->email }}" readonly class="field-input">
-                            </div> --}}
-
-                            {{-- <div class="divider"><span>Kaartgegevens</span></div> --}}
-
-                            {{-- Name on card --}}
-                            {{-- <div class="field-block">
-                                <label class="field-label">Naam op kaart</label>
-                                <input type="text" name="card_name"
-                                       placeholder="Jan Jansen"
-                                       required autocomplete="cc-name"
-                                       class="field-input">
-                            </div> --}}
-
-                            {{-- Stripe Payment Element (iDEAL, kaart, PayPal etc.) --}}
+{{-- Stripe Payment Element (iDEAL, kaart, PayPal etc.) --}}
                             <div class="field-block">
                                 <label class="field-label">Betaalmethode</label>
                                 <div id="payment-element"></div>
@@ -489,6 +472,21 @@
                                     </svg>
                                     <span x-text="paymentError"></span>
                                 </div>
+                            </div>
+
+                            {{-- Email (readonly) --}}
+                            <div class="field-block">
+                                <label class="field-label">E-mailadres</label>
+                                <input type="email" value="{{ Auth::user()->email }}" readonly class="field-input">
+                            </div>
+
+                            {{-- Naam op kaart (alleen bij kaartbetaling) --}}
+                            <div class="field-block" id="card-name-block" style="display:none;">
+                                <label class="field-label">Naam op kaart</label>
+                                <input type="text" name="card_name"
+                                       placeholder="Jan Jansen"
+                                       autocomplete="cc-name"
+                                       class="field-input">
                             </div>
 
                             {{-- Submit --}}
@@ -572,8 +570,19 @@ document.addEventListener('alpine:init', () => {
                         }
                     }
                 });
-                this.paymentElement = this.elements.create('payment');
+                this.paymentElement = this.elements.create('payment', {
+                    wallets: { link: 'never' }
+                });
                 this.paymentElement.mount('#payment-element');
+
+                // Toon naamveld alleen bij kaartbetaling
+                this.paymentElement.on('change', (e) => {
+                    const isCard = e.value?.type === 'card';
+                    const nameBlock = document.getElementById('card-name-block');
+                    const nameInput = document.querySelector('[name=card_name]');
+                    nameBlock.style.display = isCard ? 'block' : 'none';
+                    nameInput.required = isCard;
+                });
             });
         },
 
@@ -583,13 +592,18 @@ document.addEventListener('alpine:init', () => {
             this.loading = true;
             this.paymentError = '';
 
+            const nameInput = document.querySelector('[name=card_name]');
+            const cardName = nameInput && nameInput.closest('#card-name-block').style.display !== 'none'
+                ? nameInput.value
+                : '{{ Auth::user()->name }}';
+
             const { error } = await this.stripe.confirmPayment({
                 elements: this.elements,
                 confirmParams: {
                     return_url: '{{ route('premium.success') }}',
                     payment_method_data: {
                         billing_details: {
-                            name: document.querySelector('[name=card_name]').value,
+                            name: cardName,
                             email: '{{ Auth::user()->email }}'
                         }
                     }
