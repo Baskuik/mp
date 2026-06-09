@@ -11,17 +11,14 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('premium')->default(false);
+            $table->renameColumn('premium', 'is_premium');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('premium');
+            $table->renameColumn('is_premium', 'premium');
         });
     }
 };
