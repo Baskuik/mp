@@ -1217,7 +1217,7 @@
                                 <div class="social-avatar"><i class="fa-regular fa-user"></i></div>
                             </div>
                             <p class="social-text">
-                                <strong>{{ number_format(\App\Models\User::count(), 0, ',', '.') }}+ gebruikers</strong><br>
+                                <strong>{{ number_format(\App\Models\User::where('is_premium', true)->count(), 0, ',', '.') }}+ gebruikers</strong><br>
                                 gingen je al voor
                             </p>
                         </div>
