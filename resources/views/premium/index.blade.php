@@ -5,7 +5,7 @@
 
 @push('styles')
     <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <style>
         :root {
@@ -21,7 +21,7 @@
             --dd-ink: #162218;
             --dd-ink-soft: #3D5444;
             --dd-white: #FFFFFF;
-            --dd-border: #DDE4DF;
+            --dd-border: #C2CFC5;
             --dd-bg: #F2F5F3;
         }
 
@@ -257,13 +257,13 @@
         }
 
         .hero-title {
-            font-family: 'Instrument Serif', Georgia, serif;
+            font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
             font-size: clamp(2.9rem, 6.5vw, 4.8rem);
             font-weight: 400;
             line-height: 1.04;
             color: #fff;
             margin: 0 0 6px;
-            letter-spacing: -0.028em;
+            letter-spacing: -0.01em;
             animation: fadeUp 0.8s 0.1s cubic-bezier(.22, 1, .36, 1) both;
         }
 
@@ -349,6 +349,12 @@
             transform: translateY(0) scale(1);
         }
 
+        .btn-primary.is-purchased {
+            opacity: 0.55;
+            cursor: default;
+            pointer-events: none;
+        }
+
         .btn-ghost {
             display: inline-flex;
             align-items: center;
@@ -423,7 +429,7 @@
         }
 
         .hero-price-big {
-            font-family: 'Instrument Serif', Georgia, serif;
+            font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
             font-size: 3.8rem;
             line-height: 1;
             color: #F5A44A;
@@ -540,12 +546,12 @@
         }
 
         .section-heading {
-            font-family: 'Instrument Serif', Georgia, serif;
+            font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
             font-size: clamp(2rem, 3.5vw, 2.8rem);
             font-weight: 400;
             color: var(--dd-ink);
             line-height: 1.1;
-            letter-spacing: -0.022em;
+            letter-spacing: -0.01em;
             margin: 0 0 10px;
         }
 
@@ -590,6 +596,7 @@
             position: relative;
             overflow: hidden;
             cursor: default;
+            box-shadow: 0 2px 12px rgba(26, 61, 43, 0.07);
         }
 
         /* Subtle background tint on hover */
@@ -630,22 +637,14 @@
             opacity: 1;
         }
 
-        .feat-icon-wrap {
-            width: 50px;
-            height: 50px;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
+        .feat-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 12px;
             margin-bottom: 18px;
-            transition: transform 0.3s cubic-bezier(.22, 1, .36, 1), box-shadow 0.3s;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-        }
-
-        .feat-card:hover .feat-icon-wrap {
-            transform: scale(1.1) rotate(-4deg);
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            display: block;
+            background: var(--dd-mist);
         }
 
         .feat-title {
@@ -719,7 +718,7 @@
         }
 
         .limit-num {
-            font-family: 'Instrument Serif', Georgia, serif;
+            font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
             font-size: 3.8rem;
             line-height: 1;
             font-weight: 400;
@@ -882,8 +881,12 @@
         }
 
         .no {
-            color: #C8D5CB;
-            font-size: 1rem;
+            display: inline-block;
+            width: 14px;
+            height: 2.5px;
+            background: #E0A0A0;
+            border-radius: 99px;
+            vertical-align: middle;
         }
 
         /* ─── CTA BANNER ─── */
@@ -932,12 +935,12 @@
         }
 
         .cta-banner-title {
-            font-family: 'Instrument Serif', Georgia, serif;
+            font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
             font-size: clamp(2.2rem, 4vw, 3.3rem);
             font-weight: 400;
             color: #fff;
             margin-bottom: 18px;
-            letter-spacing: -0.026em;
+            letter-spacing: -0.01em;
             line-height: 1.07;
         }
 
@@ -1004,6 +1007,12 @@
             box-shadow: 0 14px 40px rgba(224, 123, 42, 0.56);
             color: #fff;
             text-decoration: none;
+        }
+
+        .btn-primary-lg.is-purchased {
+            opacity: 0.55;
+            cursor: default;
+            pointer-events: none;
         }
 
         .trust-row {
@@ -1182,13 +1191,19 @@
                         </p>
 
                         <div class="hero-actions">
-                            <a href="{{ route('premium.checkout') }}" class="btn-primary">
-                                Upgrade voor €9,99
-                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                </svg>
-                            </a>
+                            @if(Auth::user()->is_premium)
+                                <span class="btn-primary is-purchased">
+                                    ✓ Gekocht
+                                </span>
+                            @else
+                                <a href="{{ route('premium.checkout') }}" class="btn-primary">
+                                    Upgrade voor €9,99
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    </svg>
+                                </a>
+                            @endif
                             <a href="#features" class="btn-ghost">
                                 Bekijk voordelen
                             </a>
@@ -1257,71 +1272,71 @@
                 @php
                     $features = [
                         [
+                            'img' => 'auto-bieden.jpg',
                             'bg' => '#E8F3EC',
-                            'icon' => '',
                             'title' => 'Auto-bieden',
                             'desc' =>
                                 'Stel een maximumbod in en laat het systeem automatisch bieden. Nooit meer een kans missen terwijl je er niet bent.',
                             'accent' => '#2E7A4F',
                         ],
                         [
+                            'img' => 'inbox-prioriteit.jpg',
                             'bg' => '#FEF1E6',
-                            'icon' => '',
                             'title' => 'Prioriteit in de inbox',
                             'desc' =>
                                 'Jouw berichten worden bovenaan de inbox van verkopers geplaatst, zodat je sneller reactie krijgt.',
                             'accent' => '#E07B2A',
                         ],
                         [
+                            'img' => 'statistieken.jpg',
                             'bg' => '#E8F3EC',
-                            'icon' => '',
                             'title' => 'Advertentiestatistieken',
                             'desc' =>
                                 'Zie per advertentie hoeveel mensen hem openden of opsloegen. Optimaliseer jouw listings op basis van data.',
                             'accent' => '#2E7A4F',
                         ],
                         [
+                            'img' => 'push-notificaties.jpg',
                             'bg' => '#FEF1E6',
-                            'icon' => '',
                             'title' => 'Push notificaties',
                             'desc' =>
                                 'Kies categorieën, subcategorieën of specifieke items. Ontvang direct een melding bij nieuwe plaatsingen.',
                             'accent' => '#E07B2A',
                         ],
                         [
+                            'img' => 'uitlichtende-border.jpg',
                             'bg' => '#E8F3EC',
-                            'icon' => '',
                             'title' => 'Uitlichtende border',
                             'desc' =>
                                 'Een gouden rand om jouw advertenties zodat kopers direct zien dat jij een premium verkoper bent.',
                             'accent' => '#2E7A4F',
                         ],
                         [
+                            'img' => 'geen-advertenties.jpg',
                             'bg' => '#EEF0FE',
-                            'icon' => '',
                             'title' => 'Geen advertenties',
                             'desc' => 'Geen banners, geen pop-ups. Browse DirectDeal schoon, snel en afleidingsvrij.',
                             'accent' => '#4F6AE0',
                         ],
                         [
+                            'img' => '10-advertenties.jpg',
                             'bg' => '#FEF1E6',
-                            'icon' => '',
                             'title' => '10 advertenties',
                             'desc' =>
                                 'Gratis gebruikers mogen 5 advertenties plaatsen. Jij hebt ruimte voor 10 actieve listings tegelijk.',
                             'accent' => '#E07B2A',
                         ],
                         [
+                            'img' => 'premium-badge.jpg',
                             'bg' => '#E8F3EC',
-                            'icon' => '',
                             'title' => 'Premium badge',
                             'desc' =>
                                 'Een zichtbare badge op jouw profiel toont kopers dat je een serieuze en actieve verkoper bent.',
                             'accent' => '#2E7A4F',
                         ],
                         [
+                            'img' => 'geavanceerde-filters.jpg',
                             'bg' => '#E8F3EC',
-                            'icon' => '',
                             'title' => 'Geavanceerde filters',
                             'desc' =>
                                 'Filter de inbox op premium/non-premium, datum, tijd en meer. Vind precies wat je zoekt.',
@@ -1332,7 +1347,11 @@
 
                 @foreach ($features as $i => $f)
                     <div class="feat-card" style="--accent:{{ $f['accent'] }};">
-                        <div class="feat-icon-wrap" style="background:{{ $f['bg'] }};">{{ $f['icon'] }}</div>
+                        <img
+                            src="{{ asset('img/premium/' . $f['img']) }}"
+                            alt="{{ $f['title'] }}"
+                            class="feat-img"
+                        >
                         <p class="feat-title">{{ $f['title'] }}</p>
                         <p class="feat-desc">{{ $f['desc'] }}</p>
                     </div>
@@ -1346,7 +1365,7 @@
                 <div class="reveal">
                     <p class="section-label">Advertentielimiet</p>
                     <h2 class="section-heading">Twee keer zoveel <em>ruimte</em></h2>
-                    <p class="section-desc">Premium gebruikers mogen 10 actieve advertenties plaatsen — gratis gebruikers
+                    <p class="section-desc">Premium gebruikers mogen 10 actieve advertenties plaatsen - gratis gebruikers
                         slechts 5.</p>
                 </div>
 
@@ -1423,14 +1442,14 @@
                                     @if ($r[1])
                                         <span class="yes">✓</span>
                                     @else
-                                        <span class="no">—</span>
+                                        <span class="no"></span>
                                     @endif
                                 </td>
                                 <td class="prem-col">
                                     @if ($r[2])
                                         <span class="yes">✓</span>
                                     @else
-                                        <span class="no">—</span>
+                                        <span class="no"></span>
                                     @endif
                                 </td>
                             </tr>
@@ -1454,20 +1473,26 @@
                     <p class="cta-banner-sub">
                         Eenmalige betaling van €9,99. Nooit meer nadenken over limieten of gemiste kansen.
                     </p>
-                    <a href="{{ route('premium.checkout') }}" class="btn-primary-lg">
-                        Start nu voor €9,99
-                        <svg width="17" height="17" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                    </a>
-                    <div class="trust-row">
-                        <span class="trust-item">🔒 SSL beveiligd</span>
-                        <span class="trust-item" style="color:rgba(255,255,255,0.12);">·</span>
-                        <span class="trust-item">💳 Stripe Payments</span>
-                        <span class="trust-item" style="color:rgba(255,255,255,0.12);">·</span>
-                        <span class="trust-item">↩ 30 dagen garantie</span>
-                    </div>
+                    @if(Auth::user()->is_premium)
+                        <span class="btn-primary-lg is-purchased">
+                            ✓ Je hebt al Premium
+                        </span>
+                    @else
+                        <a href="{{ route('premium.checkout') }}" class="btn-primary-lg">
+                            Start nu voor €9,99
+                            <svg width="17" height="17" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </a>
+                        <div class="trust-row">
+                            <span class="trust-item">🔒 SSL beveiligd</span>
+                            <span class="trust-item" style="color:rgba(255,255,255,0.12);">·</span>
+                            <span class="trust-item">💳 Stripe Payments</span>
+                            <span class="trust-item" style="color:rgba(255,255,255,0.12);">·</span>
+                            <span class="trust-item">↩ 30 dagen garantie</span>
+                        </div>
+                    @endif
                 </div>
             </div>
         </section>
@@ -1475,19 +1500,21 @@
     </div>
 
     {{-- Sticky mobile CTA --}}
-    <div class="sticky-cta" id="stickyCta" style="display:none;">
-        <a href="{{ route('premium.checkout') }}" class="btn-primary-lg"
-            style="width:100%;justify-content:center;padding:13px 24px;font-size:0.95rem;">
-            Upgrade voor €9,99 →
-        </a>
-    </div>
+    @if(!Auth::user()->is_premium)
+        <div class="sticky-cta" id="stickyCta" style="display:none;">
+            <a href="{{ route('premium.checkout') }}" class="btn-primary-lg"
+                style="width:100%;justify-content:center;padding:13px 24px;font-size:0.95rem;">
+                Upgrade voor €9,99 →
+            </a>
+        </div>
+    @endif
 
 @endsection
 
 @push('scripts')
     <script>
         (function() {
-            // Scroll-reveal (single + stagger)
+            // Scroll-reveal (single + stagger) — animates both scrolling down AND up
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (e.isIntersecting) {
@@ -1496,9 +1523,14 @@
                         e.target.querySelectorAll('[data-fill]').forEach(bar => {
                             const type = bar.dataset.fill;
                             setTimeout(() => {
-                                bar.classList.add(type === 'free' ? 'animated-free' :
-                                    'animated-prem');
+                                bar.classList.add(type === 'free' ? 'animated-free' : 'animated-prem');
                             }, 350);
+                        });
+                    } else {
+                        // Reset when element leaves viewport so it re-animates on scroll back
+                        e.target.classList.remove('visible');
+                        e.target.querySelectorAll('[data-fill]').forEach(bar => {
+                            bar.classList.remove('animated-free', 'animated-prem');
                         });
                     }
                 });
@@ -1514,10 +1546,10 @@
                     if (entries[0].isIntersecting) {
                         const type = bar.dataset.fill;
                         setTimeout(() => {
-                            bar.classList.add(type === 'free' ? 'animated-free' :
-                                'animated-prem');
+                            bar.classList.add(type === 'free' ? 'animated-free' : 'animated-prem');
                         }, 400);
-                        barObs.disconnect();
+                    } else {
+                        bar.classList.remove('animated-free', 'animated-prem');
                     }
                 }, {
                     threshold: 0.3
@@ -1536,9 +1568,6 @@
                 });
                 stickyObs.observe(hero);
             }
-
-            // Feat card: stagger already handled by CSS, but ensure visibility for non-JS fallback
-            // (the reveal-stagger on feat-grid handles the children)
         })();
     </script>
 @endpush

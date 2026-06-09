@@ -65,7 +65,7 @@
         <div class="success-icon">👑</div>
         <h1 class="success-title">Welkom bij Premium!</h1>
         <p class="success-sub">
-            Je betaling is geslaagd. Je account is direct geüpgraded —
+            Je betaling is geslaagd. Je account is direct geüpgraded 
             geniet van alle Premium voordelen.
         </p>
         <a href="{{ url('/') }}" class="btn-home">Ga naar home →</a>
