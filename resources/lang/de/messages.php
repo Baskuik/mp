@@ -13,6 +13,8 @@ return [
     'nav_profile' => 'Mein Profil',
     'nav_profile_desc' => 'Profil anzeigen & bearbeiten',
     'nav_settings' => 'Einstellungen',
+    'nav_premium' => 'Premium',
+    'nav_premium_desc' => 'Deine Premium-Vorteile ansehen',
     'nav_settings_desc' => 'Sprache, Design & mehr',
     'nav_login' => 'Anmelden',
     'nav_logout' => 'Abmelden',

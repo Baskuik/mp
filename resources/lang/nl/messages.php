@@ -13,6 +13,8 @@ return [
     'nav_profile' => 'Mijn profiel',
     'nav_profile_desc' => 'Bekijk & bewerk profiel',
     'nav_settings' => 'Instellingen',
+    'nav_premium' => 'Premium',
+    'nav_premium_desc' => 'Bekijk je premiumvoordelen',
     'nav_settings_desc' => 'Taal, thema & meer',
     'nav_login' => 'Inloggen',
     'nav_logout' => 'Uitloggen',
