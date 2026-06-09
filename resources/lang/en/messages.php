@@ -13,6 +13,8 @@ return [
     'nav_profile' => 'My profile',
     'nav_profile_desc' => 'View & edit profile',
     'nav_settings' => 'Settings',
+    'nav_premium' => 'Premium',
+    'nav_premium_desc' => 'View your premium benefits',
     'nav_settings_desc' => 'Language, theme & more',
     'nav_login' => 'Log in',
     'nav_logout' => 'Log out',

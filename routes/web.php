@@ -14,22 +14,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::get('/favorieten', function () {
-//     return view('favorieten');
-// });
-
-// Route::get('/contact', function () {
-//     return view('contact');
-// });
-
-// Route::get('/profiel', function () {
-//     return view('profiel');
-// });
-
-// Route::get('/instellingen', function () {
-//     return view('instellingen');
-// });
-
 // Auth routes
 Route::get('/register', [AuthController::class, 'showRegisterStep1'])->name('register.step1');
 Route::post('/register/step1', [AuthController::class, 'registerStep1'])->name('register.step1.post');
