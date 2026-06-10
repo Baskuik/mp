@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class ReviewRatingDistributionWidget extends ChartWidget
 {
     protected ?string $heading = 'Verdeling beoordelingen (1-5 ster)';
-    protected ?int $sort = 7;
+    protected static ?int $sort = 7;
 
     protected function getData(): array
     {
