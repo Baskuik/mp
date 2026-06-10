@@ -23,11 +23,8 @@ use Illuminate\Support\Facades\Auth;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
-    // ──────────────────────────────────────────────────────────────
-    // Widget-definitie per pagina
-    // key   = pagina-slug
-    // value = [ WidgetClass::class => 'Leesbare naam' ]
-    // ──────────────────────────────────────────────────────────────
+    protected string $view = 'filament.pages.dashboard';
+    
     protected array $widgetMap = [
         'users' => [
             UserStatsOverview::class  => 'Gebruikersstatistieken',

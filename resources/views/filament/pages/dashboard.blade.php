@@ -50,13 +50,14 @@
                         title="{{ $row['enabled'] ? 'Widget uitschakelen' : 'Widget inschakelen' }}"
                     >
                         {{-- Track --}}
-                        <span
-                            class="relative block w-9 h-5 rounded-full transition-colors duration-200 {{ $row['enabled'] ? 'bg-green-600' : 'bg-gray-300' }}"
+                         <span
+                            class="relative block rounded-full transition-colors duration-200 {{ $row['enabled'] ? 'bg-green-600' : 'bg-gray-300' }}"
+                            style="width: 2.25rem; height: 1.25rem;"
                         >
                             {{-- Thumb --}}
                             <span
-                                class="absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform duration-200"
-                                style="left: 2px; box-shadow: 0 1px 3px rgba(0,0,0,.2); {{ $row['enabled'] ? 'transform: translateX(1rem)' : '' }}"
+                                class="absolute rounded-full bg-white transition-transform duration-200"
+                                style="top: 2px; left: 2px; width: 1rem; height: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,.2); {{ $row['enabled'] ? 'transform: translateX(1rem)' : '' }}"
                             ></span>
                         </span>
 
