@@ -8,7 +8,7 @@ use Illuminate\Support\Carbon;
 
 class NewListingsChart extends ChartWidget
 {
-    protected static ?string $heading = 'Nieuwe advertenties';
+    protected ?string $heading = 'Nieuwe advertenties';
     protected static ?int $sort = 4;
     public ?string $filter = 'month';
 

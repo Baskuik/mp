@@ -8,7 +8,7 @@ use Illuminate\Support\Carbon;
 
 class NewUsersChart extends ChartWidget
 {
-    protected static ?string $heading = 'Nieuwe gebruikers';
+    protected ?string $heading = 'Nieuwe gebruikers';
     protected static ?int $sort = 3;
     public ?string $filter = 'month';
 

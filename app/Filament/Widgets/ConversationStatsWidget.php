@@ -11,7 +11,7 @@ use Illuminate\Support\Carbon;
 class ConversationStatsWidget extends BaseWidget
 {
     protected static ?int $sort = 4;
-    protected static ?string $pollingInterval = '30s';
+    protected ?string $pollingInterval = '30s';
 
     protected function getStats(): array
     {

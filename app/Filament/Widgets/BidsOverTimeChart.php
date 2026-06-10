@@ -8,7 +8,7 @@ use Illuminate\Support\Carbon;
 
 class BidsOverTimeChart extends ChartWidget
 {
-    protected static ?string $heading = 'Biedingen over tijd';
+    protected ?string $heading = 'Biedingen over tijd';
     protected static ?int $sort = 5;
     public ?string $filter = 'month';
 

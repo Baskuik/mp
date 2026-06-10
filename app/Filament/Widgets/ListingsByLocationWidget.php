@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class ListingsByLocationWidget extends ChartWidget
 {
-    protected static ?string $heading = 'Advertenties per locatie (top 8)';
+    protected ?string $heading = 'Advertenties per locatie (top 8)';
     protected static ?int $sort = 9;
 
     protected function getData(): array
