@@ -21,7 +21,7 @@ use App\Filament\Widgets\UserStatsOverview;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
-    protected static string $view = 'filament.pages.dashboard';
+    protected string $view = 'filament.pages.dashboard';
 
     // Alle widgets per pagina
     protected array $widgetMap = [
