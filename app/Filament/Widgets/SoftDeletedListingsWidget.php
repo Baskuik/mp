@@ -9,8 +9,8 @@ use Illuminate\Support\Carbon;
 
 class SoftDeletedListingsWidget extends BaseWidget
 {
-    protected static ?int $sort = 6;
-    protected static ?string $pollingInterval = '60s';
+    protected ?int $sort = 6;
+    protected ?string $pollingInterval = '60s';
 
     protected function getStats(): array
     {

@@ -9,8 +9,8 @@ use Illuminate\Support\Carbon;
 
 class BannedUsersWidget extends BaseWidget
 {
-    protected static ?int $sort = 3;
-    protected static ?string $pollingInterval = '60s';
+    protected ?int $sort = 3;
+    protected ?string $pollingInterval = '60s';
 
     protected function getStats(): array
     {
