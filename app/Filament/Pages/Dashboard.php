@@ -19,16 +19,10 @@ use App\Filament\Widgets\SoftDeletedListingsWidget;
 use App\Filament\Widgets\TopCategoriesWidget;
 use App\Filament\Widgets\UserStatsOverview;
 use App\Models\UserWidgetPreference;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 
-class Dashboard extends \Filament\Pages\Dashboard implements HasForms
+class Dashboard extends \Filament\Pages\Dashboard
 {
-    use InteractsWithForms;
-
     // ──────────────────────────────────────────────────────────────
     // Widget-definitie per pagina
     // key   = pagina-slug
@@ -77,8 +71,6 @@ class Dashboard extends \Filament\Pages\Dashboard implements HasForms
      */
     public array $enabledWidgets = [];
 
-    public array $data = [];
-
     // ──────────────────────────────────────────────────────────────
     // Boot
     // ──────────────────────────────────────────────────────────────
@@ -86,34 +78,14 @@ class Dashboard extends \Filament\Pages\Dashboard implements HasForms
     {
         $this->selectedPage = 'users';
         $this->loadEnabledWidgets();
-
-        $this->form->fill(['selectedPage' => $this->selectedPage]);
     }
 
     // ──────────────────────────────────────────────────────────────
-    // Form (alleen de pagina-selector)
+    // Livewire lifecycle — reageert op wire:model.live="selectedPage"
     // ──────────────────────────────────────────────────────────────
-    public function form(Schema $form): Schema
+    public function updatedSelectedPage(string $value): void
     {
-        return $form
-            ->schema([
-                Select::make('selectedPage')
-                    ->label('Pagina')
-                    ->options([
-                        'users'         => '👤  Gebruikers',
-                        'categories'    => '📂  Categorieën',
-                        'listings'      => '📋  Advertenties',
-                        'bids'          => '💰  Biedingen',
-                        'reviews'       => '⭐  Reviews',
-                        'conversations' => '💬  Gesprekken',
-                    ])
-                    ->live()
-                    ->afterStateUpdated(function (string $state): void {
-                        $this->selectedPage = $state;
-                        $this->loadEnabledWidgets();
-                    }),
-            ])
-            ->statePath('data');
+        $this->loadEnabledWidgets();
     }
 
     // ──────────────────────────────────────────────────────────────
@@ -129,9 +101,9 @@ class Dashboard extends \Filament\Pages\Dashboard implements HasForms
         $newState  = ! $isEnabled;
 
         UserWidgetPreference::setWidget(
-            userId: Auth::id(),
-            page:   $this->selectedPage,
-            widget: $widgetClass,
+            userId:  Auth::id(),
+            page:    $this->selectedPage,
+            widget:  $widgetClass,
             enabled: $newState,
         );
 
