@@ -18,6 +18,7 @@ class ListingsByLocationWidget extends ChartWidget
             ->whereNotNull('location')
             ->where('location', '!=', '')
             ->whereNull('deleted_at')
+            ->where('status', 'active')
             ->groupBy('location')
             ->orderByDesc('total')
             ->limit(8)

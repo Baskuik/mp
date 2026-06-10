@@ -18,7 +18,7 @@ class TopCategoriesWidget extends BaseWidget
             ->query(
                 Category::query()
                     ->withCount(['listings' => function ($q) {
-                        $q->whereNull('deleted_at')->where('is_active', true);
+                        $q->whereNull('deleted_at')->where('status', 'active');
                     }])
                     ->orderByDesc('listings_count')
                     ->limit(8)
