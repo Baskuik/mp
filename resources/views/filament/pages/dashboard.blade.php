@@ -92,7 +92,7 @@
         .ws-lbl{font-size:11px;font-weight:700;letter-spacing:.03em;width:20px;text-align:left;color:#9ca3af}
         .ws-card--on .ws-lbl{color:#15803d}
 
-        @media(max-width:640px){.ws-header{padding:1rem}.ws-grid{grid-template-columns:1fr 1fr}}
+        @@media(max-width:640px){.ws-header{padding:1rem}.ws-grid{grid-template-columns:1fr 1fr}}
     </style>
 
 </x-filament-panels::page>
