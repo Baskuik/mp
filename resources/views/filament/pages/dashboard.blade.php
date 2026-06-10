@@ -52,7 +52,7 @@
         wire:key="widget-grid-{{ md5(implode(',', $this->enabledWidgets)) }}"
     >
         @foreach ($this->enabledWidgets as $widgetClass)
-            @livewire($widgetClass, key: 'widget-' . md5($widgetClass . implode(',', $this->enabledWidgets)))
+            @livewire($widgetClass, [], 'widget-' . md5($widgetClass . implode(',', $this->enabledWidgets)))
         @endforeach
     </div>
 
