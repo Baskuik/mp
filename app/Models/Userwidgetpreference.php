@@ -11,43 +11,42 @@ class UserWidgetPreference extends Model
 
     protected $casts = ['enabled' => 'boolean'];
 
+    // ── Relatie ───────────────────────────────────────────────────
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
-    /**
-     * Geeft een array terug van widget-classnames die ENABLED zijn
-     * voor de opgegeven gebruiker + pagina.
-     *
-     * Als er nog geen voorkeur is opgeslagen voor een widget,
-     * wordt die widget als standaard INGESCHAKELD beschouwd.
-     *
-     * @param  int    $userId
-     * @param  string $page
-     * @param  array  $allWidgets   Alle widget-classnames voor die pagina
-     * @return array<string>
-     */
-    public static function enabledForPage(int $userId, string $page, array $allWidgets): array
-    {
-        $saved = static::where('user_id', $userId)
-            ->where('page', $page)
-            ->pluck('enabled', 'widget');   // ['App\...\UserStatsOverview' => true, ...]
-
-        return array_filter($allWidgets, function (string $widget) use ($saved) {
-            // Geen voorkeur opgeslagen? Dan standaard aan.
-            return $saved->get($widget, true);
-        });
-    }
+    // ── Helpers ───────────────────────────────────────────────────
 
     /**
-     * Sla de aan/uit-staat op voor één widget.
+     * Sla de enabled/disabled staat van één widget op (upsert).
      */
     public static function setWidget(int $userId, string $page, string $widget, bool $enabled): void
     {
         static::updateOrCreate(
             ['user_id' => $userId, 'page' => $page, 'widget' => $widget],
-            ['enabled' => $enabled],
+            ['enabled' => $enabled]
         );
+    }
+
+    /**
+     * Geeft de lijst van ingeschakelde widget-classnames terug voor een pagina.
+     * Als een widget nog nooit is opgeslagen, wordt hij als 'aan' beschouwd ($defaults).
+     *
+     * `@param`  array<string>  $defaults  Alle bekende widgets voor deze pagina
+     * `@return` array<string>
+     */
+    public static function enabledForPage(int $userId, string $page, array $defaults): array
+    {
+        $saved = static::where('user_id', $userId)
+            ->where('page', $page)
+            ->pluck('enabled', 'widget')
+            ->all();
+
+        // Widgets die nooit zijn opgeslagen → standaard aan
+        return array_values(array_filter($defaults, function (string $widget) use ($saved) {
+            return $saved[$widget] ?? true;
+        }));
     }
 }
