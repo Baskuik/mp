@@ -23,7 +23,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 
 class Dashboard extends \Filament\Pages\Dashboard implements HasForms
 {
@@ -65,21 +65,23 @@ class Dashboard extends \Filament\Pages\Dashboard implements HasForms
     public string $selectedPage   = 'users';
     public array  $enabledWidgets = [];
 
+    public array $data = [];
+
     public function mount(): void
-    {
-        $this->selectedPage   = session('dashboard_page', 'users');
-        $this->enabledWidgets = session(
-            'dashboard_enabled_widgets',
-            array_keys($this->widgetMap[$this->selectedPage] ?? [])
-        );
+{
+    $this->selectedPage   = session('dashboard_page', 'users');
+    $this->enabledWidgets = session(
+        'dashboard_enabled_widgets',
+        array_keys($this->widgetMap[$this->selectedPage] ?? [])
+    );
 
-        $this->form->fill([
-            'selectedPage'   => $this->selectedPage,
-            'enabledWidgets' => $this->enabledWidgets,
-        ]);
-    }
+    $this->form->fill([
+        'selectedPage'   => $this->selectedPage,
+        'enabledWidgets' => $this->enabledWidgets,
+    ]);
+}
 
-    public function form(Form $form): Form
+    public function form(Schema $form): Schema
     {
         return $form
             ->schema([
@@ -121,7 +123,7 @@ class Dashboard extends \Filament\Pages\Dashboard implements HasForms
                             ->columns(3),
                     ]),
             ])
-            ->statePath('');
+            ->statePath('data');
     }
 
     public function getWidgets(): array
