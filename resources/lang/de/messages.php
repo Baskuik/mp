@@ -138,5 +138,5 @@ return [
     'email_address' => 'E-Mail-Adresse',
     'email_updated_successfully' => 'E-Mail-Adresse erfolgreich aktualisiert',
     'email_not_verified' => 'E-Mail noch nicht verifiziert',
-    'email_verified' => 'E-Mail verifiziert ✓',
+    'email_verified' => 'E-Mail verifiziert ✓', 
 ];
