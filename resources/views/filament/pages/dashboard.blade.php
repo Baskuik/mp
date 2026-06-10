@@ -46,16 +46,11 @@
     </div>
 
      {{-- ══ Widget-grid ═══════════════════════════════════════════════ --}}
-    <div
-        class="fi-wi-stats-overview-stats-ctn grid gap-6"
-        style="grid-template-columns: repeat({{ $this->getColumns() }}, minmax(0, 1fr));"
-        wire:key="widget-grid-{{ md5(implode(',', $this->enabledWidgets)) }}"
-    >
-        @foreach ($this->enabledWidgets as $widgetClass)
-            @livewire($widgetClass, [], 'widget-' . md5($widgetClass . implode(',', $this->enabledWidgets)))
-        @endforeach
+@foreach ($this->enabledWidgets as $widgetClass)
+    <div wire:key="widget-{{ md5($widgetClass) }}">
+        @livewire($widgetClass)
     </div>
-
+@endforeach
     <style>
         /* Wrapper */
         .ws-wrap{background:#fff;border:1px solid #e5e7eb;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.07);overflow:hidden;margin-bottom:1.5rem}
