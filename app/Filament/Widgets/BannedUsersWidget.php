@@ -14,8 +14,8 @@ class BannedUsersWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        $totalBanned    = User::where('is_banned', true)->count();
-        $bannedThisWeek = User::where('is_banned', true)
+        $totalBanned     = User::where('is_banned', true)->count();
+        $bannedThisWeek  = User::where('is_banned', true)
             ->where('updated_at', '>=', Carbon::now()->subWeek())
             ->count();
         $bannedThisMonth = User::where('is_banned', true)

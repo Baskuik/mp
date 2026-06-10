@@ -15,9 +15,9 @@ class ConversationStatsWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        $totalConversations  = Conversation::count();
-        $totalMessages       = Message::count();
-        $activeToday         = Conversation::whereHas('messages', function ($q) {
+        $totalConversations = Conversation::count();
+        $totalMessages      = Message::count();
+        $activeToday        = Conversation::whereHas('messages', function ($q) {
             $q->where('created_at', '>=', Carbon::today());
         })->count();
 
