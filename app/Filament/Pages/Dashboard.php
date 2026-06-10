@@ -21,7 +21,7 @@ use App\Filament\Widgets\UserStatsOverview;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
-    protected function getHeaderWidgets(): array
+    public function getWidgets(): array
     {
         return [
             // Stats
@@ -45,4 +45,4 @@ class Dashboard extends \Filament\Pages\Dashboard
             ListingsByLocationWidget::class,
         ];
     }
-}
+}   
