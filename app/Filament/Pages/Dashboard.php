@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Auth;
 class Dashboard extends \Filament\Pages\Dashboard
 {
     protected string $view = 'filament.pages.dashboard';
-    
+
     protected array $widgetMap = [
         'users' => [
             UserStatsOverview::class  => 'Gebruikersstatistieken',
@@ -92,31 +92,35 @@ class Dashboard extends \Filament\Pages\Dashboard
     /**
      * Zet een widget aan of uit en persisteer de keuze in de DB.
      */
-    public function toggleWidget(string $widgetClass): void
-    {
-        $isEnabled = in_array($widgetClass, $this->enabledWidgets, true);
-        $newState  = ! $isEnabled;
-
-        UserWidgetPreference::setWidget(
-            userId:  Auth::id(),
-            page:    $this->selectedPage,
-            widget:  $widgetClass,
-            enabled: $newState,
-        );
-
-        // Update lokale state
-        if ($newState) {
-            // Voeg toe op de originele positie (volgorde uit widgetMap bewaren)
-            $ordered = array_keys($this->widgetMap[$this->selectedPage] ?? []);
-            $this->enabledWidgets = array_values(
-                array_filter($ordered, fn ($w) => $w === $widgetClass || in_array($w, $this->enabledWidgets, true))
-            );
-        } else {
-            $this->enabledWidgets = array_values(
-                array_filter($this->enabledWidgets, fn ($w) => $w !== $widgetClass)
-            );
-        }
+public function toggleWidget(int $index): void
+{
+    $allWidgets = array_keys($this->widgetMap[$this->selectedPage] ?? []);
+    
+    if (!isset($allWidgets[$index])) {
+        return;
     }
+
+    $widgetClass = $allWidgets[$index];
+    $isEnabled   = in_array($widgetClass, $this->enabledWidgets, true);
+    $newState    = ! $isEnabled;
+
+    UserWidgetPreference::setWidget(
+        userId:  Auth::id(),
+        page:    $this->selectedPage,
+        widget:  $widgetClass,
+        enabled: $newState,
+    );
+
+    if ($newState) {
+        $this->enabledWidgets = array_values(
+            array_filter($allWidgets, fn ($w) => $w === $widgetClass || in_array($w, $this->enabledWidgets, true))
+        );
+    } else {
+        $this->enabledWidgets = array_values(
+            array_filter($this->enabledWidgets, fn ($w) => $w !== $widgetClass)
+        );
+    }
+}
 
     // ──────────────────────────────────────────────────────────────
     // Helpers

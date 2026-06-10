@@ -18,32 +18,28 @@
 
         {{-- Widget-kaartjes --}}
         <div class="ws-grid">
-            @foreach ($this->getWidgetRows() as $row)
-                <div class="ws-card {{ $row['enabled'] ? 'ws-card--on' : 'ws-card--off' }}"
-                     wire:key="wc-{{ md5($row['class']) }}">
+            @foreach ($this->getWidgetRows() as $index => $row)
+    <div class="ws-card {{ $row['enabled'] ? 'ws-card--on' : 'ws-card--off' }}"
+         wire:key="wc-{{ $index }}">
 
-                    <span class="ws-dot"></span>
+        <span class="ws-dot"></span>
+        <span class="ws-name">{{ $row['label'] }}</span>
 
-                    <span class="ws-name">{{ $row['label'] }}</span>
-
-                    <button
-                        type="button"
-                        wire:click="toggleWidget('{{ addslashes($row['class']) }}')"
-                        wire:loading.attr="disabled"
-                        wire:target="toggleWidget('{{ addslashes($row['class']) }}')"
-                        class="ws-btn"
-                        title="{{ $row['enabled'] ? 'Uitschakelen' : 'Inschakelen' }}"
-                    >
-                        <span class="ws-track">
-                            <span class="ws-thumb"></span>
-                        </span>
-                        <span class="ws-lbl">{{ $row['enabled'] ? 'Aan' : 'Uit' }}</span>
-                    </button>
-
-                </div>
-            @endforeach
-        </div>
+        <button
+            type="button"
+            wire:click="toggleWidget({{ $index }})"
+            wire:loading.attr="disabled"
+            wire:target="toggleWidget({{ $index }})"
+            class="ws-btn"
+            title="{{ $row['enabled'] ? 'Uitschakelen' : 'Inschakelen' }}"
+        >
+            <span class="ws-track">
+                <span class="ws-thumb"></span>
+            </span>
+            <span class="ws-lbl">{{ $row['enabled'] ? 'Aan' : 'Uit' }}</span>
+        </button>
     </div>
+@endforeach
 
      {{-- ══ Widget-grid ═══════════════════════════════════════════════ --}}
 @foreach ($this->enabledWidgets as $widgetClass)
