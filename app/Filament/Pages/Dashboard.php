@@ -18,127 +18,114 @@ use App\Filament\Widgets\ReviewStatsOverview;
 use App\Filament\Widgets\SoftDeletedListingsWidget;
 use App\Filament\Widgets\TopCategoriesWidget;
 use App\Filament\Widgets\UserStatsOverview;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
 
-class Dashboard extends \Filament\Pages\Dashboard
+class Dashboard extends \Filament\Pages\Dashboard implements HasForms
 {
+    use InteractsWithForms;
+
     protected string $view = 'filament.pages.dashboard';
 
-    // Alle widgets per pagina
     protected array $widgetMap = [
         'users' => [
-            UserStatsOverview::class,
-            PremiumStatsWidget::class,
-            BannedUsersWidget::class,
-            NewUsersChart::class,
+            UserStatsOverview::class  => 'Gebruikersstatistieken',
+            PremiumStatsWidget::class => 'Premium statistieken',
+            BannedUsersWidget::class  => 'Verbannen gebruikers',
+            NewUsersChart::class      => 'Nieuwe gebruikers (grafiek)',
         ],
         'categories' => [
-            CategoryStatsOverview::class,
-            TopCategoriesWidget::class,
+            CategoryStatsOverview::class => 'Categoriestatistieken',
+            TopCategoriesWidget::class   => 'Top categorieën',
         ],
         'listings' => [
-            ListingStatsOverview::class,
-            SoftDeletedListingsWidget::class,
-            NewListingsChart::class,
-            ListingsByLocationWidget::class,
-            RecentActivityWidget::class,
+            ListingStatsOverview::class       => 'Advertentiestatistieken',
+            SoftDeletedListingsWidget::class  => 'Verwijderde advertenties',
+            NewListingsChart::class           => 'Nieuwe advertenties (grafiek)',
+            ListingsByLocationWidget::class   => 'Advertenties per locatie',
+            RecentActivityWidget::class       => 'Recente activiteit',
         ],
         'bids' => [
-            BidStatsOverview::class,
-            BidsOverTimeChart::class,
+            BidStatsOverview::class  => 'Biedingsstatistieken',
+            BidsOverTimeChart::class => 'Biedingen over tijd (grafiek)',
         ],
         'reviews' => [
-            ReviewStatsOverview::class,
-            ReviewRatingDistributionWidget::class,
+            ReviewStatsOverview::class            => 'Reviewstatistieken',
+            ReviewRatingDistributionWidget::class => 'Ratingverdeling (grafiek)',
         ],
         'conversations' => [
-            ConversationStatsWidget::class,
+            ConversationStatsWidget::class => 'Gespreksstatistieken',
         ],
     ];
 
-    // Vriendelijke namen voor de widgets
-    protected array $widgetLabels = [
-        UserStatsOverview::class          => 'Gebruikersstatistieken',
-        PremiumStatsWidget::class         => 'Premium statistieken',
-        BannedUsersWidget::class          => 'Verbannen gebruikers',
-        NewUsersChart::class              => 'Nieuwe gebruikers (grafiek)',
-        CategoryStatsOverview::class      => 'Categoriestatistieken',
-        TopCategoriesWidget::class        => 'Top categorieën',
-        ListingStatsOverview::class       => 'Advertentiestatistieken',
-        SoftDeletedListingsWidget::class  => 'Verwijderde advertenties',
-        NewListingsChart::class           => 'Nieuwe advertenties (grafiek)',
-        ListingsByLocationWidget::class   => 'Advertenties per locatie',
-        RecentActivityWidget::class       => 'Recente activiteit',
-        BidStatsOverview::class           => 'Biedingsstatistieken',
-        BidsOverTimeChart::class          => 'Biedingen over tijd (grafiek)',
-        ReviewStatsOverview::class        => 'Reviewstatistieken',
-        ReviewRatingDistributionWidget::class => 'Ratingverdeling (grafiek)',
-        ConversationStatsWidget::class    => 'Gespreksstatistieken',
-    ];
-
-    public string $selectedPage = 'users';
-    public array $enabledWidgets = [];
+    public string $selectedPage   = 'users';
+    public array  $enabledWidgets = [];
 
     public function mount(): void
     {
-        $this->selectedPage  = session('dashboard_page', 'users');
-        $this->enabledWidgets = session('dashboard_enabled_widgets', $this->widgetMap[$this->selectedPage] ?? []);
+        $this->selectedPage   = session('dashboard_page', 'users');
+        $this->enabledWidgets = session(
+            'dashboard_enabled_widgets',
+            array_keys($this->widgetMap[$this->selectedPage] ?? [])
+        );
+
+        $this->form->fill([
+            'selectedPage'   => $this->selectedPage,
+            'enabledWidgets' => $this->enabledWidgets,
+        ]);
     }
 
-    public function updatedSelectedPage(string $value): void
+    public function form(Form $form): Form
     {
-        $this->selectedPage   = $value;
-        $this->enabledWidgets = $this->widgetMap[$value] ?? [];
-        session(['dashboard_page' => $value, 'dashboard_enabled_widgets' => $this->enabledWidgets]);
-    }
+        return $form
+            ->schema([
+                Section::make('🗂️ Widget Selector')
+                    ->description('Kies een sectie en schakel widgets in of uit.')
+                    ->schema([
+                        Select::make('selectedPage')
+                            ->label('Selecteer een pagina')
+                            ->options([
+                                'users'         => '👤 Gebruikers',
+                                'categories'    => '📂 Categorieën',
+                                'listings'      => '📋 Advertenties',
+                                'bids'          => '💰 Biedingen',
+                                'reviews'       => '⭐ Reviews',
+                                'conversations' => '💬 Gesprekken',
+                            ])
+                            ->live()
+                            ->afterStateUpdated(function (string $state) {
+                                $this->selectedPage   = $state;
+                                $this->enabledWidgets = array_keys($this->widgetMap[$state] ?? []);
+                                session([
+                                    'dashboard_page'            => $state,
+                                    'dashboard_enabled_widgets' => $this->enabledWidgets,
+                                ]);
+                                $this->form->fill([
+                                    'selectedPage'   => $this->selectedPage,
+                                    'enabledWidgets' => $this->enabledWidgets,
+                                ]);
+                            }),
 
-    public function toggleWidget(string $widget): void
-    {
-        if (in_array($widget, $this->enabledWidgets)) {
-            $this->enabledWidgets = array_values(array_filter(
-                $this->enabledWidgets,
-                fn($w) => $w !== $widget
-            ));
-        } else {
-            $this->enabledWidgets[] = $widget;
-        }
-        session(['dashboard_enabled_widgets' => $this->enabledWidgets]);
-    }
-
-    public function toggleAll(): void
-    {
-        $all = $this->widgetMap[$this->selectedPage] ?? [];
-        if (count($this->enabledWidgets) === count($all)) {
-            $this->enabledWidgets = [];
-        } else {
-            $this->enabledWidgets = $all;
-        }
-        session(['dashboard_enabled_widgets' => $this->enabledWidgets]);
+                        CheckboxList::make('enabledWidgets')
+                            ->label('Zichtbare widgets')
+                            ->options(fn () => $this->widgetMap[$this->selectedPage] ?? [])
+                            ->live()
+                            ->afterStateUpdated(function (array $state) {
+                                $this->enabledWidgets = $state;
+                                session(['dashboard_enabled_widgets' => $state]);
+                            })
+                            ->columns(3),
+                    ]),
+            ])
+            ->statePath('');
     }
 
     public function getWidgets(): array
     {
         return $this->enabledWidgets;
-    }
-
-    public function getAvailableWidgets(): array
-    {
-        return $this->widgetMap[$this->selectedPage] ?? [];
-    }
-
-    public function getWidgetLabel(string $widget): string
-    {
-        return $this->widgetLabels[$widget] ?? class_basename($widget);
-    }
-
-    public function getPageOptions(): array
-    {
-        return [
-            'users'         => 'Gebruikers',
-            'categories'    => 'Categorieën',
-            'listings'      => 'Advertenties',
-            'bids'          => 'Biedingen',
-            'reviews'       => 'Reviews',
-            'conversations' => 'Gesprekken',
-        ];
     }
 }
