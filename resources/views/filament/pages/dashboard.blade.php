@@ -45,11 +45,16 @@
         </div>
     </div>
 
-    {{-- ══ Widget-grid ═══════════════════════════════════════════════ --}}
-    <x-filament-widgets::widgets
-        :widgets="$this->getWidgets()"
-        :columns="$this->getColumns()"
-    />
+     {{-- ══ Widget-grid ═══════════════════════════════════════════════ --}}
+    <div
+        class="fi-wi-stats-overview-stats-ctn grid gap-6"
+        style="grid-template-columns: repeat({{ $this->getColumns() }}, minmax(0, 1fr));"
+        wire:key="widget-grid-{{ md5(implode(',', $this->enabledWidgets)) }}"
+    >
+        @foreach ($this->enabledWidgets as $widgetClass)
+            @livewire($widgetClass, key: 'widget-' . md5($widgetClass . implode(',', $this->enabledWidgets)))
+        @endforeach
+    </div>
 
     <style>
         /* Wrapper */
