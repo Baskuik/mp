@@ -15,13 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\SetLocale::class,
         ]);
 
-        // FORCEER: Sla CSRF-check over voor de login om de 419 te fixen
         $middleware->validateCsrfTokens(except: [
+            'stripe/webhook',
             'admin/login',
         ]);
+        
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
-
-    

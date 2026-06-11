@@ -443,6 +443,9 @@ class AdminPanelProvider extends PanelProvider
                 BidResource::class,
                 ReviewResource::class,
             ])
+            ->pages([
+                \App\Filament\Pages\Dashboard::class,
+            ])
             ->navigationGroups([
                 \Filament\Navigation\NavigationGroup::make()
                     ->label('BEHEER')

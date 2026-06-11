@@ -40,5 +40,10 @@ return [
     'token'      => env('TWILIO_AUTH_TOKEN'),
     'verify_sid' => env('TWILIO_VERIFY_SID'),
 ],
-
+'stripe' => [
+    'key'              => env('STRIPE_KEY'),
+    'secret'           => env('STRIPE_SECRET'),
+    'monthly_price_id' => env('STRIPE_MONTHLY_PRICE_ID'),
+    'webhook_secret'   => env('STRIPE_WEBHOOK_SECRET'),
+],
 ];

@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Listing;
+
 
 class Category extends Model
 {
@@ -45,4 +47,8 @@ class Category extends Model
     {
         return $this->hasMany(Category::class, 'parent_id');
     }
+    public function listings(): HasMany
+{
+    return $this->hasMany(Listing::class, 'category_id', 'category_id');
+}
 }

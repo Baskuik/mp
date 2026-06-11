@@ -6,11 +6,15 @@ use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\PremiumController;
+use App\Http\Controllers\StripeWebhookController;
 
 // View routes
 Route::get('/', function () {
     return view('welcome');
 });
+
+
 
 // Auth routes
 Route::get('/register', [AuthController::class, 'showRegisterStep1'])->name('register.step1');
@@ -83,3 +87,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/settings/email', [SettingsController::class, 'updateEmail'])->name('settings.email');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/premium',          [PremiumController::class, 'index'])->name('premium.index');
+    Route::get('/premium/checkout', [PremiumController::class, 'checkout'])->name('premium.checkout');
+    Route::post('/premium/intent',  [PremiumController::class, 'intent'])->name('premium.intent');
+    Route::get('/premium/success',  [PremiumController::class, 'success'])->name('premium.success');
+    Route::post('/premium/cancel',  [PremiumController::class, 'cancel'])->name('premium.cancel'); // ← nieuw
+});
+ 
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])
+    ->name('stripe.webhook');
