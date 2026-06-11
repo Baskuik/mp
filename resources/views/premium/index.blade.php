@@ -1186,18 +1186,25 @@
                         </h1>
 
                         <p class="hero-sub">
-                            Één eenmalige betaling van €9,99. Geen abonnement, geen verborgen kosten. Levenslange toegang
+                            Slechts €9,99 per maand. Maandelijks opzegbaar, geen verborgen kosten. Toegang
                             tot auto-bieden, inbox-prioriteit, statistieken en negen andere voordelen.
                         </p>
 
                         <div class="hero-actions">
                             @if(Auth::user()->is_premium)
                                 <span class="btn-primary is-purchased">
-                                    ✓ Gekocht
+                                    ✓ Actief abonnement
                                 </span>
+                                <form action="{{ route('premium.cancel') }}" method="POST"
+                                      onsubmit="return confirm('Weet je zeker dat je je abonnement wilt opzeggen?')">
+                                    @csrf
+                                    <button type="submit" class="btn-ghost" style="border-color:rgba(255,255,255,0.3);color:rgba(255,255,255,0.6);">
+                                        Abonnement opzeggen
+                                    </button>
+                                </form>
                             @else
                                 <a href="{{ route('premium.checkout') }}" class="btn-primary">
-                                    Upgrade voor €9,99
+                                    Upgrade voor €9,99/maand
                                     <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                             d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -1226,12 +1233,12 @@
                     <div class="hero-card">
                         <p
                             style="font-size:0.66rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin:0 0 14px;">
-                            Eenmalig</p>
+                            Maandelijks</p>
                         <div class="hero-price">
                             <span class="hero-price-big">€9</span>
                             <span class="hero-price-dec">,99</span>
                         </div>
-                        <p class="hero-price-label">Voor altijd · geen verlengingen</p>
+                        <p class="hero-price-label">Per maand · maandelijks opzegbaar</p>
 
                         @foreach (['Auto-bieden op advertenties', 'Prioriteit in de inbox', 'Advertentiestatistieken', 'Push notificaties', 'Geen advertenties'] as $item)
                             <div class="hero-card-item">
@@ -1265,7 +1272,7 @@
             <div class="reveal">
                 <p class="section-label">Inbegrepen</p>
                 <h2 class="section-heading">Alles wat je <em>krijgt</em></h2>
-                <p class="section-desc">Eén upgrade, negen voordelen ontgrendeld. Hier is exact wat je krijgt.</p>
+                <p class="section-desc">Voor €9,99 per maand, negen voordelen ontgrendeld. Hier is exact wat je krijgt.</p>
             </div>
 
             <div class="feat-grid reveal-stagger" style="margin-top:48px;">
@@ -1468,18 +1475,30 @@
                         Klaar om te starten?</p>
                     <h2 class="cta-banner-title">
                         Upgrade vandaag.<br>
-                        <em>Geen abonnement.</em>
+                        <em>Maandelijks opzegbaar.</em>
                     </h2>
                     <p class="cta-banner-sub">
-                        Eenmalige betaling van €9,99. Nooit meer nadenken over limieten of gemiste kansen.
+                        Slechts €9,99 per maand. Nooit meer nadenken over limieten of gemiste kansen.
                     </p>
                     @if(Auth::user()->is_premium)
                         <span class="btn-primary-lg is-purchased">
                             ✓ Je hebt al Premium
                         </span>
+                        <div class="trust-row" style="margin-top:18px;">
+                            <form action="{{ route('premium.cancel') }}" method="POST"
+                                  onsubmit="return confirm('Weet je zeker dat je je abonnement wilt opzeggen?')">
+                                @csrf
+                                <button type="submit" class="trust-item"
+                                        style="background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:6px 16px;cursor:pointer;font-family:inherit;font-size:0.75rem;color:rgba(255,255,255,0.45);transition:color 0.2s,border-color 0.2s;"
+                                        onmouseover="this.style.color='rgba(255,255,255,0.7)';this.style.borderColor='rgba(255,255,255,0.4)'"
+                                        onmouseout="this.style.color='rgba(255,255,255,0.45)';this.style.borderColor='rgba(255,255,255,0.2)'">
+                                    Abonnement opzeggen
+                                </button>
+                            </form>
+                        </div>
                     @else
                         <a href="{{ route('premium.checkout') }}" class="btn-primary-lg">
-                            Start nu voor €9,99
+                            Start nu voor €9,99/maand
                             <svg width="17" height="17" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                     d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -1504,7 +1523,7 @@
         <div class="sticky-cta" id="stickyCta" style="display:none;">
             <a href="{{ route('premium.checkout') }}" class="btn-primary-lg"
                 style="width:100%;justify-content:center;padding:13px 24px;font-size:0.95rem;">
-                Upgrade voor €9,99 →
+                Upgrade voor €9,99/maand →
             </a>
         </div>
     @endif
