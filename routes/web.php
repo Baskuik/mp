@@ -88,11 +88,11 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/premium',          [PremiumController::class, 'index'])->name('premium.index');
-    Route::get('/premium/checkout', [PremiumController::class, 'checkout'])->name('premium.checkout');
-    Route::post('/premium/intent',  [PremiumController::class, 'intent'])->name('premium.intent');
-    Route::get('/premium/success',  [PremiumController::class, 'success'])->name('premium.success');
+    Route::get('/premium',             [PremiumController::class, 'index'])->name('premium.index');
+    Route::get('/premium/checkout',    [PremiumController::class, 'checkout'])->name('premium.checkout');
+    Route::post('/premium/subscribe',  [PremiumController::class, 'subscribe'])->name('premium.subscribe');
+    Route::get('/premium/success',     [PremiumController::class, 'success'])->name('premium.success');
+    Route::post('/premium/cancel',     [PremiumController::class, 'cancel'])->name('premium.cancel');
 });
 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])
-    ->name('stripe.webhook');

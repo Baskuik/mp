@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use Stripe\Stripe;
 use Stripe\Webhook;
+use Stripe\Subscription;
 
 class StripeWebhookController extends Controller
 {
@@ -25,17 +26,58 @@ class StripeWebhookController extends Controller
             return response('Invalid signature', 400);
         }
 
-        if ($event->type === 'payment_intent.succeeded') {
-            $intent = $event->data->object;
-            $userId = $intent->metadata->user_id ?? null;
+        switch ($event->type) {
 
-            if ($userId) {
-                User::where('id', $userId)
-                    ->where('is_premium', false)
-                    ->update(['is_premium' => true]);
+            // First-time subscription payment succeeded → activate premium
+            case 'invoice.payment_succeeded':
+                $invoice = $event->data->object;
+                if ($invoice->billing_reason === 'subscription_create') {
+                    $subscriptionId = $invoice->subscription;
+                    User::where('stripe_subscription_id', $subscriptionId)
+                        ->where('is_premium', false)
+                        ->update(['is_premium' => true]);
+                    Log::info("Premium activated via webhook for subscription {$subscriptionId}.");
+                }
+                break;
 
-                Log::info("User {$userId} upgraded to premium via webhook.");
-            }
+            // Renewal payment failed → cancel subscription and revoke premium
+            case 'invoice.payment_failed':
+                $invoice        = $event->data->object;
+                $subscriptionId = $invoice->subscription;
+
+                if ($subscriptionId) {
+                    try {
+                        $subscription = Subscription::retrieve($subscriptionId);
+                        if (in_array($subscription->status, ['active', 'trialing', 'past_due'])) {
+                            $subscription->cancel();
+                        }
+                    } catch (\Exception $e) {
+                        Log::warning("Could not cancel subscription {$subscriptionId}: " . $e->getMessage());
+                    }
+
+                    User::where('stripe_subscription_id', $subscriptionId)
+                        ->update([
+                            'is_premium'             => false,
+                            'stripe_subscription_id' => null,
+                        ]);
+
+                    Log::info("Premium revoked due to failed payment for subscription {$subscriptionId}.");
+                }
+                break;
+
+            // Subscription cancelled/deleted (e.g. via Stripe dashboard or cancel())
+            case 'customer.subscription.deleted':
+                $subscription   = $event->data->object;
+                $subscriptionId = $subscription->id;
+
+                User::where('stripe_subscription_id', $subscriptionId)
+                    ->update([
+                        'is_premium'             => false,
+                        'stripe_subscription_id' => null,
+                    ]);
+
+                Log::info("Premium revoked via subscription.deleted webhook for {$subscriptionId}.");
+                break;
         }
 
         return response('OK', 200);

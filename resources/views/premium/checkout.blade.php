@@ -646,7 +646,7 @@
             </a>
 
             <p class="co-eyebrow">DirectDeal Premium</p>
-            <h1 class="co-title">Afrekenen. <em>Eenmalig.</em></h1>
+            <h1 class="co-title">Afrekenen. <em>Maandelijks.</em></h1>
             <p class="co-subtitle">
                 <span class="co-subtitle-dot"></span>
                 Veilige betaling via Stripe · SSL versleuteld
@@ -686,7 +686,7 @@
                                 </div>
                                 <div>
                                     <p class="product-name">Premium Lidmaatschap</p>
-                                    <p class="product-sub">Levenslange toegang · eenmalig</p>
+                                    <p class="product-sub">Maandelijks abonnement · opzegbaar</p>
                                 </div>
                             </div>
 
@@ -696,8 +696,8 @@
                             </div>
                             <div class="sum-total">
                                 <span class="l">
-                                    Totaal
-                                    <span class="once-pill">Eenmalig</span>
+                                    Per maand
+                                    <span class="once-pill">Maandelijks</span>
                                 </span>
                                 <span class="v">€9,99</span>
                             </div>
@@ -732,8 +732,8 @@
                                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
                         <div class="guarantee-badge-text">
-                            <strong>Zeg gemakkelijk op </strong>
-                            Niet tevreden? Zeg gemakkelijk je lidmaatschap op.
+                            <strong>Altijd opzegbaar</strong>
+                            Niet tevreden? Zeg je maandelijks abonnement op elk moment op.
                         </div>
                     </div>
                 </div>
@@ -788,7 +788,7 @@
                                                 d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                         </svg>
                                     </template>
-                                    <span x-text="loading ? 'Verwerken...' : 'Betaal €9,99'"></span>
+                                    <span x-text="loading ? 'Verwerken...' : 'Abonneer voor €9,99/maand'"></span>
                                 </button>
 
                             </form>
@@ -844,7 +844,7 @@
                 init() {
                     this.stripe = Stripe('{{ config('services.stripe.key') }}');
 
-                    fetch('/premium/intent', {
+                    fetch('/premium/subscribe', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

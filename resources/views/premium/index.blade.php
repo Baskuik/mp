@@ -1167,6 +1167,28 @@
 @section('content')
     <div style="font-family:'DM Sans',sans-serif; background:var(--dd-bg); min-height:100vh;">
 
+        {{-- Flash messages --}}
+        @if(session('success'))
+            <div style="max-width:700px;margin:24px auto 0;padding:0 20px;">
+                <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:14px 18px;color:#166534;font-size:0.9rem;display:flex;align-items:center;gap:10px;">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:18px;height:18px;flex-shrink:0;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    {{ session('success') }}
+                </div>
+            </div>
+        @endif
+        @if(session('error'))
+            <div style="max-width:700px;margin:24px auto 0;padding:0 20px;">
+                <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:12px;padding:14px 18px;color:#991b1b;font-size:0.9rem;display:flex;align-items:center;gap:10px;">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:18px;height:18px;flex-shrink:0;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01"/>
+                    </svg>
+                    {{ session('error') }}
+                </div>
+            </div>
+        @endif
+
         {{-- ══════ HERO ══════ --}}
         <section class="hero">
             <div class="hero-mesh" aria-hidden="true"></div>
@@ -1468,18 +1490,28 @@
                         Klaar om te starten?</p>
                     <h2 class="cta-banner-title">
                         Upgrade vandaag.<br>
-                        <em>Geen abonnement.</em>
+                        <em>Altijd opzegbaar.</em>
                     </h2>
                     <p class="cta-banner-sub">
-                        Eenmalige betaling van €9,99. Nooit meer nadenken over limieten of gemiste kansen.
+                        Maandelijks €9,99. Op elk moment opzegbaar. Nooit meer nadenken over limieten of gemiste kansen.
                     </p>
                     @if(Auth::user()->is_premium)
                         <span class="btn-primary-lg is-purchased">
-                            ✓ Je hebt al Premium
+                            ✓ Je hebt Premium
                         </span>
+                        <form action="{{ route('premium.cancel') }}" method="POST" style="margin-top:16px;"
+                              onsubmit="return confirm('Weet je zeker dat je je Premium abonnement wilt opzeggen? Je verliest direct toegang tot alle Premium functies.')">
+                            @csrf
+                            <button type="submit"
+                                style="background:transparent;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.7);font-size:0.82rem;padding:8px 18px;border-radius:8px;cursor:pointer;transition:border-color 0.2s,color 0.2s;"
+                                onmouseover="this.style.borderColor='rgba(255,255,255,0.5)';this.style.color='#fff';"
+                                onmouseout="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='rgba(255,255,255,0.7)';">
+                                Abonnement opzeggen
+                            </button>
+                        </form>
                     @else
                         <a href="{{ route('premium.checkout') }}" class="btn-primary-lg">
-                            Start nu voor €9,99
+                            Start nu voor €9,99/maand
                             <svg width="17" height="17" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                     d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -1490,7 +1522,7 @@
                             <span class="trust-item" style="color:rgba(255,255,255,0.12);">·</span>
                             <span class="trust-item">💳 Stripe Payments</span>
                             <span class="trust-item" style="color:rgba(255,255,255,0.12);">·</span>
-                            <span class="trust-item">↩ 30 dagen garantie</span>
+                            <span class="trust-item">↩ Altijd opzegbaar</span>
                         </div>
                     @endif
                 </div>
@@ -1504,7 +1536,7 @@
         <div class="sticky-cta" id="stickyCta" style="display:none;">
             <a href="{{ route('premium.checkout') }}" class="btn-primary-lg"
                 style="width:100%;justify-content:center;padding:13px 24px;font-size:0.95rem;">
-                Upgrade voor €9,99 →
+                Upgrade voor €9,99/maand →
             </a>
         </div>
     @endif

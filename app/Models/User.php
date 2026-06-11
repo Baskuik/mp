@@ -70,6 +70,8 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'phone_number',
         'language',
         'is_premium',
+        'stripe_customer_id',
+        'stripe_subscription_id',
     ];
 
     protected $hidden = [
