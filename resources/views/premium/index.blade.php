@@ -622,7 +622,7 @@
     @if(Auth::user()->is_premium)
         <div class="dd-modal-backdrop" id="cancelModal" role="dialog" aria-modal="true" aria-labelledby="cancelModalTitle">
             <div class="dd-modal">
-                <div class="dd-modal-icon">🗑️</div>
+                
                 <h2 class="dd-modal-title" id="cancelModalTitle">Abonnement opzeggen?</h2>
                 <p class="dd-modal-desc">
                     Weet je het zeker? Je behoudt toegang tot alle Premium-functies
