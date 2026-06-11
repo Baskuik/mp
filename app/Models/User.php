@@ -73,6 +73,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'stripe_customer_id',
         'stripe_subscription_id',
         'premium_expires_at',
+        'subscription_cancelled',
     ];
 
     protected $hidden = [
@@ -81,15 +82,16 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     ];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'is_admin' => 'boolean',
-        'is_active' => 'boolean',
-        'is_banned' => 'boolean',
-        'is_premium' => 'boolean',
-        'phone_verified' => 'boolean',
+        'email_verified_at'      => 'datetime',
+        'password'               => 'hashed',
+        'is_admin'               => 'boolean',
+        'is_active'              => 'boolean',
+        'is_banned'              => 'boolean',
+        'is_premium'             => 'boolean',
+        'phone_verified'         => 'boolean',
         'phone_verification_sent_at' => 'datetime',
-        'premium_expires_at' => 'datetime',
+        'premium_expires_at'     => 'datetime',
+        'subscription_cancelled' => 'boolean',
     ];
 
     public function isAdmin(): bool

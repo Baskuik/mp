@@ -31,14 +31,14 @@ class PremiumController extends Controller
 
         if (!$user->stripe_customer_id) {
             $customer = Customer::create([
-                'email' => $user->email,
+                'email'    => $user->email,
                 'metadata' => ['user_id' => (string) $user->id],
             ]);
             $user->update(['stripe_customer_id' => $customer->id]);
         }
 
         $setupIntent = SetupIntent::create([
-            'customer' => $user->stripe_customer_id,
+            'customer'             => $user->stripe_customer_id,
             'payment_method_types' => ['card'],
         ]);
 
@@ -68,21 +68,23 @@ class PremiumController extends Controller
             return view('premium.success');
         }
 
-        //dd($user->stripe_customer_id, $setupIntent->customer, $user->getAttributes());
-
         \Stripe\PaymentMethod::retrieve($setupIntent->payment_method)->attach([
             'customer' => $user->stripe_customer_id,
         ]);
+
         $subscription = Subscription::create([
-            'customer' => $user->stripe_customer_id,
-            'items' => [['price' => config('services.stripe.monthly_price_id')]],
+            'customer'               => $user->stripe_customer_id,
+            'items'                  => [['price' => config('services.stripe.monthly_price_id')]],
             'default_payment_method' => $setupIntent->payment_method,
         ]);
 
         $user->update([
-            'is_premium' => true,
-            'stripe_subscription_id' => $subscription->id,
-            'premium_expires_at' => now()->addMonth(),
+            'is_premium'              => true,
+            'stripe_subscription_id'  => $subscription->id,
+            'subscription_cancelled'  => false,
+            'premium_expires_at'      => $subscription->current_period_end
+                ? now()->createFromTimestamp($subscription->current_period_end)
+                : now()->addMonth(),
         ]);
 
         return view('premium.success');
@@ -94,18 +96,38 @@ class PremiumController extends Controller
         $user = Auth::user();
 
         if (!$user->is_premium || !$user->stripe_subscription_id) {
-            return redirect()->route('premium.index');
+            return redirect()->route('premium.index')
+                ->with('error', 'Er is geen actief abonnement gevonden.');
         }
 
-        $subscription = Subscription::retrieve($user->stripe_subscription_id);
-        $subscription->update(['cancel_at_period_end' => true]);
+        try {
+            // Zet cancel_at_period_end op true bij Stripe
+            Subscription::update($user->stripe_subscription_id, [
+                'cancel_at_period_end' => true,
+            ]);
 
-        $user->update([
-            'is_premium' => false,
-            'stripe_subscription_id' => null,
-            'premium_expires_at' => null,
-        ]);
+            // Haal de subscription opnieuw op — nu bevat current_period_end de juiste waarde
+            $subscription = Subscription::retrieve($user->stripe_subscription_id);
 
-        return redirect()->route('premium.index')->with('success', 'Je abonnement is opgezegd.');
+            $expiresAt = $subscription->current_period_end
+                ? now()->createFromTimestamp($subscription->current_period_end)
+                : now()->addMonth(); // fallback voor het geval Stripe het niet teruggeeft
+
+            $user->update([
+                'premium_expires_at'     => $expiresAt,
+                'subscription_cancelled' => true,
+                // is_premium en stripe_subscription_id blijven staan —
+                // de `customer.subscription.deleted` webhook ruimt dat op na afloop
+            ]);
+
+        } catch (\Exception $e) {
+            return redirect()->route('premium.index')
+                ->with('error', 'Er ging iets mis bij het opzeggen. Probeer het later opnieuw.');
+        }
+
+        $expiresFormatted = $user->fresh()->premium_expires_at?->format('d-m-Y') ?? 'het einde van je betaalperiode';
+
+        return redirect()->route('premium.index')
+            ->with('cancelled', "Je abonnement is opgezegd. Je hebt nog toegang tot {$expiresFormatted}.");
     }
 }
