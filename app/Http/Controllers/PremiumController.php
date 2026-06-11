@@ -40,6 +40,7 @@ class PremiumController extends Controller
         $setupIntent = SetupIntent::create([
             'customer'             => $user->stripe_customer_id,
             'payment_method_types' => ['card'],
+            'metadata'             => ['user_id' => (string) $user->id],
         ]);
 
         return response()->json(['clientSecret' => $setupIntent->client_secret]);
