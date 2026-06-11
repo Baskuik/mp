@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'stripe/webhook',
             'admin/login',
         ]);
+        
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

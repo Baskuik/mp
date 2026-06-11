@@ -70,6 +70,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'phone_number',
         'language',
         'is_premium',
+        'stripe_customer_id',
+        'stripe_subscription_id',
+        'premium_expires_at',
     ];
 
     protected $hidden = [
@@ -86,6 +89,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'is_premium' => 'boolean',
         'phone_verified' => 'boolean',
         'phone_verification_sent_at' => 'datetime',
+        'premium_expires_at' => 'datetime',
     ];
 
     public function isAdmin(): bool
