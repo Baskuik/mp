@@ -876,9 +876,9 @@
                             this.paymentElement.on('change', (e) => {
                                 const isCard = e.value?.type === 'card';
                                 const nameBlock = document.getElementById(
-                                'card-name-block');
+                                    'card-name-block');
                                 const nameInput = document.querySelector(
-                                '[name=card_name]');
+                                    '[name=card_name]');
                                 nameBlock.style.display = isCard ? 'block' : 'none';
                                 nameInput.required = isCard;
                             });
@@ -899,7 +899,7 @@
 
                     const {
                         error
-                    } = await this.stripe.confirmPayment({
+                    } = await this.stripe.confirmSetup({
                         elements: this.elements,
                         confirmParams: {
                             return_url: '{{ route('premium.success') }}',

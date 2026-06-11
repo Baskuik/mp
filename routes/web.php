@@ -14,6 +14,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+
 // Auth routes
 Route::get('/register', [AuthController::class, 'showRegisterStep1'])->name('register.step1');
 Route::post('/register/step1', [AuthController::class, 'registerStep1'])->name('register.step1.post');
@@ -90,7 +92,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/premium/checkout', [PremiumController::class, 'checkout'])->name('premium.checkout');
     Route::post('/premium/intent',  [PremiumController::class, 'intent'])->name('premium.intent');
     Route::get('/premium/success',  [PremiumController::class, 'success'])->name('premium.success');
+    Route::post('/premium/cancel',  [PremiumController::class, 'cancel'])->name('premium.cancel'); // ← nieuw
 });
-
+ 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])
     ->name('stripe.webhook');
