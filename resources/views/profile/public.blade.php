@@ -39,19 +39,19 @@
                 <div class="px-6 pb-4 flex flex-wrap gap-2">
                     @if ($user->show_badge_premium && $user->is_premium)
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-700">
-                            ⭐ Premium
+                            <i class="fa-regular fa-star"></i> Premium
                         </span>
                     @endif
 
                     @if ($user->show_badge_email && $user->email_verified_at)
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700">
-                            ✓ E-mail geverifieerd
+                           <i class="fa-solid fa-check"></i> E-mail geverifieerd
                         </span>
                     @endif
 
                     @if ($user->show_badge_phone && $user->phone_verified)
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
-                            ✓ Telefoon geverifieerd
+                            <i class="fa-solid fa-check"></i> Telefoon geverifieerd
                         </span>
                     @endif
                 </div>
