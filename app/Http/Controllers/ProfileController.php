@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
@@ -206,5 +207,9 @@ class ProfileController extends Controller
 
     return redirect()->route('profile.show')
         ->with('success', 'Badge instellingen opgeslagen!');
+}
+public function showPublic(User $user)
+{
+    return view('profile.public', compact('user'));
 }
 }

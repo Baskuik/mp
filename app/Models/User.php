@@ -143,4 +143,8 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     {
         return parent::delete();
     }
+    public function getRouteKeyName()
+{
+    return 'user_id';
+}
 }

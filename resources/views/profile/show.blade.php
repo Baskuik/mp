@@ -6,6 +6,13 @@
     <div class="min-h-screen bg-gray-50 py-8">
         <div class="max-w-6xl mx-auto px-4">
             <!-- Header -->
+            <a href="{{ route('profile.public', $user) }}" target="_blank"
+   class="inline-flex items-center gap-2 mt-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium text-gray-700">
+    Bekijk mijn profiel als anderen
+</a><a href="{{ route('profile.public', $user) }}" target="_blank"
+   class="inline-flex items-center gap-2 mt-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium text-gray-700">
+    Bekijk mijn profiel als anderen
+</a>
             <div class="mb-8">
                 <h1 class="text-3xl font-bold text-gray-900">{{ __('profile.title') }}</h1>
                 <p class="text-gray-600 mt-2">
