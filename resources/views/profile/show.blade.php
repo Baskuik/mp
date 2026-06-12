@@ -6,6 +6,13 @@
     <div class="min-h-screen bg-gray-50 py-8">
         <div class="max-w-6xl mx-auto px-4">
             <!-- Header -->
+            <a href="{{ route('profile.public', $user) }}" target="_blank"
+   class="inline-flex items-center gap-2 mt-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium text-gray-700">
+    Bekijk mijn profiel als anderen
+</a><a href="{{ route('profile.public', $user) }}" target="_blank"
+   class="inline-flex items-center gap-2 mt-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium text-gray-700">
+    Bekijk mijn profiel als anderen
+</a>
             <div class="mb-8">
                 <h1 class="text-3xl font-bold text-gray-900">{{ __('profile.title') }}</h1>
                 <p class="text-gray-600 mt-2">
@@ -83,6 +90,17 @@
                                         d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                 </svg>
                                 {{ __('profile.nav_phone_verification') }}
+                            </span>
+                        </a>
+                        <a href="#badge-settings"
+                            class="block px-4 py-2.5 rounded-lg text-left text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+                            onclick="scrollToSection('#badge-settings')">
+                            <span class="inline-flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                                </svg>
+                                Badge instellingen
                             </span>
                         </a>
                     </nav>
@@ -550,6 +568,93 @@
                             @endif
                         </div>
                     </div>
+
+                    <!-- SECTION: Badge Settings -->
+                    <div id="badge-settings" class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                            <h2 class="text-lg font-semibold text-gray-900">Badge instellingen</h2>
+                            <p class="text-sm text-gray-500 mt-1">Kies welke badges zichtbaar zijn op jouw profiel.</p>
+                        </div>
+
+                        <form action="{{ route('profile.badges') }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+
+                            <div class="divide-y divide-gray-100">
+
+                                @if($user->is_premium)
+                                <div class="flex items-center gap-4 px-6 py-4">
+                                    <div class="w-9 h-9 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-900">Premium</p>
+                                        <p class="text-xs text-gray-500">Toont dat je een premium account hebt</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="hidden" name="show_badge_premium" value="0">
+                                        <input type="checkbox" name="show_badge_premium" value="1" class="sr-only peer"
+                                            {{ $user->show_badge_premium ? 'checked' : '' }}
+                                            onchange="this.form.submit()">
+                                        <div class="w-10 h-6 bg-gray-200 rounded-full peer peer-checked:bg-purple-600 peer-checked:after:translate-x-4 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                                    </label>
+                                </div>
+                                @endif
+
+                                @if($user->email_verified_at)
+                                <div class="flex items-center gap-4 px-6 py-4">
+                                    <div class="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-900">E-mail geverifieerd</p>
+                                        <p class="text-xs text-gray-500">Toont dat jouw e-mailadres bevestigd is</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="hidden" name="show_badge_email" value="0">
+                                        <input type="checkbox" name="show_badge_email" value="1" class="sr-only peer"
+                                            {{ $user->show_badge_email ? 'checked' : '' }}
+                                            onchange="this.form.submit()">
+                                        <div class="w-10 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600 peer-checked:after:translate-x-4 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                                    </label>
+                                </div>
+                                @endif
+
+                                @if($user->number_verified_at)
+                                <div class="flex items-center gap-4 px-6 py-4">
+                                    <div class="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-900">Telefoon geverifieerd</p>
+                                        <p class="text-xs text-gray-500">Toont dat jouw telefoonnummer bevestigd is</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="hidden" name="show_badge_phone" value="0">
+                                        <input type="checkbox" name="show_badge_phone" value="1" class="sr-only peer"
+                                            {{ $user->show_badge_phone ? 'checked' : '' }}
+                                            onchange="this.form.submit()">
+                                        <div class="w-10 h-6 bg-gray-200 rounded-full peer peer-checked:bg-green-600 peer-checked:after:translate-x-4 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                                    </label>
+                                </div>
+                                @endif
+
+                                @if(!$user->is_premium && !$user->email_verified_at && !$user->number_verified_at)
+                                <div class="px-6 py-4 text-sm text-gray-400">
+                                    Je hebt nog geen badges om te beheren.
+                                </div>
+                                @endif
+
+                            </div>
+                        </form>
+                    </div>
+
                 </div>
             </div>
 
@@ -577,4 +682,4 @@
             }
         }
     </script>
-'@endsection'
+@endsection

@@ -74,6 +74,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'stripe_subscription_id',
         'premium_expires_at',
         'subscription_cancelled',
+        'show_badge_premium',
+        'show_badge_email',
+        'show_badge_phone',
     ];
 
     protected $hidden = [
@@ -92,6 +95,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'phone_verification_sent_at' => 'datetime',
         'premium_expires_at'     => 'datetime',
         'subscription_cancelled' => 'boolean',
+        'show_badge_premium'    => 'boolean',
+        'show_badge_email'      => 'boolean',
+        'show_badge_phone'      => 'boolean',
     ];
 
     public function isAdmin(): bool
@@ -137,4 +143,8 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     {
         return parent::delete();
     }
+    public function getRouteKeyName()
+{
+    return 'user_id';
+}
 }

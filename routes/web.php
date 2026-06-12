@@ -69,17 +69,21 @@ Route::get('/set-language/{lang}', function ($lang) {
 })->name('set-language');
 
 Route::middleware(['auth'])->group(function () {
+
     // Profile routes
     Route::get('/profiel', [ProfileController::class, 'show'])->name('profile.show');
     Route::post('/profiel', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profiel/password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
     Route::post('/profiel/email/send', [ProfileController::class, 'sendEmailVerificationCode'])->name('profile.email.send');
     Route::post('/profiel/email/verify', [ProfileController::class, 'verifyEmailCode'])->name('profile.email.verify');
+    Route::patch('/profiel/badges', [ProfileController::class, 'updateBadges'])->name('profile.badges');
+    Route::get('/gebruiker/{user}', [ProfileController::class, 'showPublic'])->name('profile.public');
+
     // Phone verification
     Route::post('/profile/phone/send', [PhoneVerificationController::class, 'send'])->name('phone.send');
     Route::post('/profile/phone/verify', [PhoneVerificationController::class, 'verify'])->name('phone.verify');
 
-    // Settings routes (Story 399, 400, 402, 403)
+    // Settings routes
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('/settings/language', [SettingsController::class, 'updateLanguage'])->name('settings.language');
     Route::post('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password');
