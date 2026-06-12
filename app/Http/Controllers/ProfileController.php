@@ -194,4 +194,17 @@ class ProfileController extends Controller
             Log::error('Email verification failed', ['email' => $email, 'error' => $e->getMessage()]);
         }
     }
+    public function updateBadges(Request $request)
+{
+    $user = Auth::user();
+
+    $user->update([
+        'show_badge_premium' => $request->boolean('show_badge_premium'),
+        'show_badge_email'   => $request->boolean('show_badge_email'),
+        'show_badge_phone'   => $request->boolean('show_badge_phone'),
+    ]);
+
+    return redirect()->route('profile.show')
+        ->with('success', 'Badge instellingen opgeslagen!');
+}
 }

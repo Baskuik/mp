@@ -75,6 +75,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profiel/password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
     Route::post('/profiel/email/send', [ProfileController::class, 'sendEmailVerificationCode'])->name('profile.email.send');
     Route::post('/profiel/email/verify', [ProfileController::class, 'verifyEmailCode'])->name('profile.email.verify');
+    Route::patch('/profiel/badges', [ProfileController::class, 'updateBadges'])->name('profile.badges');
+    
     // Phone verification
     Route::post('/profile/phone/send', [PhoneVerificationController::class, 'send'])->name('phone.send');
     Route::post('/profile/phone/verify', [PhoneVerificationController::class, 'verify'])->name('phone.verify');
@@ -97,3 +99,5 @@ Route::middleware(['auth'])->group(function () {
  
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])
     ->name('stripe.webhook');
+
+    
